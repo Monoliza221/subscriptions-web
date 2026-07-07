@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- PROTECTED: meta type -->
+    <meta name="type" value="app" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои Подписки — все подписки в одном месте</title>
+    <meta property="og:title" content="Мои Подписки">
+    <meta property="og:description" content="Сервис, который собирает все ваши подписки из разных экосистем в одном месте и помогает экономить.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ========== AUTH ========== -->
+<div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+        <div class="logo">
+            <div class="logo-badge"><i class="fa-solid fa-layer-group"></i></div>
+            Мои Подписки
+        </div>
+        <div id="authStep1">
+            <h1>Вход без пароля</h1>
+            <p>Введите номер телефона — вышлем код в SMS</p>
+            <div class="field">
+                <label>Номер телефона</label>
+                <input type="tel" id="phoneInput" placeholder="+7 912 345-67-89" value="+7">
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="consent">
+                <label for="consent">Согласен с <a href="#">политикой конфиденциальности</a> и <a href="#">офертой</a></label>
+            </div>
+            <button class="btn btn-primary" onclick="sendCode()">Получить код <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div id="authStep2" style="display:none;">
+            <h1>Введите код</h1>
+            <p>Отправили 6 цифр на <span id="phoneDisplay" style="color:var(--ink); font-weight:500;"></span></p>
+            <div class="field">
+                <label>Код из SMS (для демо: <strong>123456</strong>)</label>
+                <input type="text" id="codeInput" class="auth-code" maxlength="6" placeholder="000000">
+            </div>
+            <button class="btn btn-primary" onclick="verifyCode()">Войти <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="back-link" onclick="backToStep1()"><i class="fa-solid fa-arrow-left"></i> Изменить номер</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== APP ========== -->
+<div id="appRoot" class="app" style="display:none;">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-badge"><i class="fa-solid fa-layer-group"></i></div>
+            Мои Подписки
+        </div>
+        <nav class="nav">
+            <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i> Обзор</button>
+            <button class="nav-item" data-view="subscriptions"><i class="fa-solid fa-rectangle-list"></i> Подписки</button>
+            <button class="nav-item" data-view="calendar"><i class="fa-solid fa-calendar-days"></i> Календарь</button>
+            <button class="nav-item" data-view="wallet"><i class="fa-solid fa-wallet"></i> Кошелёк</button>
+            <button class="nav-item" data-view="history"><i class="fa-solid fa-clock-rotate-left"></i> История</button>
+            <button class="nav-item" data-view="merchant"><i class="fa-solid fa-store"></i> Мои подписки для продаж</button>
+            <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> Настройки</button>
+        </nav>
+        <div class="sidebar-foot">
+            <a href="#">Политика конфиденциальности</a>
+            <a href="#">Пользовательское соглашение</a>
+            <div style="margin-top:8px;">© 2026 Мои Подписки</div>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <!-- DASHBOARD -->
+        <section class="view active" id="view-dashboard">
+            <div class="dashboard-mobile-wrap">
+                <div class="dashboard-app-header">
+                    <div>
+                        <div class="dashboard-greeting" id="dashboardGreeting">Добрый день 👋</div>
+                        <h1 class="dashboard-name">Ваш бюджет</h1>
+                    </div>
+                    <button class="dashboard-balance-pill" type="button" onclick="switchView('wallet')">
+                        <span class="dashboard-avatar">👤</span>
+                        <span>Баланс: <strong id="dashboardTopBalance">0 ₽</strong></span>
+                        <em>3</em>
+                    </button>
+                </div>
+
+                <div class="dashboard-hero-area">
+                    <div class="dashboard-budget-card">
+                        <div class="dashboard-budget-info">
+                            <div class="dashboard-budget-label">Траты в месяц</div>
+                            <div class="dashboard-budget-value" id="kpiMonthly">0 ₽</div>
+                            <div class="dashboard-budget-sub">Активных подписок: <span id="kpiCount">0</span></div>
+                        </div>
+                        <div class="dashboard-budget-promo">
+                            <div class="promo-ring"></div>
+                            <div class="promo-text">открывается<br>в подписке</div>
+                        </div>
+                        <div class="dashboard-budget-bottom">
+                            <div class="dashboard-budget-line"></div>
+                            <div class="dashboard-budget-metrics">
+                                <div>
+                                    <span>В год</span>
+                                    <strong id="kpiYearly">0 ₽</strong>
+                                </div>
+                                <div>
+                                    <span>Средний чек</span>
+                                    <strong id="kpiAvg">0 ₽</strong>
+                                </div>
+                                <div>
+                                    <span>Следующее</span>
+                                    <strong id="kpiNext">—</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-feature-grid">
+                        <button class="dashboard-feature-card" type="button" onclick="toast('Калькулятор будет добавлен отдельным экраном')">
+                            <span class="dashboard-feature-icon pink"><i class="fa-solid fa-calculator"></i></span>
+                            <span>Калькулятор</span>
+                        </button>
+                        <button class="dashboard-feature-card" type="button" onclick="toast('Тесты будут добавлены отдельным экраном')">
+                            <span class="dashboard-feature-icon mint"><i class="fa-solid fa-circle-question"></i></span>
+                            <span>Тесты</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-quick-grid">
+                    <button class="dashboard-quick-card primary" type="button" onclick="toast('Категории будут добавлены отдельным экраном')">
+                        <span><i class="fa-solid fa-folder"></i></span>
+                        <strong>Категории</strong>
+                    </button>
+                    <button class="dashboard-quick-card" type="button" onclick="switchView('wallet')">
+                        <span><i class="fa-solid fa-wallet"></i></span>
+                        <strong>Кошелёк</strong>
+                    </button>
+                    <button class="dashboard-quick-card" type="button" onclick="switchView('history')">
+                        <span><i class="fa-solid fa-clock-rotate-left"></i></span>
+                        <strong>История</strong>
+                    </button>
+                    <button class="dashboard-quick-card" type="button" onclick="switchView('subscriptions')">
+                        <span><i class="fa-solid fa-rectangle-list"></i></span>
+                        <strong>Подписки</strong>
+                    </button>
+                </div>
+
+                <div class="dashboard-calendar-block">
+                    <div class="dashboard-calendar-head">
+                        <div>
+                            <h2>Календарь списаний</h2>
+                        </div>
+                        <button type="button" onclick="switchView('calendar')">Все</button>
+                    </div>
+                    <div id="dashboardCalendarDays"></div>
+                    <div id="dashboardCalendarEvents"></div>
+                </div>
+
+                <div class="dashboard-section-title">
+                    <h2>Ближайшие списания</h2>
+                    <button type="button" onclick="switchView('subscriptions')">Все</button>
+                </div>
+                <div id="dashUpcoming" class="dashboard-upcoming-list"></div>
+            </div>
+        </section>
+
+        <!-- SUBSCRIPTIONS -->
+        <section class="view" id="view-subscriptions">
+            <div class="topbar">
+                <div>
+                    <h1 class="page-title">Подписки</h1>
+                    <div class="page-sub">Все ваши активные и архивные подписки</div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div class="tabs" id="subTabs">
+                        <button class="tab active" data-filter="active">Активные</button>
+                        <button class="tab" data-filter="archived">Архив</button>
+                    </div>
+                    <button class="btn btn-accent" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Добавить</button>
+                </div>
+            </div>
+            <div id="subList" class="sub-list"></div>
+        </section>
+
+        <!-- CALENDAR -->
+        <section class="view" id="view-calendar">
+            <div class="topbar">
+                <div>
+                    <h1 class="page-title">Календарь списаний</h1>
+                    <div class="page-sub">Когда и что с вас спишут</div>
+                </div>
+            </div>
+            <div id="calList" class="sub-list cal-list"></div>
+        </section>
+
+        <!-- WALLET -->
+        <section class="view" id="view-wallet">
+            <div class="topbar">
+                <div>
+                    <h1 class="page-title">Виртуальный кошелёк</h1>
+                    <div class="page-sub">Оплачивайте подписки с баланса автоматически</div>
+                </div>
+            </div>
+            <div class="grid wallet-layout">
+                <div class="card wallet-card">
+                    <div class="ring"></div>
+                    <div class="label">Доступно</div>
+                    <div class="balance" id="walletBalance">0 ₽</div>
+                    <div style="font-size:13px; opacity:0.9;">Автопополнение: <span id="autoTopupLabel">выключено</span></div>
+                    <div class="wallet-actions">
+                        <button class="btn" onclick="openDepositModal()"><i class="fa-solid fa-plus"></i> Пополнить</button>
+                        <button class="btn" onclick="openAutoTopupModal()"><i class="fa-solid fa-rotate"></i> Автопополнение</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:16px; margin-bottom:14px;">Последние операции</h3>
+                    <div id="walletTx"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section class="view" id="view-history">
+            <div class="topbar">
+                <div>
+                    <h1 class="page-title">История списаний</h1>
+                    <div class="page-sub">Все платежи по вашим подпискам</div>
+                </div>
+                <div class="tabs" id="histTabs">
+                    <button class="tab active" data-period="month">Месяц</button>
+                    <button class="tab" data-period="quarter">3 месяца</button>
+                    <button class="tab" data-period="year">Год</button>
+                </div>
+            </div>
+            <div class="card" id="historyList"></div>
+        </section>
+
+        <!-- MERCHANT -->
+        <section class="view" id="view-merchant">
+            <div class="topbar">
+                <div>
+                    <h1 class="page-title">Подписки для продаж</h1>
+                    <div class="page-sub">Создавайте свои подписки и принимайте платежи</div>
+                </div>
+                <button class="btn btn-accent" onclick="openMerchantModal()"><i class="fa-solid fa-plus"></i> Создать</button>
+            </div>
+            <div id="merchantList" class="merch-grid"></div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view" id="view-settings">
+            <div class="topbar">
+                <div>
+                    <h1 class="page-title">Настройки</h1>
+                    <div class="page-sub">Уведомления, безопасность и аккаунт</div>
+                </div>
+            </div>
+            <div class="grid" style="grid-template-columns:1fr 1fr; gap:20px;">
+                <div class="card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Уведомления</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Когда напомнить о списании</div>
+                    <div class="field"><label><input type="checkbox" checked> За 7 дней</label></div>
+                    <div class="field"><label><input type="checkbox" checked> За 3 дня</label></div>
+                    <div class="field"><label><input type="checkbox"> За 1 день</label></div>
+                    <div class="field" style="margin-top:16px;">
+                        <label>Канал</label>
+                        <select><option>Web Push</option><option>Telegram</option><option>Оба</option></select>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Аккаунт</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Управление профилем</div>
+                    <div class="field"><label>Телефон</label><input type="tel" id="settingsPhone" readonly></div>
+                    <div class="field"><label>Часовой пояс</label>
+                        <select><option>Europe/Moscow (UTC+3)</option><option>Europe/Kaliningrad (UTC+2)</option><option>Asia/Yekaterinburg (UTC+5)</option></select>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:18px;">
+                        <button class="btn btn-ghost" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выйти</button>
+                        <button class="btn btn-danger" onclick="deleteAccount()"><i class="fa-solid fa-trash"></i> Удалить аккаунт</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ========== MODAL: Add Subscription ========== -->
+<div class="modal-backdrop" id="addModal">
+    <div class="modal">
+        <h2 id="addModalTitle">Новая подписка</h2>
+        <p class="sub">Заполните данные о подписке</p>
+        <div class="field">
+            <label>Название сервиса</label>
+            <input type="text" id="subName" placeholder="Netflix, Яндекс Плюс, Spotify…">
+        </div>
+        <div class="field-row">
+            <div class="field"><label>Сумма</label><input type="number" id="subAmount" placeholder="799"></div>
+            <div class="field"><label>Валюта</label>
+                <select id="subCurrency"><option>RUB</option><option>USD</option><option>EUR</option></select>
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field"><label>Периодичность</label>
+                <select id="subCycle">
+                    <option value="monthly">Ежемесячно</option>
+                    <option value="yearly">Ежегодно</option>
+                    <option value="weekly">Еженедельно</option>
+                </select>
+            </div>
+            <div class="field"><label>Дата следующего списания</label><input type="date" id="subDate"></div>
+        </div>
+        <div class="field">
+            <label>Категория</label>
+            <select id="subCategory">
+                <option value="entertainment">Развлечения</option>
+                <option value="software">Софт</option>
+                <option value="communication">Связь</option>
+                <option value="education">Образование</option>
+                <option value="other">Другое</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal('addModal')">Отмена</button>
+            <button class="btn btn-primary" onclick="saveSubscription()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Deposit -->
+<div class="modal-backdrop" id="depositModal">
+    <div class="modal">
+        <h2>Пополнить кошелёк</h2>
+        <p class="sub">Средства поступят мгновенно</p>
+        <div class="field"><label>Сумма пополнения</label><input type="number" id="depositAmount" placeholder="1000" value="1000"></div>
+        <div class="field"><label>Способ оплаты</label>
+            <select><option>Банковская карта</option><option>СБП</option></select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal('depositModal')">Отмена</button>
+            <button class="btn btn-accent" onclick="depositConfirm()">Пополнить</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Auto topup -->
+<div class="modal-backdrop" id="autoTopupModal">
+    <div class="modal">
+        <h2>Автопополнение</h2>
+        <p class="sub">Кошелёк пополнится сам, когда баланс опустится ниже порога</p>
+        <div class="field-row">
+            <div class="field"><label>Порог, ₽</label><input type="number" id="atThreshold" value="500"></div>
+            <div class="field"><label>Сумма пополнения, ₽</label><input type="number" id="atAmount" value="2000"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal('autoTopupModal')">Отмена</button>
+            <button class="btn btn-primary" onclick="saveAutoTopup()">Включить</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Merchant -->
+<div class="modal-backdrop" id="merchantModal">
+    <div class="modal">
+        <h2>Своя подписка</h2>
+        <p class="sub">Поделитесь ссылкой, чтобы другие могли подписаться</p>
+        <div class="field"><label>Название</label><input type="text" id="mName" placeholder="Закрытый канал"></div>
+        <div class="field"><label>Описание</label><textarea id="mDesc" rows="3" placeholder="Что получит подписчик"></textarea></div>
+        <div class="field-row">
+            <div class="field"><label>Цена, ₽</label><input type="number" id="mAmount" placeholder="199"></div>
+            <div class="field"><label>Периодичность</label>
+                <select id="mCycle"><option value="monthly">Ежемесячно</option><option value="yearly">Ежегодно</option></select>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal('merchantModal')">Отмена</button>
+            <button class="btn btn-primary" onclick="saveMerchant()">Создать</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Confirm cancel -->
+<div class="modal-backdrop" id="confirmModal">
+    <div class="modal" style="max-width:420px;">
+        <h2 id="confirmTitle">Отменить подписку?</h2>
+        <p class="sub" id="confirmText">Подписка уйдёт в архив. Вы сможете восстановить её позже.</p>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal('confirmModal')">Назад</button>
+            <button class="btn btn-danger" id="confirmBtn">Отменить подписку</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="main.js"></script>
+</body>
+</html>
