@@ -57,11 +57,15 @@
         </div>
         <nav class="nav">
             <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i> Обзор</button>
+            <button class="nav-item" data-view="analytics"><i class="fa-solid fa-chart-pie"></i> Аналитика</button>
+            <button class="nav-item" data-view="feed"><i class="fa-solid fa-newspaper"></i> Лента</button>
+            <button class="nav-item" data-view="authors"><i class="fa-solid fa-user-pen"></i> Авторы</button>
             <button class="nav-item" data-view="subscriptions"><i class="fa-solid fa-rectangle-list"></i> Подписки</button>
             <button class="nav-item" data-view="calendar"><i class="fa-solid fa-calendar-days"></i> Календарь</button>
             <button class="nav-item" data-view="wallet"><i class="fa-solid fa-wallet"></i> Кошелёк</button>
             <button class="nav-item" data-view="history"><i class="fa-solid fa-clock-rotate-left"></i> История</button>
             <button class="nav-item" data-view="merchant"><i class="fa-solid fa-store"></i> Мои подписки для продаж</button>
+            <button class="nav-item" data-view="profile"><i class="fa-solid fa-user"></i> Профиль</button>
             <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> Настройки</button>
         </nav>
         <div class="sidebar-foot">
@@ -118,7 +122,7 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-feature-grid">
+                    <div class="dashboard-feature-grid" onclick="openTimeCalculatorFromDashboard()" role="button" tabindex="0">
                         <button class="dashboard-feature-card" type="button" onclick="toast('Калькулятор будет добавлен отдельным экраном')">
                             <span class="dashboard-feature-icon pink"><i class="fa-solid fa-calculator"></i></span>
                             <span>Калькулятор</span>
@@ -167,6 +171,455 @@
                 <div id="dashUpcoming" class="dashboard-upcoming-list"></div>
             </div>
         </section>
+
+
+
+
+        <!-- TIME CALCULATOR -->
+        <section class="view" id="view-time-calculator">
+            <div class="timecalc-page">
+                <div class="timecalc-topbar">
+                    <button class="timecalc-back" type="button" onclick="switchView('dashboard')">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div class="timecalc-logo-icon">
+                        <i class="fa-solid fa-stopwatch"></i>
+                    </div>
+                    <h1>Калькулятор времени</h1>
+                </div>
+
+                <div class="timecalc-wrap">
+                    <div class="timecalc-col">
+                        <div class="timecalc-card">
+                            <div class="timecalc-card-head">
+                                <div class="timecalc-ico">
+                                    <i class="fa-solid fa-dollar-sign"></i>
+                                </div>
+                                <h2>Введите вашу зарплату</h2>
+                            </div>
+
+                            <div class="timecalc-field">
+                                <label for="timecalcSalary">Зарплата в месяц, ₽</label>
+                                <input type="number" id="timecalcSalary" value="50000">
+                            </div>
+
+                            <div class="timecalc-field">
+                                <label for="timecalcHours">Рабочих часов в месяц</label>
+                                <input type="number" id="timecalcHours" value="160">
+                            </div>
+                        </div>
+
+                        <div class="timecalc-card">
+                            <div class="timecalc-card-head">
+                                <div class="timecalc-ico">
+                                    <i class="fa-solid fa-gem"></i>
+                                </div>
+                                <h2>Ваши траты на подписки</h2>
+                            </div>
+
+                            <div class="timecalc-field">
+                                <label for="timecalcSubs">Траты в месяц, ₽</label>
+                                <input type="number" id="timecalcSubs" value="3636">
+                            </div>
+
+                            <div class="timecalc-note">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Автоматически подставляется из модуля «Мои подписки».</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timecalc-col">
+                        <div class="timecalc-section-label">Результат</div>
+
+                        <div class="timecalc-result-hero">
+                            <div class="timecalc-tag">
+                                <i class="fa-solid fa-clock"></i>
+                                Вы работаете на подписки
+                            </div>
+                            <div class="timecalc-big">
+                                <span id="timecalcWhole">11,6</span>
+                                <span>часов в месяц</span>
+                            </div>
+                            <div class="timecalc-sub" id="timecalcHeroSub">
+                                Это 1,5 дня в месяц · 17,5 дня в год (0,05 года жизни)
+                            </div>
+                        </div>
+
+                        <div class="timecalc-card">
+                            <div class="timecalc-metric-head">
+                                <div class="timecalc-lbl">
+                                    <i class="fa-solid fa-percent"></i>
+                                    Доля рабочего времени
+                                </div>
+                                <div class="timecalc-val" id="timecalcShare">7,3%</div>
+                            </div>
+                            <div class="timecalc-bar">
+                                <div class="timecalc-bar-fill" id="timecalcBar" style="width:7.3%"></div>
+                            </div>
+                        </div>
+
+                        <div class="timecalc-card">
+                            <div class="timecalc-metric-head">
+                                <div class="timecalc-lbl">
+                                    <i class="fa-solid fa-coins"></i>
+                                    Стоимость часа работы
+                                </div>
+                                <div class="timecalc-val" id="timecalcRate">312 ₽</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ANALYTICS -->
+        <section class="view" id="view-analytics">
+            <div class="analytics-page">
+                <div class="analytics-topbar">
+                    <button class="analytics-back" type="button" onclick="switchView('dashboard')">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1>Аналитика</h1>
+                </div>
+
+                <div class="analytics-grid">
+                    <!-- COLUMN 1 -->
+                    <div class="analytics-col">
+                        <div class="analytics-toggle">
+                            <button class="active" type="button" data-analytics-period="month">Мес</button>
+                            <button type="button" data-analytics-period="year">Год</button>
+                        </div>
+
+                        <div class="analytics-card analytics-overview">
+                            <div class="analytics-overview-row">
+                                <div>
+                                    <div class="analytics-label">Разбор расходов за месяц</div>
+                                    <div class="analytics-amount">3 636 ₽</div>
+                                    <div class="analytics-sub">5 подписок • 43 632 ₽ в год</div>
+                                </div>
+                                <div class="analytics-overview-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                            </div>
+                        </div>
+
+                        <div class="analytics-metrics">
+                            <div class="analytics-metric">
+                                <div class="analytics-deco" style="background:#ffe6d5;"></div>
+                                <div class="analytics-m-icon" style="background:#fff0e6;color:#f97316;"><i class="fa-solid fa-money-bill"></i></div>
+                                <div class="analytics-m-label">Всего за месяц</div>
+                                <div class="analytics-m-value">3 636 ₽</div>
+                                <div class="analytics-m-foot">без исто… <a href="#" style="color:#f97316;">Подробнее</a></div>
+                            </div>
+                            <div class="analytics-metric">
+                                <div class="analytics-deco" style="background:#dfe9ff;"></div>
+                                <div class="analytics-m-icon" style="background:#e8f0ff;color:#2563eb;"><i class="fa-solid fa-receipt"></i></div>
+                                <div class="analytics-m-label">Средний чек</div>
+                                <div class="analytics-m-value">727 ₽</div>
+                                <div class="analytics-m-foot">без исто… <a href="#" style="color:#2563eb;">Подробнее</a></div>
+                            </div>
+                            <div class="analytics-metric">
+                                <div class="analytics-deco" style="background:#e6e0ff;"></div>
+                                <div class="analytics-m-icon" style="background:#efeaff;color:#6c2bd9;"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                                <div class="analytics-m-label">Прогноз года</div>
+                                <div class="analytics-m-value">43 632 ₽</div>
+                                <div class="analytics-m-foot">текущий… <a href="#" style="color:#e8443c;">Подробнее</a></div>
+                            </div>
+                            <div class="analytics-metric">
+                                <div class="analytics-deco" style="background:#d6f2e4;"></div>
+                                <div class="analytics-m-icon" style="background:#e4f6ee;color:#22a565;"><i class="fa-solid fa-piggy-bank"></i></div>
+                                <div class="analytics-m-label">Можно сэкономить</div>
+                                <div class="analytics-m-value">0 ₽</div>
+                                <div class="analytics-m-foot">рекомен… <a href="#" style="color:#22a565;">Подробнее</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 2 -->
+                    <div class="analytics-col">
+                        <div class="analytics-section-title">Категории трат</div>
+                        <div class="analytics-card">
+                            <div class="analytics-donut-wrap">
+                                <div class="analytics-donut">
+                                    <svg viewBox="0 0 42 42" width="220" height="220">
+                                        <circle cx="21" cy="21" r="15.915" fill="none" stroke="#f0f1f3" stroke-width="6"></circle>
+                                        <circle cx="21" cy="21" r="15.915" fill="none" stroke="#6c2bd9" stroke-width="6" stroke-dasharray="55 45" stroke-dashoffset="25" transform="rotate(-90 21 21)"></circle>
+                                        <circle cx="21" cy="21" r="15.915" fill="none" stroke="#e8443c" stroke-width="6" stroke-dasharray="33 67" stroke-dashoffset="-30" transform="rotate(-90 21 21)"></circle>
+                                        <circle cx="21" cy="21" r="15.915" fill="none" stroke="#22a565" stroke-width="6" stroke-dasharray="8 92" stroke-dashoffset="-63" transform="rotate(-90 21 21)"></circle>
+                                    </svg>
+                                    <div class="analytics-donut-center">
+                                        <div>Всего</div>
+                                        <strong>3 636 ₽</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-legend">
+                                <div class="analytics-legend-row">
+                                    <div class="analytics-legend-left">
+                                        <span class="analytics-dot" style="background:#6c2bd9;"></span>
+                                        <div><div class="analytics-name">Работа</div><div class="analytics-pct">55% расходов</div></div>
+                                    </div>
+                                    <div class="analytics-val">1 990 ₽</div>
+                                </div>
+                                <div class="analytics-legend-row">
+                                    <div class="analytics-legend-left">
+                                        <span class="analytics-dot" style="background:#e8443c;"></span>
+                                        <div><div class="analytics-name">Развлечения</div><div class="analytics-pct">33% расходов</div></div>
+                                    </div>
+                                    <div class="analytics-val">1 198 ₽</div>
+                                </div>
+                                <div class="analytics-legend-row">
+                                    <div class="analytics-legend-left">
+                                        <span class="analytics-dot" style="background:#22a565;"></span>
+                                        <div><div class="analytics-name">Музыка</div><div class="analytics-pct">8% расходов</div></div>
+                                    </div>
+                                    <div class="analytics-val">299 ₽</div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-divider"></div>
+
+                            <div class="analytics-cat-row">
+                                <div class="analytics-cat-head">
+                                    <div class="analytics-cat-ico" style="background:#efeaff;color:#6c2bd9;"><i class="fa-solid fa-folder"></i></div>
+                                    <div class="analytics-cat-mid">
+                                        <div class="analytics-cat-top"><span class="analytics-cat-name">Работа</span><span class="analytics-cat-amt">1 990 ₽</span></div>
+                                        <div class="analytics-cat-top"><span class="analytics-cat-meta">55% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
+                                </div>
+                                <div class="analytics-bar"><span style="width:55%;background:#6c2bd9;"></span></div>
+                            </div>
+
+                            <div class="analytics-cat-row">
+                                <div class="analytics-cat-head">
+                                    <div class="analytics-cat-ico" style="background:#fdeaea;color:#e8443c;"><i class="fa-solid fa-folder"></i></div>
+                                    <div class="analytics-cat-mid">
+                                        <div class="analytics-cat-top"><span class="analytics-cat-name">Развлечения</span><span class="analytics-cat-amt">1 198 ₽</span></div>
+                                        <div class="analytics-cat-top"><span class="analytics-cat-meta">33% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
+                                </div>
+                                <div class="analytics-bar"><span style="width:33%;background:#e8443c;"></span></div>
+                            </div>
+
+                            <div class="analytics-cat-row">
+                                <div class="analytics-cat-head">
+                                    <div class="analytics-cat-ico" style="background:#e4f6ee;color:#22a565;"><i class="fa-solid fa-folder"></i></div>
+                                    <div class="analytics-cat-mid">
+                                        <div class="analytics-cat-top"><span class="analytics-cat-name">Музыка</span><span class="analytics-cat-amt">299 ₽</span></div>
+                                        <div class="analytics-cat-top"><span class="analytics-cat-meta">8% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
+                                </div>
+                                <div class="analytics-bar"><span style="width:8%;background:#22a565;"></span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 3 -->
+                    <div class="analytics-col">
+                        <div class="analytics-section-title">Главные инсайты</div>
+
+                        <div class="analytics-insight">
+                            <div class="analytics-i-ico" style="background:#fdeaea;color:#e8443c;"><i class="fa-solid fa-fire"></i></div>
+                            <div class="analytics-i-body">
+                                <div class="analytics-i-cap">Самая дорогая подписка</div>
+                                <div class="analytics-i-title">ChatGPT Plus</div>
+                                <div class="analytics-i-sub">1 990 ₽ в месяц</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right analytics-chev"></i>
+                        </div>
+
+                        <div class="analytics-insight">
+                            <div class="analytics-i-ico" style="background:#fff0e6;color:#f97316;"><i class="fa-solid fa-chart-pie"></i></div>
+                            <div class="analytics-i-body">
+                                <div class="analytics-i-cap">Главная категория</div>
+                                <div class="analytics-i-title">Работа</div>
+                                <div class="analytics-i-sub">55% расходов • 1 990 ₽</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right analytics-chev"></i>
+                        </div>
+
+                        <div class="analytics-insight">
+                            <div class="analytics-i-ico" style="background:#efeaff;color:#6c2bd9;"><i class="fa-solid fa-calendar-day"></i></div>
+                            <div class="analytics-i-body">
+                                <div class="analytics-i-cap">Ближайшее списание</div>
+                                <div class="analytics-i-title">Netflix</div>
+                                <div class="analytics-i-sub">8 июня • 799 ₽</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right analytics-chev"></i>
+                        </div>
+
+                        <div class="analytics-card">
+                            <div class="analytics-dyn-head">
+                                <div class="analytics-dh-left"><i class="fa-solid fa-chart-column"></i>Динамика</div>
+                                <div class="analytics-badge">7 МЕС</div>
+                            </div>
+                            <div class="analytics-dyn-bars">
+                                <div class="analytics-dyn-bar"><div class="analytics-pill" style="height:14px;"></div><div class="analytics-mon">НОЯ</div></div>
+                                <div class="analytics-dyn-bar"><div class="analytics-pill" style="height:14px;"></div><div class="analytics-mon">ДЕК</div></div>
+                                <div class="analytics-dyn-bar"><div class="analytics-pill" style="height:14px;"></div><div class="analytics-mon">ЯНВ</div></div>
+                                <div class="analytics-dyn-bar"><div class="analytics-pill" style="height:14px;"></div><div class="analytics-mon">ФЕВ</div></div>
+                                <div class="analytics-dyn-bar"><div class="analytics-pill" style="height:14px;"></div><div class="analytics-mon">МАР</div></div>
+                                <div class="analytics-dyn-bar"><div class="analytics-pill" style="height:14px;"></div><div class="analytics-mon">АПР</div></div>
+                                <div class="analytics-dyn-bar active"><div class="analytics-pill" style="height:14px;"></div><div class="analytics-mon">МАЙ</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- AUTHORS -->
+        <section class="view" id="view-authors">
+            <div class="topbar">
+                <div>
+                    <h1 class="page-title">Авторы</h1>
+                    <div class="page-sub">Подписки, материалы и профили авторов</div>
+                </div>
+            </div>
+
+            <div class="authors-hero">
+                <div>
+                    <span class="authors-kicker">Авторский маркет</span>
+                    <h2>Найдите автора и подпишитесь на эксклюзивный контент</h2>
+                    <p>Статьи, видео, аудио, галереи и премиум-материалы в одном разделе.</p>
+                </div>
+                <div class="authors-hero-badge">
+                    <i class="fa-solid fa-star"></i>
+                    <strong>12,4К</strong>
+                    <span>подписчиков у топ-авторов</span>
+                </div>
+            </div>
+
+            
+            <div class="authors-grid" id="authorsGrid">
+                <article class="author-card">
+                    <div class="author-card-top">
+                        <div class="author-card-avatar" style="background:linear-gradient(135deg,#ff7a28,#ff3d20)">МД</div>
+                        <div>
+                            <h3>Мария Дизайнова</h3>
+                            <div class="handle">@maria_designs</div>
+                        </div>
+                    </div>
+                    <p>Делюсь секретами UI/UX дизайна, кейсами и инсайтами из мира digital. Эксклюзивный контент каждую неделю ✨</p>
+                    <div class="author-card-stats">
+                        <span><i class="fa-solid fa-star"></i> <strong>4.9</strong></span>
+                        <span>·</span>
+                        <span><strong>247</strong> отзывов</span>
+                        <span>·</span>
+                        <span><strong>12,4К</strong> подписчиков</span>
+                    </div>
+                    <div class="author-card-actions">
+                        <button class="open" type="button" onclick="openAuthorProfile('maria')">Открыть профиль</button>
+                        <button class="mini" type="button" onclick="toast('Автор добавлен в избранное')"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                </article>
+
+                <article class="author-card">
+                    <div class="author-card-top">
+                        <div class="author-card-avatar" style="background:linear-gradient(135deg,#2563eb,#22c55e)">АК</div>
+                        <div>
+                            <h3>Алекс Кодеров</h3>
+                            <div class="handle">@alex_code</div>
+                        </div>
+                    </div>
+                    <p>Показываю, как создавать приложения, backend и автоматизацию без лишней воды.</p>
+                    <div class="author-card-stats">
+                        <span><i class="fa-solid fa-star"></i> <strong>4.8</strong></span>
+                        <span>·</span>
+                        <span><strong>183</strong> отзывов</span>
+                        <span>·</span>
+                        <span><strong>8,7К</strong> подписчиков</span>
+                    </div>
+                    <div class="author-card-actions">
+                        <button class="open" type="button" onclick="openAuthorProfile('alex')">Открыть профиль</button>
+                        <button class="mini" type="button" onclick="toast('Автор добавлен в избранное')"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                </article>
+
+                <article class="author-card">
+                    <div class="author-card-top">
+                        <div class="author-card-avatar" style="background:linear-gradient(135deg,#a855f7,#ec4899)">ЛМ</div>
+                        <div>
+                            <h3>Лина Маркетолог</h3>
+                            <div class="handle">@lina_growth</div>
+                        </div>
+                    </div>
+                    <p>Разбираю рост продуктов, рекламу, упаковку и подписочные модели.</p>
+                    <div class="author-card-stats">
+                        <span><i class="fa-solid fa-star"></i> <strong>4.7</strong></span>
+                        <span>·</span>
+                        <span><strong>156</strong> отзывов</span>
+                        <span>·</span>
+                        <span><strong>6,2К</strong> подписчиков</span>
+                    </div>
+                    <div class="author-card-actions">
+                        <button class="open" type="button" onclick="openAuthorProfile('lina')">Открыть профиль</button>
+                        <button class="mini" type="button" onclick="toast('Автор добавлен в избранное')"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                </article>
+            </div>
+
+        </section>
+
+        <!-- AUTHOR PROFILE -->
+        <section class="view" id="view-author-profile">
+            <div class="author-profile-page">
+                <div class="author-profile-top">
+                    <button class="author-back-btn" type="button" onclick="switchView('authors')">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <h1>Профиль автора</h1>
+                </div>
+
+                <div class="author-profile-layout">
+                    <aside class="author-profile-left">
+                        <div class="author-main-card">
+                            <div class="author-avatar-big" id="authorProfileAvatar">МД</div>
+                            <h2 id="authorProfileName">Мария Дизайнова</h2>
+                            <div class="author-handle" id="authorProfileHandle">@maria_designs</div>
+                            <p id="authorProfileBio">Делюсь секретами UI/UX дизайна, кейсами и инсайтами из мира digital. Эксклюзивный контент каждую неделю ✨</p>
+
+                            <div class="author-stats-line">
+                                <div><i class="fa-solid fa-star"></i> <strong id="authorProfileRating">4.9</strong></div>
+                                <span>·</span>
+                                <div><strong id="authorProfileReviews">247</strong> отзывов</div>
+                                <span>·</span>
+                                <div><strong id="authorProfileFollowers">12,4К</strong> подписчиков</div>
+                            </div>
+
+                            <button class="author-subscribe-btn" type="button">
+                                <i class="fa-solid fa-check"></i>
+                                Подписан
+                            </button>
+                        </div>
+
+                        <div class="author-plan-card">
+                            <span>Текущий тариф</span>
+                            <h3>Premium <i class="fa-solid fa-star"></i></h3>
+                            <p>490 ₽/мес · Следующее списание: 27.06.2026</p>
+                            <button type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Изменить</button>
+                        </div>
+                    </aside>
+
+                    <div class="author-profile-content">
+                        <div class="author-tabs">
+                            <button class="active" type="button">Статьи</button>
+                            <button type="button">Видео</button>
+                            <button type="button">Аудио</button>
+                            <button type="button">Галерея</button>
+                        </div>
+
+                        <div class="author-content-grid" id="authorContentGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <!-- SUBSCRIPTIONS -->
         <section class="view" id="view-subscriptions">
@@ -251,6 +704,434 @@
             <div id="merchantList" class="merch-grid"></div>
         </section>
 
+
+
+        <!-- FEED -->
+        <section class="view" id="view-feed">
+            <div class="feed-web-page">
+                <div class="feed-web-layout">
+                    <div class="feed-web-head">
+                        <h1>Лента</h1>
+                        <div class="feed-web-head-actions">
+                            <button class="feed-web-icon-btn" type="button" title="Поиск" onclick="toast('Поиск по ленте')">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                            <button class="feed-web-icon-btn" type="button" title="Уведомления" onclick="toast('Уведомления ленты')">
+                                <i class="fa-regular fa-bell"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="feed-web-tabs" id="feedTabs">
+                        <button class="feed-web-tab active" type="button">Рекомендации</button>
+                        <button class="feed-web-tab" type="button">Новости</button>
+                        <button class="feed-web-tab" type="button">Авторы</button>
+                        <button class="feed-web-tab" type="button">Советы</button>
+                    </div>
+
+                    <div class="feed-web-grid">
+                        <article class="feed-web-card">
+                            <div class="feed-web-card-top">
+                                <div class="feed-web-author">
+                                    <div class="feed-web-avatar" style="background:#6c5ce7;">K</div>
+                                    <div>
+                                        <div class="feed-web-name-row">
+                                            <strong>Команда проекта</strong>
+                                            <span class="feed-web-badge">Admin</span>
+                                        </div>
+                                        <div class="feed-web-meta">Авторы • 24 мин назад</div>
+                                    </div>
+                                </div>
+                                <div class="feed-web-views">
+                                    <i class="fa-regular fa-eye"></i>
+                                    1.8K
+                                </div>
+                            </div>
+                            <h2>Лента появилась в приложении</h2>
+                            <p>Теперь внутри приложения можно читать новости проекта, следить за обновлениями и обсуждать новые функции в комментариях.</p>
+                            <div class="feed-web-quote">На первом этапе публикации добавляет команда проекта. Пользователи могут ставить лайки, комментировать и делиться постами.</div>
+                            <div class="feed-web-actions">
+                                <button class="feed-web-action like" type="button"><i class="fa-regular fa-heart"></i><span>128</span></button>
+                                <button class="feed-web-action comment" type="button"><i class="fa-regular fa-comment"></i><span>1</span></button>
+                                <button class="feed-web-action share" type="button"><i class="fa-solid fa-arrow-up-from-bracket"></i><span>14</span></button>
+                            </div>
+                        </article>
+
+                        <article class="feed-web-card">
+                            <div class="feed-web-card-top">
+                                <div class="feed-web-author">
+                                    <div class="feed-web-avatar" style="background:#8b5cf6;">M</div>
+                                    <div>
+                                        <div class="feed-web-name-row">
+                                            <strong>Мои подписки</strong>
+                                            <span class="feed-web-badge">Project</span>
+                                        </div>
+                                        <div class="feed-web-meta">Новости • 2 ч назад</div>
+                                    </div>
+                                </div>
+                                <div class="feed-web-views">
+                                    <i class="fa-regular fa-eye"></i>
+                                    960
+                                </div>
+                            </div>
+                            <h2>Награды и баллы стали понятнее</h2>
+                            <p>После покупки награды код активации теперь показывается на экране и дублируется в личном кабинете, чтобы его было проще найти.</p>
+                            <div class="feed-web-actions">
+                                <button class="feed-web-action like" type="button"><i class="fa-regular fa-heart"></i><span>84</span></button>
+                                <button class="feed-web-action comment" type="button"><i class="fa-regular fa-comment"></i><span>5</span></button>
+                                <button class="feed-web-action share" type="button"><i class="fa-solid fa-arrow-up-from-bracket"></i><span>9</span></button>
+                            </div>
+                        </article>
+
+                        <article class="feed-web-card">
+                            <div class="feed-web-card-top">
+                                <div class="feed-web-author">
+                                    <div class="feed-web-avatar" style="background:#0ea5e9;">D</div>
+                                    <div>
+                                        <div class="feed-web-name-row">
+                                            <strong>Дизайн-команда</strong>
+                                            <span class="feed-web-badge">Design</span>
+                                        </div>
+                                        <div class="feed-web-meta">Советы • 5 ч назад</div>
+                                    </div>
+                                </div>
+                                <div class="feed-web-views">
+                                    <i class="fa-regular fa-eye"></i>
+                                    2.3K
+                                </div>
+                            </div>
+                            <h2>Обновили тёмную тему</h2>
+                            <p>Мы пересобрали палитру тёмной темы: контраст текста стал выше, а акцентные элементы — заметнее. Переключить тему можно в настройках.</p>
+                            <div class="feed-web-quote">Совет: включайте автоматическую смену темы по расписанию, чтобы глаза меньше уставали вечером.</div>
+                            <div class="feed-web-actions">
+                                <button class="feed-web-action like" type="button"><i class="fa-regular fa-heart"></i><span>312</span></button>
+                                <button class="feed-web-action comment" type="button"><i class="fa-regular fa-comment"></i><span>27</span></button>
+                                <button class="feed-web-action share" type="button"><i class="fa-solid fa-arrow-up-from-bracket"></i><span>41</span></button>
+                            </div>
+                        </article>
+
+                        <article class="feed-web-card">
+                            <div class="feed-web-card-top">
+                                <div class="feed-web-author">
+                                    <div class="feed-web-avatar" style="background:#f59e0b;">A</div>
+                                    <div>
+                                        <div class="feed-web-name-row">
+                                            <strong>Алексей Р.</strong>
+                                            <span class="feed-web-badge">Author</span>
+                                        </div>
+                                        <div class="feed-web-meta">Авторы • 8 ч назад</div>
+                                    </div>
+                                </div>
+                                <div class="feed-web-views">
+                                    <i class="fa-regular fa-eye"></i>
+                                    640
+                                </div>
+                            </div>
+                            <h2>Как мы ускорили загрузку ленты</h2>
+                            <p>Рассказываем, какие технические решения помогли сократить время появления первых постов почти в два раза и сделать прокрутку плавнее.</p>
+                            <div class="feed-web-actions">
+                                <button class="feed-web-action like" type="button"><i class="fa-regular fa-heart"></i><span>56</span></button>
+                                <button class="feed-web-action comment" type="button"><i class="fa-regular fa-comment"></i><span>12</span></button>
+                                <button class="feed-web-action share" type="button"><i class="fa-solid fa-arrow-up-from-bracket"></i><span>7</span></button>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- PROFILE -->
+        <section class="view" id="view-profile">
+            <div class="profile-web-page">
+                <div class="profile-web-shell">
+                    <div class="profile-web-topbar">
+                        <h1>Профиль</h1>
+                        <div class="profile-web-actions">
+                            <button class="profile-web-icon-btn" type="button" onclick="toast('Уведомления профиля')">
+                                <i class="fa-regular fa-bell"></i>
+                            </button>
+                            <button class="profile-web-icon-btn" type="button" onclick="switchView('settings')">
+                                <i class="fa-solid fa-gear"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-web-layout">
+                        <div>
+                            <div class="profile-web-card">
+                                <div class="profile-web-head">
+                                    <div class="profile-web-avatar-wrap">
+                                        <div class="profile-web-avatar">Д</div>
+                                        <button class="profile-web-cam" type="button" onclick="toast('Выбор аватара')">
+                                            <i class="fa-solid fa-camera"></i>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <div class="profile-web-name-row">
+                                            <h2>Данияр</h2>
+                                            <button class="profile-web-edit" type="button" onclick="toast('Редактирование профиля')">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                        </div>
+                                        <div class="profile-web-email">
+                                            a.kravtsov@mail.ru
+                                            <i class="fa-solid fa-circle-check profile-web-verified"></i>
+                                        </div>
+                                        <div class="profile-web-gender">Мужской</div>
+                                        <button class="profile-web-bday" type="button" onclick="toast('Дата рождения будет добавлена')">
+                                            <i class="fa-solid fa-cake-candles"></i>
+                                            Добавить дату рождения · +10 баллов
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <hr class="profile-web-hr">
+
+                                <div class="profile-web-level-top">
+                                    <div>
+                                        <div class="profile-web-level-title">Магистр подписок 4-го уровня</div>
+                                        <div class="profile-web-level-sub">До «Стратег подписок» — 435 XP</div>
+                                    </div>
+                                    <div class="profile-web-points">
+                                        <div class="profile-web-num">2 800</div>
+                                        <div class="profile-web-lbl">баллов</div>
+                                    </div>
+                                </div>
+
+                                <div class="profile-web-bar"><span></span></div>
+                                <div class="profile-web-bar-labels">
+                                    <span>Уровень 4</span>
+                                    <span>Уровень 5</span>
+                                </div>
+
+                                <div class="profile-web-main-actions">
+                                    <button class="profile-web-btn profile-web-btn-dark" type="button" onclick="toast('Магазин наград')">
+                                        <i class="fa-solid fa-gift"></i>
+                                        Магазин наград
+                                    </button>
+                                    <button class="profile-web-btn profile-web-btn-ghost" type="button" onclick="toast('Ссылка приглашения скопирована')">
+                                        <i class="fa-solid fa-share-nodes"></i>
+                                        Пригласить
+                                    </button>
+                                </div>
+
+                                <div class="profile-web-stats">
+                                    <button class="profile-web-stat" type="button" onclick="toast('Друзья')">
+                                        <i class="fa-solid fa-user-group"></i>
+                                        <div>
+                                            <div class="profile-web-stat-val">3</div>
+                                            <div class="profile-web-stat-cap">друзей</div>
+                                        </div>
+                                    </button>
+                                    <button class="profile-web-stat" type="button" onclick="toast('Подписчики')">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                        <div>
+                                            <div class="profile-web-stat-val">1</div>
+                                            <div class="profile-web-stat-cap">подписчиков</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="profile-web-card">
+                                <div class="profile-web-ach-head">
+                                    <h3>Достижения</h3>
+                                    <button type="button" onclick="switchView('achievements')">Все</button>
+                                </div>
+                                <div class="profile-web-ach-grid">
+                                    <button class="profile-web-ach" type="button" style="background:#ff9a3d;" onclick="switchView('achievements')"><i class="fa-solid fa-piggy-bank"></i></button>
+                                    <button class="profile-web-ach" type="button" style="background:#8b5cf6;" onclick="toast('Меломан')"><i class="fa-solid fa-headphones"></i></button>
+                                    <button class="profile-web-ach" type="button" style="background:#ef4444;" onclick="toast('Киноман')"><i class="fa-solid fa-clapperboard"></i></button>
+                                    <button class="profile-web-ach" type="button" style="background:#3b82f6;" onclick="toast('Душа компании')"><i class="fa-solid fa-users"></i></button>
+                                </div>
+                                <div class="profile-web-ach-list">
+                                    <button class="profile-web-ach-item" type="button" onclick="toast('Экономист')">
+                                        <div class="profile-web-ach-ic" style="background:#ff9a3d;"><i class="fa-solid fa-piggy-bank"></i></div>
+                                        <div>
+                                            <div class="profile-web-ach-t">Экономист</div>
+                                            <div class="profile-web-ach-d">Отслеживаете все подписки</div>
+                                        </div>
+                                    </button>
+                                    <button class="profile-web-ach-item" type="button" onclick="toast('Меломан')">
+                                        <div class="profile-web-ach-ic" style="background:#8b5cf6;"><i class="fa-solid fa-headphones"></i></div>
+                                        <div>
+                                            <div class="profile-web-ach-t">Меломан</div>
+                                            <div class="profile-web-ach-d">Подключено 3 музыкальных сервиса</div>
+                                        </div>
+                                    </button>
+                                    <button class="profile-web-ach-item" type="button" onclick="toast('Душа компании')">
+                                        <div class="profile-web-ach-ic" style="background:#3b82f6;"><i class="fa-solid fa-users"></i></div>
+                                        <div>
+                                            <div class="profile-web-ach-t">Душа компании</div>
+                                            <div class="profile-web-ach-d">Пригласите 5 друзей</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- ACHIEVEMENTS -->
+        <section class="view" id="view-achievements">
+            <div class="achievements-web-page">
+                <div class="achievements-web-wrap">
+                    <div class="achievements-web-topbar">
+                        <button class="achievements-web-back" type="button" onclick="switchView('profile')" aria-label="Назад">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h1>Достижения</h1>
+                    </div>
+
+                    <div class="achievements-web-balance">
+                        <div>
+                            <div class="achievements-web-label">Ваш баланс</div>
+                            <div class="achievements-web-value">2 800<span>баллов</span></div>
+                        </div>
+                        <div>
+                            <div class="achievements-web-label">Получено достижений</div>
+                            <div class="achievements-web-value">4 <span>из 8</span></div>
+                        </div>
+                    </div>
+
+                    <div class="achievements-web-section-head">
+                        <h2>Получено</h2>
+                        <span class="achievements-web-count">4 из 8</span>
+                    </div>
+
+                    <div class="achievements-web-grid">
+                        <article class="achievements-web-card">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#eef6ee;color:#3aa657;">
+                                    <i class="fa-solid fa-credit-card"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <h3>Первая оплата</h3>
+                            <p>Совершите первую оплату через сервис</p>
+                            <div class="achievements-web-foot">
+                                <span>Обычное</span>
+                                <span class="achievements-web-points"><span></span>+10</span>
+                            </div>
+                        </article>
+
+                        <article class="achievements-web-card">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#eef1fb;color:#4a6cf7;">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <h3>Постоянный клиент</h3>
+                            <p>Активные подписки 3 месяца</p>
+                            <div class="achievements-web-foot">
+                                <span>Редкое</span>
+                                <span class="achievements-web-points"><span></span>+100</span>
+                            </div>
+                        </article>
+
+                        <article class="achievements-web-card">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#eef6ee;color:#3aa657;">
+                                    <i class="fa-solid fa-fire"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <h3>Метроном</h3>
+                            <p>7 дней подряд в приложении</p>
+                            <div class="achievements-web-foot">
+                                <span>Обычное</span>
+                                <span class="achievements-web-points"><span></span>+25</span>
+                            </div>
+                        </article>
+
+                        <article class="achievements-web-card">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#eef6ee;color:#3aa657;">
+                                    <i class="fa-solid fa-chart-pie"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <h3>Первый анализ</h3>
+                            <p>Откройте отчёт «На что»</p>
+                            <div class="achievements-web-foot">
+                                <span>Обычное</span>
+                                <span class="achievements-web-points"><span></span>+10</span>
+                            </div>
+                        </article>
+
+                        <article class="achievements-web-card locked">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#eef6ee;color:#3aa657;">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                            <h3>Друг в деле</h3>
+                            <p>Пригласите друга в приложение</p>
+                            <div class="achievements-web-foot">
+                                <span>Обычное</span>
+                                <span class="achievements-web-points"><span></span>+30</span>
+                            </div>
+                        </article>
+
+                        <article class="achievements-web-card locked">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#eef6ee;color:#3aa657;">
+                                    <i class="fa-solid fa-plus"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                            <h3>Знакомство</h3>
+                            <p>Добавьте свою первую цель</p>
+                            <div class="achievements-web-foot">
+                                <span>Обычное</span>
+                                <span class="achievements-web-points"><span></span>+5</span>
+                            </div>
+                        </article>
+
+                        <article class="achievements-web-card locked">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#fbf1e8;color:#ff5a1f;">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                            <h3>Марафонец</h3>
+                            <p>30 дней подряд активности</p>
+                            <div class="achievements-web-foot">
+                                <span>Легендарное</span>
+                                <span class="achievements-web-points"><span></span>+200</span>
+                            </div>
+                        </article>
+
+                        <article class="achievements-web-card locked">
+                            <div class="achievements-web-card-top">
+                                <div class="achievements-web-icon" style="background:#fbf1e8;color:#ff5a1f;">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="achievements-web-check"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                            <h3>Мастер бюджета</h3>
+                            <p>Достигните всех финансовых целей</p>
+                            <div class="achievements-web-foot">
+                                <span>Легендарное</span>
+                                <span class="achievements-web-points"><span></span>+300</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <!-- SETTINGS -->
         <section class="view" id="view-settings">
             <div class="topbar">
@@ -284,6 +1165,104 @@
                     </div>
                 </div>
             </div>
+
+                <div class="settings-personalization-bottom">
+                    <div class="settings-personalization-head">
+                        <h2>Персонализация</h2>
+                        <p>Настройте тему и акцентный цвет — изменения применяются мгновенно</p>
+                    </div>
+
+                    <div class="settings-personalization-grid">
+                        <div>
+                            <div class="settings-personalization-card">
+                                <div class="settings-theme-row">
+                                    <div class="settings-theme-icon">
+                                        <i class="fa-solid fa-moon"></i>
+                                    </div>
+                                    <div class="settings-theme-txt">
+                                        <h3>Тёмная</h3>
+                                        <p>Всегда использовать тёмную тему</p>
+                                    </div>
+                                    <button class="settings-theme-switch off" id="settingsThemeSwitch" type="button" aria-label="Переключить тему"></button>
+                                </div>
+                            </div>
+
+                            <div class="settings-personalization-card">
+                                <div class="settings-preview-head">
+                                    <div class="settings-preview-avatar">П</div>
+                                    <div>
+                                        <h3>Предпросмотр</h3>
+                                        <p>Цвета применятся после сохранения</p>
+                                    </div>
+                                    <button class="settings-preview-gear" type="button" onclick="toast('Настройки предпросмотра')">
+                                        <i class="fa-solid fa-gear"></i>
+                                    </button>
+                                </div>
+
+                                <div class="settings-preview-tiles">
+                                    <div class="settings-preview-tile">
+                                        <div class="settings-preview-tile-ic">
+                                            <i class="fa-solid fa-chart-simple"></i>
+                                        </div>
+                                        <h4>Аналитика</h4>
+                                        <span>12 400 ₽</span>
+                                    </div>
+                                    <div class="settings-preview-tile">
+                                        <div class="settings-preview-tile-ic">
+                                            <i class="fa-solid fa-arrow-trend-up"></i>
+                                        </div>
+                                        <h4>Инсайды</h4>
+                                        <span>3 новых</span>
+                                    </div>
+                                </div>
+
+                                <div class="settings-preview-navbar">
+                                    <div class="settings-preview-nav-item active">
+                                        <i class="fa-solid fa-table-cells-large"></i>
+                                        Главная
+                                    </div>
+                                    <div class="settings-preview-nav-item">
+                                        <i class="fa-solid fa-store"></i>
+                                        Маркет
+                                    </div>
+                                    <div class="settings-preview-nav-plus">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </div>
+                                    <div class="settings-preview-nav-item">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                        Лента
+                                    </div>
+                                    <div class="settings-preview-nav-item">
+                                        <i class="fa-solid fa-user"></i>
+                                        Профиль
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-personalization-card">
+                            <div class="settings-color-title">Цвет приложения</div>
+                            <div class="settings-color-sub">Кнопки, иконки, активные вкладки и акценты</div>
+
+                            <div class="settings-picker-wrap" id="settingsPickerWrap">
+                                <canvas id="settingsHueCanvas"></canvas>
+                                <div class="settings-picker-dot" id="settingsPickerDot"></div>
+                            </div>
+
+                            <div class="settings-hue-slider" id="settingsHueSlider">
+                                <div class="settings-hue-handle" id="settingsHueHandle"></div>
+                            </div>
+
+                            <div class="settings-color-foot">
+                                <div class="settings-color-swatch" id="settingsSwatch"></div>
+                                <p>Выбранный цвет будет применён к кнопкам, иконкам и активным элементам</p>
+                                <div class="settings-hex-badge" id="settingsHexBadge">#4A5CF0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
         </section>
 
     </main>
