@@ -5740,3 +5740,330 @@ body.global-dark-theme .friend-subscription-list-copy span{
 }
 .friend-profile-web-section-link:hover{opacity:.72}
 body.global-dark-theme .friend-profile-web-section-link{color:var(--accent,#ff6a2b)}
+
+/* Rewards shop */
+.rewards-shop-page{
+    min-height:100%;
+    padding:38px 42px 72px;
+    background:#f5f6f8;
+    color:#17191f;
+}
+.rewards-shop-wrap{
+    width:min(1120px,100%);
+    margin:0 auto;
+}
+.rewards-shop-topbar{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:24px;
+}
+.rewards-shop-topbar h1{
+    margin:0 0 6px;
+    font-size:32px;
+    line-height:1.15;
+    font-weight:800;
+    letter-spacing:-.02em;
+}
+.rewards-shop-topbar p{
+    margin:0;
+    color:#8a909c;
+    font-size:15px;
+}
+.rewards-shop-back{
+    width:44px;
+    height:44px;
+    flex:0 0 44px;
+    border-radius:14px;
+    border:1px solid #dde1e8;
+    background:#fff;
+    color:#17191f;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    box-shadow:0 4px 16px rgba(24,28,38,.05);
+}
+.rewards-shop-back:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(24,28,38,.08)}
+.rewards-shop-balance{
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:28px 32px;
+    border-radius:24px;
+    background:linear-gradient(115deg,#181a20 0%,#29222a 52%,var(--accent,#ff5a1f) 135%);
+    color:#fff;
+    margin-bottom:20px;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 16px 36px rgba(20,22,28,.14);
+}
+.rewards-shop-balance::after{
+    content:'';
+    position:absolute;
+    width:220px;
+    height:220px;
+    right:-70px;
+    top:-95px;
+    border-radius:50%;
+    background:rgba(255,255,255,.08);
+}
+.rewards-shop-balance span{
+    display:block;
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    opacity:.75;
+    margin-bottom:8px;
+}
+.rewards-shop-balance strong{
+    display:block;
+    font-size:38px;
+    line-height:1;
+    letter-spacing:-.03em;
+}
+.rewards-shop-balance small{
+    font-size:17px;
+    font-weight:600;
+    opacity:.78;
+}
+.rewards-shop-balance>i{
+    position:relative;
+    z-index:1;
+    width:62px;
+    height:62px;
+    border-radius:18px;
+    display:grid;
+    place-items:center;
+    background:rgba(255,255,255,.12);
+    font-size:28px;
+}
+.rewards-shop-tabs{
+    display:inline-flex;
+    padding:4px;
+    border:1px solid #dde1e8;
+    border-radius:14px;
+    background:#fff;
+    margin-bottom:20px;
+    box-shadow:0 4px 14px rgba(24,28,38,.04);
+}
+.rewards-shop-tabs button{
+    min-width:130px;
+    border:0;
+    background:transparent;
+    padding:11px 22px;
+    border-radius:10px;
+    font:inherit;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    color:#7c8390;
+}
+.rewards-shop-tabs button.active{
+    background:#17191f;
+    color:#fff;
+}
+.rewards-shop-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:18px;
+}
+.rewards-shop-card{
+    position:relative;
+    overflow:hidden;
+    border:1px solid #e0e4eb;
+    background:#fff;
+    border-radius:22px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    min-height:250px;
+    box-shadow:0 10px 28px rgba(24,28,38,.05);
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.rewards-shop-card:hover{
+    transform:translateY(-2px);
+    border-color:#d4d9e2;
+    box-shadow:0 16px 34px rgba(24,28,38,.08);
+}
+.rewards-shop-card-icon{
+    width:58px;
+    height:58px;
+    border-radius:17px;
+    display:grid;
+    place-items:center;
+    background:color-mix(in srgb,var(--accent,#ff5a1f) 13%,#fff);
+    color:var(--accent,#ff5a1f);
+    font-size:24px;
+    margin-bottom:20px;
+}
+.rewards-shop-card h3{
+    font-size:21px;
+    line-height:1.25;
+    margin:0 0 10px;
+    font-weight:800;
+    letter-spacing:-.01em;
+}
+.rewards-shop-card p{
+    font-size:14px;
+    line-height:1.55;
+    color:#858c99;
+    margin:0 0 24px;
+    max-width:92%;
+}
+.rewards-shop-card-bottom{
+    margin-top:auto;
+    padding-top:18px;
+    border-top:1px solid #edf0f4;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+}
+.rewards-shop-price{
+    font-weight:800;
+    color:var(--accent,#ff5a1f);
+    font-size:15px;
+}
+.rewards-shop-buy{
+    border:0;
+    border-radius:12px;
+    background:var(--accent,#ff5a1f);
+    color:#fff;
+    min-width:118px;
+    padding:12px 18px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 8px 18px color-mix(in srgb,var(--accent,#ff5a1f) 26%,transparent);
+}
+.rewards-shop-buy:hover{filter:brightness(.96)}
+.rewards-shop-buy:disabled{
+    background:#e7e9ee;
+    color:#a1a7b2;
+    cursor:default;
+    box-shadow:none;
+}
+.rewards-shop-code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    background:#f3f5f8;
+    border:1px dashed #d7dce5;
+    border-radius:12px;
+    padding:11px 13px;
+    font-size:13px;
+    word-break:break-all;
+    margin:2px 0 16px;
+    color:#343944;
+}
+.rewards-shop-empty{
+    grid-column:1/-1;
+    padding:64px 24px;
+    text-align:center;
+    border:1px dashed #d7dce5;
+    border-radius:20px;
+    background:#fff;
+    color:#8a909c;
+}
+body.global-dark-theme .rewards-shop-page{
+    background:#0f1217;
+    color:#f4f5f7;
+}
+body.global-dark-theme .rewards-shop-back,
+body.global-dark-theme .rewards-shop-tabs,
+body.global-dark-theme .rewards-shop-card,
+body.global-dark-theme .rewards-shop-empty{
+    background:#1d2028;
+    border-color:#343946;
+    color:#f4f5f7;
+}
+body.global-dark-theme .rewards-shop-topbar p,
+body.global-dark-theme .rewards-shop-card p,
+body.global-dark-theme .rewards-shop-empty{
+    color:#9da4b1;
+}
+body.global-dark-theme .rewards-shop-tabs button{color:#aeb4c0}
+body.global-dark-theme .rewards-shop-tabs button.active{
+    background:#f3f4f6;
+    color:#17191f;
+}
+body.global-dark-theme .rewards-shop-card-bottom{border-top-color:#313642}
+body.global-dark-theme .rewards-shop-card-icon{
+    background:color-mix(in srgb,var(--accent,#ff5a1f) 18%,#1d2028);
+}
+body.global-dark-theme .rewards-shop-code{
+    background:#282c36;
+    border-color:#3a4050;
+    color:#f5f6f8;
+}
+body.global-dark-theme .rewards-shop-buy:disabled{
+    background:#2b303a;
+    color:#777f8d;
+}
+@media(max-width:800px){
+    .rewards-shop-page{padding:24px 18px 50px}
+    .rewards-shop-topbar h1{font-size:27px}
+    .rewards-shop-grid{grid-template-columns:1fr}
+    .rewards-shop-balance{padding:24px}
+    .rewards-shop-balance strong{font-size:32px}
+}
+
+
+/* ================== REFERRAL PROGRAM ================== */
+.referral-page{
+    min-height:100%;
+    padding:38px 38px 64px;
+    background:#f6f7f9;
+    color:#17191f;
+}
+.referral-wrap{max-width:760px;margin:0 auto}
+.referral-topbar{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.referral-topbar h1{margin:0;font-size:30px;line-height:1.08;font-weight:800;letter-spacing:-.03em}
+.referral-back{
+    width:44px;height:44px;border-radius:14px;border:1px solid #dde1e8;background:#fff;color:#17191f;
+    display:grid;place-items:center;cursor:pointer;font-size:16px;box-shadow:0 5px 16px rgba(24,28,38,.05)
+}
+.referral-main-card,.referral-stats-card{
+    background:#fff;border:1px solid #e0e4eb;border-radius:24px;box-shadow:0 14px 34px rgba(24,28,38,.06)
+}
+.referral-main-card{padding:34px;text-align:center}
+.referral-gift-icon{
+    width:82px;height:82px;margin:0 auto 22px;border-radius:24px;display:grid;place-items:center;
+    background:color-mix(in srgb,var(--accent,#ff5a1f) 13%,#fff);color:var(--accent,#ff5a1f);font-size:36px
+}
+.referral-main-card h2{margin:0 0 12px;font-size:27px;line-height:1.1;font-weight:800;letter-spacing:-.025em}
+.referral-main-card>p{max-width:570px;margin:0 auto 26px;color:#7e8591;font-size:15px;line-height:1.55}
+.referral-code-box{
+    width:100%;min-height:82px;padding:15px 18px;border:1px solid #dde1e8;border-radius:18px;background:#f6f7f9;
+    display:grid;grid-template-columns:1fr auto;grid-template-areas:'label icon' 'code icon';text-align:left;align-items:center;
+    color:#17191f;cursor:pointer
+}
+.referral-code-box span{grid-area:label;color:#8a909b;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.referral-code-box strong{grid-area:code;font-size:22px;line-height:1.15;letter-spacing:.06em}
+.referral-code-box i{grid-area:icon;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#fff;border:1px solid #e0e4eb;color:var(--accent,#ff5a1f)}
+.referral-share-button{
+    width:100%;height:50px;margin-top:16px;border:0;border-radius:16px;background:#17191f;color:#fff;
+    display:flex;align-items:center;justify-content:center;gap:10px;font:inherit;font-size:15px;font-weight:800;cursor:pointer
+}
+.referral-stats-card{margin-top:18px;padding:24px}
+.referral-stats-card h3{margin:0 0 18px;font-size:20px;font-weight:800}
+.referral-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.referral-stat{padding:20px 14px;border-radius:18px;background:#f6f7f9;border:1px solid #e8ebf0;text-align:center}
+.referral-stat strong{display:block;font-size:28px;line-height:1;font-weight:850;margin-bottom:7px}
+.referral-stat span{color:#858c98;font-size:13px}
+body.global-dark-theme .referral-page{background:#0f1217;color:#f4f5f7}
+body.global-dark-theme .referral-back,
+body.global-dark-theme .referral-main-card,
+body.global-dark-theme .referral-stats-card{background:#1d2028;border-color:#343946;color:#f4f5f7}
+body.global-dark-theme .referral-main-card>p,
+body.global-dark-theme .referral-code-box span,
+body.global-dark-theme .referral-stat span{color:#9da4b1}
+body.global-dark-theme .referral-code-box,
+body.global-dark-theme .referral-stat{background:#272b35;border-color:#3a4050;color:#f4f5f7}
+body.global-dark-theme .referral-code-box i{background:#1d2028;border-color:#3a4050}
+body.global-dark-theme .referral-share-button{background:#f3f4f6;color:#17191f}
+body.global-dark-theme .referral-gift-icon{background:color-mix(in srgb,var(--accent,#ff5a1f) 18%,#1d2028)}
+@media(max-width:760px){
+    .referral-page{padding:24px 18px 50px}.referral-main-card{padding:26px 20px}.referral-topbar h1{font-size:25px}
+    .referral-stats-grid{grid-template-columns:1fr}.referral-stat{display:flex;align-items:center;justify-content:space-between;text-align:left}
+    .referral-stat strong{margin:0}
+}

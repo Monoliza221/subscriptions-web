@@ -2266,3 +2266,116 @@ function refreshFriendSubscriptionsOverlay(){
         list.innerHTML=getFriendSubscriptions(currentFriend()).map(item=>friendSubscriptionListItem(item)).join('');
     }
 }
+
+
+// ================== REWARDS SHOP (isolated) ==================
+const REWARDS_SHOP_KEY = 'subscriptions_rewards_shop_v1';
+const rewardsShopCatalog = [
+    {id:'discount10',title:'Скидка 10% на любую подписку',desc:'Одноразовая скидка на следующую оплату любой активной подписки.',cost:500,icon:'fa-percent'},
+    {id:'pro100',title:'Подписка PRO бесплатно',desc:'Полная скидка 100% на один месяц тарифа PRO.',cost:500,icon:'fa-crown'}
+];
+let rewardsShopTab='active';
+function loadRewardsShopState(){
+    try{
+        const saved=JSON.parse(localStorage.getItem(REWARDS_SHOP_KEY)||'null');
+        return saved&&typeof saved==='object'?saved:{balance:2800,purchased:[]};
+    }catch(_){ return {balance:2800,purchased:[]}; }
+}
+function saveRewardsShopState(data){ localStorage.setItem(REWARDS_SHOP_KEY,JSON.stringify(data)); }
+function openRewardsShop(){ rewardsShopTab='active'; renderRewardsShop(); switchView('rewards-shop'); }
+function closeRewardsShop(){ switchView('profile'); }
+function setRewardsShopTab(tab){ rewardsShopTab=tab; renderRewardsShop(); }
+function renderRewardsShop(){
+    const data=loadRewardsShopState();
+    const balance=document.getElementById('rewardsShopBalance');
+    if(balance) balance.innerHTML=`${Number(data.balance||0).toLocaleString('ru-RU')} <small>баллов</small>`;
+    document.querySelectorAll('[data-rewards-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.rewardsTab===rewardsShopTab));
+    const grid=document.getElementById('rewardsShopGrid');
+    if(!grid) return;
+    const items=rewardsShopTab==='purchased'?(data.purchased||[]):rewardsShopCatalog;
+    if(!items.length){ grid.innerHTML=`<div class="rewards-shop-empty">${rewardsShopTab==='purchased'?'У вас пока нет купленных наград':'Нет доступных наград'}</div>`; return; }
+    grid.innerHTML=items.map(item=>{
+        const purchased=rewardsShopTab==='purchased';
+        const insufficient=!purchased && data.balance<item.cost;
+        return `<article class="rewards-shop-card">
+            <div class="rewards-shop-card-icon"><i class="fa-solid ${item.icon||'fa-gift'}"></i></div>
+            <h3>${item.title}</h3><p>${item.desc}</p>
+            ${purchased&&item.code?`<div class="rewards-shop-code">${item.code}</div>`:''}
+            <div class="rewards-shop-card-bottom">
+                <span class="rewards-shop-price">${item.cost} баллов</span>
+                ${purchased?`<button class="rewards-shop-buy" type="button" onclick="copyRewardCode('${item.code||''}')">Скопировать код</button>`:`<button class="rewards-shop-buy" type="button" ${insufficient?'disabled':''} onclick="buyReward('${item.id}')">${insufficient?'Не хватает баллов':'Купить'}</button>`}
+            </div>
+        </article>`;
+    }).join('');
+}
+function buyReward(id){
+    const item=rewardsShopCatalog.find(x=>x.id===id); if(!item) return;
+    const data=loadRewardsShopState();
+    if(data.balance<item.cost){ toast('Недостаточно баллов'); return; }
+    if(!confirm(`Купить «${item.title}» за ${item.cost} баллов?`)) return;
+    data.balance-=item.cost;
+    data.purchased=[...(data.purchased||[]),{...item,code:`REWARD-${Math.random().toString(36).slice(2,8).toUpperCase()}`}];
+    saveRewardsShopState(data);
+    renderRewardsShop();
+    toast('Награда куплена');
+}
+function copyRewardCode(code){
+    if(!code) return;
+    if(navigator.clipboard?.writeText){ navigator.clipboard.writeText(code).then(()=>toast('Код скопирован')).catch(()=>toast(code)); }
+    else toast(code);
+}
+
+
+// ================== REFERRAL PROGRAM ==================
+function buildReferralCode(){
+    const source=[state?.user?.phone,state?.user?.name,'SubHub'].filter(Boolean).join('|');
+    if(!source) return 'SUBHUB-7QX3';
+    let hash=0;
+    for(const ch of source) hash=(hash*31+ch.charCodeAt(0))&0x7fffffff;
+    const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let suffix='';
+    let value=hash||9173;
+    for(let i=0;i<4;i++){
+        suffix+=alphabet[value%alphabet.length];
+        value=Math.floor(value/alphabet.length)||hash+i*19+41;
+    }
+    return `SUBHUB-${suffix}`;
+}
+function referralStats(){
+    const active=(state.subscriptions||[]).filter(item=>item.active);
+    const archived=(state.subscriptions||[]).filter(item=>!item.active);
+    const paid=Math.max(0,Math.min(99,Math.floor(active.length/2)));
+    const invited=Math.max(paid,Math.min(99,paid+archived.length+2));
+    return {code:buildReferralCode(),invited,paid,bonus:paid*100+invited*50};
+}
+function renderReferralProgram(){
+    const data=referralStats();
+    const code=document.getElementById('referralCodeValue');
+    const invited=document.getElementById('referralInvitedCount');
+    const paid=document.getElementById('referralPaidCount');
+    const bonus=document.getElementById('referralBonusPoints');
+    if(code) code.textContent=data.code;
+    if(invited) invited.textContent=data.invited;
+    if(paid) paid.textContent=data.paid;
+    if(bonus) bonus.textContent=data.bonus.toLocaleString('ru-RU');
+}
+function openReferralProgram(){ renderReferralProgram(); switchView('referral-program'); }
+function closeReferralProgram(){ switchView('profile'); }
+function copyReferralCode(){
+    const code=referralStats().code;
+    if(navigator.clipboard?.writeText){
+        navigator.clipboard.writeText(code).then(()=>toast('Код скопирован')).catch(()=>toast(code));
+    }else toast(code);
+}
+async function shareReferralInvite(){
+    const code=referralStats().code;
+    const text=`Присоединяйся к SubHub и следи за подписками. Мой код: ${code}`;
+    const url=`${location.origin}${location.pathname}?ref=${encodeURIComponent(code)}`;
+    if(navigator.share){
+        try{ await navigator.share({title:'SubHub',text,url}); return; }catch(error){ if(error?.name==='AbortError') return; }
+    }
+    const payload=`${text}\n${url}`;
+    if(navigator.clipboard?.writeText){
+        navigator.clipboard.writeText(payload).then(()=>toast('Ссылка приглашения скопирована')).catch(()=>toast(text));
+    }else toast(text);
+}
