@@ -122,12 +122,12 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-feature-grid" onclick="openTimeCalculatorFromDashboard()" role="button" tabindex="0">
-                        <button class="dashboard-feature-card" type="button" onclick="toast('Калькулятор будет добавлен отдельным экраном')">
+                    <div class="dashboard-feature-grid">
+                        <button class="dashboard-feature-card" type="button" onclick="openTimeCalculatorFromDashboard()">
                             <span class="dashboard-feature-icon pink"><i class="fa-solid fa-calculator"></i></span>
                             <span>Калькулятор</span>
                         </button>
-                        <button class="dashboard-feature-card" type="button" onclick="toast('Тесты будут добавлены отдельным экраном')">
+                        <button class="dashboard-feature-card" type="button" onclick="openSubscriptionTestFromDashboard()">
                             <span class="dashboard-feature-icon mint"><i class="fa-solid fa-circle-question"></i></span>
                             <span>Тесты</span>
                         </button>
@@ -135,7 +135,7 @@
                 </div>
 
                 <div class="dashboard-quick-grid">
-                    <button class="dashboard-quick-card primary" type="button" onclick="toast('Категории будут добавлены отдельным экраном')">
+                    <button class="dashboard-quick-card primary" type="button" onclick="openCategoriesFromDashboard()">
                         <span><i class="fa-solid fa-folder"></i></span>
                         <strong>Категории</strong>
                     </button>
@@ -267,6 +267,97 @@
                                 </div>
                                 <div class="timecalc-val" id="timecalcRate">312 ₽</div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SUBSCRIPTION TEST -->
+        <section class="view" id="view-subscription-test">
+            <div class="subscription-test-page">
+                <div class="subscription-test-shell">
+                    <div class="subscription-test-step active" id="subscriptionTestIntro">
+                        <div class="subscription-test-topbar">
+                            <button class="subscription-test-back" type="button" onclick="switchView('dashboard')">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1>Тесты</h1>
+                        </div>
+
+                        <div class="subscription-test-intro-content">
+                            <div class="subscription-test-hero-icon"><i class="fa-solid fa-brain"></i></div>
+                            <h2>Подписочный тест</h2>
+                            <p class="subscription-test-intro-sub">Узнайте, насколько вы зависимы от цифровых подписок</p>
+
+                            <div class="subscription-test-info-card">
+                                <div class="subscription-test-time"><i class="fa-regular fa-clock"></i><span>3 минуты · 14 вопросов</span></div>
+                                <div class="subscription-test-get"><i class="fa-solid fa-bullseye"></i><strong>Вы получите:</strong></div>
+                                <ul>
+                                    <li>Индекс зависимости (0–100)</li>
+                                    <li>Разбор по 7 измерениям</li>
+                                    <li>Персональные рекомендации</li>
+                                    <li>Сравнение с другими</li>
+                                </ul>
+                            </div>
+
+                            <div class="subscription-test-privacy"><i class="fa-solid fa-lock"></i><span>Все данные анонимны и не передаются третьим лицам</span></div>
+                            <button class="subscription-test-primary" type="button" onclick="startSubscriptionTest()">Начать тест <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="subscription-test-step" id="subscriptionTestQuestions">
+                        <div class="subscription-test-topbar">
+                            <button class="subscription-test-back" type="button" onclick="subscriptionTestBack()"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h1>Подписочный тест</h1>
+                        </div>
+                        <div class="subscription-test-progress-meta">
+                            <span id="subscriptionTestCounter">1 из 14</span>
+                            <span><i class="fa-solid fa-seedling"></i> Путь к осознанности</span>
+                        </div>
+                        <div class="subscription-test-progress"><div id="subscriptionTestProgressFill"></div></div>
+                        <div class="subscription-test-category" id="subscriptionTestCategory"><i class="fa-solid fa-circle-question"></i> Доминирование</div>
+                        <h2 class="subscription-test-question" id="subscriptionTestQuestion"></h2>
+                        <div class="subscription-test-scale-labels"><span>Совсем нет</span><span>Постоянно</span></div>
+                        <input class="subscription-test-range" id="subscriptionTestRange" type="range" min="1" max="5" step="1" value="3" oninput="updateSubscriptionTestAnswer(this.value)">
+                        <div class="subscription-test-range-value" id="subscriptionTestRangeValue">3</div>
+                        <p class="subscription-test-help">Выберите позицию, которая лучше всего описывает ваши ощущения за последний месяц</p>
+                        <button class="subscription-test-primary subscription-test-next" type="button" onclick="subscriptionTestNext()">Далее</button>
+                    </div>
+
+                    <div class="subscription-test-step" id="subscriptionTestResult">
+                        <div class="subscription-test-topbar">
+                            <button class="subscription-test-back" type="button" onclick="switchView('dashboard')"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h1>Результат</h1>
+                        </div>
+                        <div class="subscription-test-result-content">
+                            <h2>Тест пройден!</h2>
+                            <p>Ваш индекс подписочной зависимости</p>
+                            <div class="subscription-test-score"><strong id="subscriptionTestScore">0</strong><span>/100</span></div>
+                            <div class="subscription-test-result-scale">
+                                <div class="subscription-test-result-zones"><span></span><span></span><span></span></div>
+                                <div class="subscription-test-result-pointer" id="subscriptionTestPointer"></div>
+                            </div>
+                            <div class="subscription-test-result-labels"><span>Свободный</span><span>Осознанный</span><span>Зависимый</span></div>
+                            <h3>Вы — <span id="subscriptionTestLevel">«Осознанный подписчик»</span></h3>
+                            <p class="subscription-test-result-description" id="subscriptionTestDescription"></p>
+                            <button class="subscription-test-primary" type="button" onclick="showSubscriptionTestBreakdown()">Разбор <i class="fa-solid fa-arrow-right"></i></button>
+                            <button class="subscription-test-secondary" type="button" onclick="shareSubscriptionTestResult()"><i class="fa-solid fa-share-nodes"></i> Поделиться результатом</button>
+                        </div>
+                    </div>
+
+                    <div class="subscription-test-step" id="subscriptionTestBreakdown">
+                        <div class="subscription-test-topbar">
+                            <button class="subscription-test-back" type="button" onclick="showSubscriptionTestResult()"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h1><i class="fa-solid fa-chart-column"></i> Разбор по измерениям</h1>
+                        </div>
+                        <div class="subscription-test-breakdown-content">
+                            <h2>Ваш профиль зависимости</h2>
+                            <div id="subscriptionTestDimensions" class="subscription-test-dimensions"></div>
+                            <h2 class="subscription-test-recommend-title"><i class="fa-solid fa-lightbulb"></i> Персональные рекомендации</h2>
+                            <div id="subscriptionTestRecommendations" class="subscription-test-recommendations"></div>
+                            <button class="subscription-test-restart" type="button" onclick="startSubscriptionTest()"><i class="fa-solid fa-rotate-right"></i> Пройти заново</button>
                         </div>
                     </div>
                 </div>
@@ -639,6 +730,103 @@
             <div id="subList" class="sub-list"></div>
         </section>
 
+        <!-- SUBSCRIPTION DETAILS -->
+        <section class="view" id="view-subscription-detail">
+            <div class="subscription-detail-page">
+                <div class="subscription-detail-topbar">
+                    <button class="subscription-detail-back" type="button" onclick="switchView('subscriptions')" aria-label="Вернуться к подпискам">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <h1>Детали</h1>
+                </div>
+                <div id="subscriptionDetailContent" class="subscription-detail-content"></div>
+            </div>
+        </section>
+
+
+
+        <!-- SUBSCRIPTION CATEGORIES -->
+        <section class="view" id="view-categories">
+            <div class="categories-page">
+                <div class="categories-topbar">
+                    <button class="categories-back" type="button" onclick="switchView('dashboard')" aria-label="Вернуться на обзор">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div>
+                        <h1>Категории подписок</h1>
+                        <p>Распределяйте подписки по удобным группам</p>
+                    </div>
+                    <button class="categories-add" type="button" onclick="openCategoryEditor()">
+                        <i class="fa-solid fa-plus"></i> Категория
+                    </button>
+                </div>
+
+                <div id="categoriesList" class="categories-list"></div>
+            </div>
+        </section>
+
+        <!-- CATEGORY EDITOR -->
+        <section class="view" id="view-category-editor">
+            <div class="category-editor-page">
+                <div class="category-editor-topbar">
+                    <button class="categories-back" type="button" onclick="switchView('categories')" aria-label="Вернуться к категориям">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <h1 id="categoryEditorTitle">Новая категория</h1>
+                    <button id="categoryDeleteButton" class="category-delete" type="button" onclick="deleteCategoryUi()" aria-label="Удалить категорию">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </div>
+
+                <div class="category-editor-card">
+                    <label for="categoryNameInput">Название категории</label>
+                    <input id="categoryNameInput" type="text" placeholder="Например, Обучение">
+                </div>
+
+                <div class="category-editor-section-head">
+                    <div>
+                        <h2>Подписки в этой категории</h2>
+                        <p>Здесь отображаются только добавленные подписки</p>
+                    </div>
+                    <button class="category-add-subscription" type="button" onclick="openCategorySubscriptionPicker()">
+                        <i class="fa-solid fa-plus"></i> Добавить подписку
+                    </button>
+                </div>
+                <div id="categorySubscriptionsList" class="category-subscriptions-list"></div>
+
+                <button class="category-save" type="button" onclick="saveCategoryUi()">Сохранить</button>
+
+                <div id="categorySubscriptionModal" class="category-modal" aria-hidden="true">
+                    <div class="category-modal-backdrop" onclick="closeCategorySubscriptionPicker()"></div>
+                    <div class="category-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+                        <div class="category-modal-head">
+                            <div>
+                                <h3 id="categoryModalTitle">Добавить подписку</h3>
+                                <p id="categoryModalSubtitle">Выберите подписку из списка</p>
+                            </div>
+                            <button class="category-modal-close" type="button" onclick="closeCategorySubscriptionPicker()" aria-label="Закрыть">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <div id="categorySubscriptionPickerList" class="category-picker-list"></div>
+                    </div>
+                </div>
+
+                <div id="categoryTransferModal" class="category-modal" aria-hidden="true">
+                    <div class="category-modal-backdrop" onclick="closeCategoryTransferConfirmation()"></div>
+                    <div class="category-modal-dialog category-transfer-dialog" role="dialog" aria-modal="true" aria-labelledby="categoryTransferTitle">
+                        <div class="category-transfer-icon"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                        <h3 id="categoryTransferTitle">Перенести подписку?</h3>
+                        <p id="categoryTransferText"></p>
+                        <div class="category-transfer-actions">
+                            <button class="category-transfer-cancel" type="button" onclick="closeCategoryTransferConfirmation()">Отмена</button>
+                            <button class="category-transfer-confirm" type="button" onclick="confirmCategoryTransfer()">Подтвердить перенос</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- CALENDAR -->
         <section class="view" id="view-calendar">
             <div class="topbar">
@@ -917,14 +1105,14 @@
                                 </div>
 
                                 <div class="profile-web-stats">
-                                    <button class="profile-web-stat" type="button" onclick="toast('Друзья')">
+                                    <button class="profile-web-stat" type="button" onclick="openFriendsScreen(0)">
                                         <i class="fa-solid fa-user-group"></i>
                                         <div>
                                             <div class="profile-web-stat-val">3</div>
                                             <div class="profile-web-stat-cap">друзей</div>
                                         </div>
                                     </button>
-                                    <button class="profile-web-stat" type="button" onclick="toast('Подписчики')">
+                                    <button class="profile-web-stat" type="button" onclick="openFriendsScreen(2)">
                                         <i class="fa-solid fa-user-plus"></i>
                                         <div>
                                             <div class="profile-web-stat-val">1</div>
@@ -939,10 +1127,10 @@
                             <div class="profile-web-card">
                                 <div class="profile-web-ach-head">
                                     <h3>Достижения</h3>
-                                    <button type="button" onclick="switchView('achievements')">Все</button>
+                                    <button type="button" onclick="openOwnAchievements()">Все</button>
                                 </div>
                                 <div class="profile-web-ach-grid">
-                                    <button class="profile-web-ach" type="button" style="background:#ff9a3d;" onclick="switchView('achievements')"><i class="fa-solid fa-piggy-bank"></i></button>
+                                    <button class="profile-web-ach" type="button" style="background:#ff9a3d;" onclick="openOwnAchievements()"><i class="fa-solid fa-piggy-bank"></i></button>
                                     <button class="profile-web-ach" type="button" style="background:#8b5cf6;" onclick="toast('Меломан')"><i class="fa-solid fa-headphones"></i></button>
                                     <button class="profile-web-ach" type="button" style="background:#ef4444;" onclick="toast('Киноман')"><i class="fa-solid fa-clapperboard"></i></button>
                                     <button class="profile-web-ach" type="button" style="background:#3b82f6;" onclick="toast('Душа компании')"><i class="fa-solid fa-users"></i></button>
@@ -979,12 +1167,85 @@
 
 
 
+        <!-- FRIENDS -->
+        <section class="view" id="view-friends">
+            <div class="friends-web-page">
+                <div class="friends-web-shell">
+                    <div class="friends-web-topbar">
+                        <div class="friends-web-title-row">
+                            <button class="friends-web-back" type="button" onclick="backFromAchievements()" aria-label="Назад">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1>Друзья</h1>
+                        </div>
+                        <button class="friends-web-search-toggle" type="button" onclick="toggleFriendsSearch()" aria-label="Поиск друзей">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+
+                    <div class="friends-web-tabs" id="friendsWebTabs">
+                        <button class="active" type="button" data-friends-tab="0" onclick="setFriendsTab(0)">Друзья <span id="friendsCountBadge">0</span></button>
+                        <button type="button" data-friends-tab="1" onclick="setFriendsTab(1)">Подписчики <span id="followersCountBadge">0</span></button>
+                        <button type="button" data-friends-tab="2" onclick="setFriendsTab(2)">Заявки <span id="requestsCountBadge">0</span></button>
+                    </div>
+
+                    <div class="friends-web-search" id="friendsWebSearch">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="friendsWebSearchInput" type="search" placeholder="Поиск по имени" oninput="renderFriendsScreen()">
+                        <button type="button" onclick="closeFriendsSearch()" aria-label="Закрыть поиск"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+
+                    <div class="friends-web-list" id="friendsWebList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FRIEND PROFILE -->
+        <section class="view" id="view-friend-profile">
+            <div class="friend-profile-web-page">
+                <div class="friend-profile-web-shell">
+                    <div class="friend-profile-web-topbar">
+                        <div class="friend-profile-web-title-row">
+                            <button class="friends-web-back" type="button" onclick="goBackFromFriendProfile()" aria-label="Назад">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1 id="friendProfileWebTitle">Профиль друга</h1>
+                        </div>
+                        <button class="friends-web-search-toggle" type="button" onclick="toast('Дополнительные действия')" aria-label="Дополнительные действия">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                    </div>
+                    <div id="friendProfileWebContent"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- FRIEND CONNECTIONS -->
+        <section class="view" id="view-friend-connections">
+            <div class="friends-web-page">
+                <div class="friends-web-shell">
+                    <div class="friends-web-topbar">
+                        <div class="friends-web-title-row">
+                            <button class="friends-web-back" type="button" onclick="backFromFriendConnections()" aria-label="Назад">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1 id="friendConnectionsTitle">Друзья</h1>
+                        </div>
+                    </div>
+                    <div class="friends-web-tabs" id="friendConnectionsTabs"></div>
+                    <div class="friends-web-list" id="friendConnectionsList"></div>
+                </div>
+            </div>
+        </section>
+
+
         <!-- ACHIEVEMENTS -->
         <section class="view" id="view-achievements">
             <div class="achievements-web-page">
                 <div class="achievements-web-wrap">
                     <div class="achievements-web-topbar">
-                        <button class="achievements-web-back" type="button" onclick="switchView('profile')" aria-label="Назад">
+                        <button class="achievements-web-back" type="button" onclick="backFromAchievements()" aria-label="Назад">
                             <i class="fa-solid fa-arrow-left"></i>
                         </button>
                         <h1>Достижения</h1>
