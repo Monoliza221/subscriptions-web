@@ -1094,11 +1094,11 @@
                                 </div>
 
                                 <div class="profile-web-main-actions">
-                                    <button class="profile-web-btn profile-web-btn-dark" type="button" onclick="toast('Магазин наград')">
+                                    <button class="profile-web-btn profile-web-btn-dark" type="button" onclick="openRewardsShop()">
                                         <i class="fa-solid fa-gift"></i>
                                         Магазин наград
                                     </button>
-                                    <button class="profile-web-btn profile-web-btn-ghost" type="button" onclick="toast('Ссылка приглашения скопирована')">
+                                    <button class="profile-web-btn profile-web-btn-ghost" type="button" onclick="openReferralProgram()">
                                         <i class="fa-solid fa-share-nodes"></i>
                                         Пригласить
                                     </button>
@@ -1387,6 +1387,80 @@
                                 <span class="achievements-web-points"><span></span>+300</span>
                             </div>
                         </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- REWARDS SHOP -->
+        <section class="view" id="view-rewards-shop">
+            <div class="rewards-shop-page">
+                <div class="rewards-shop-wrap">
+                    <div class="rewards-shop-topbar">
+                        <button class="rewards-shop-back" type="button" onclick="closeRewardsShop()" aria-label="Назад">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <div>
+                            <h1>Магазин наград</h1>
+                            <p>Обменивайте накопленные баллы на бонусы</p>
+                        </div>
+                    </div>
+
+                    <div class="rewards-shop-balance">
+                        <div>
+                            <span>Ваш баланс</span>
+                            <strong id="rewardsShopBalance">2 800 <small>баллов</small></strong>
+                        </div>
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+
+                    <div class="rewards-shop-tabs">
+                        <button class="active" type="button" data-rewards-tab="active" onclick="setRewardsShopTab('active')">Активные</button>
+                        <button type="button" data-rewards-tab="purchased" onclick="setRewardsShopTab('purchased')">Купленные</button>
+                    </div>
+
+                    <div class="rewards-shop-grid" id="rewardsShopGrid"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- REFERRAL PROGRAM -->
+        <section class="view" id="view-referral-program">
+            <div class="referral-page">
+                <div class="referral-wrap">
+                    <div class="referral-topbar">
+                        <button class="referral-back" type="button" onclick="closeReferralProgram()" aria-label="Назад">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h1>Реферальная программа</h1>
+                    </div>
+
+                    <div class="referral-main-card">
+                        <div class="referral-gift-icon"><i class="fa-solid fa-gift"></i></div>
+                        <h2>Приглашайте друзей</h2>
+                        <p>Получайте 100 баллов за каждого друга, который установит SubHub и оформит подписку</p>
+
+                        <button class="referral-code-box" type="button" onclick="copyReferralCode()" aria-label="Скопировать реферальный код">
+                            <span>Ваш код</span>
+                            <strong id="referralCodeValue">SUBHUB-7QX3</strong>
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+
+                        <button class="referral-share-button" type="button" onclick="shareReferralInvite()">
+                            <i class="fa-solid fa-share-nodes"></i>
+                            Поделиться ссылкой
+                        </button>
+                    </div>
+
+                    <div class="referral-stats-card">
+                        <h3>Статистика</h3>
+                        <div class="referral-stats-grid">
+                            <div class="referral-stat"><strong id="referralInvitedCount">0</strong><span>приглашено</span></div>
+                            <div class="referral-stat"><strong id="referralPaidCount">0</strong><span>платящих</span></div>
+                            <div class="referral-stat"><strong id="referralBonusPoints">0</strong><span>бонусов</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
