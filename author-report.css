@@ -1,0 +1,37 @@
+.author-profile-top{justify-content:space-between}
+.author-profile-top-main{display:flex;align-items:center;gap:14px}
+.author-report-menu-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line,#e3e5e9);background:var(--card,#fff);color:var(--ink,#1c1d21);display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .2s}
+.author-report-menu-btn:hover{background:var(--soft,#f3f4f6);transform:translateY(-1px)}
+.author-report-overlay{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(12,14,18,.56)}
+.author-report-overlay.open{display:flex}
+.author-report-dialog{width:min(100%,520px);max-height:min(88vh,720px);overflow:auto;background:#fff;border:1px solid #e5e7eb;border-radius:24px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.22)}
+.author-report-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:20px}
+.author-report-head h2{margin:0;color:#17191f;font:800 22px/1.2 'Inter',sans-serif}
+.author-report-head p{margin:7px 0 0;color:#818791;font-size:14px}
+.author-report-close{width:40px;height:40px;flex:0 0 auto;border-radius:50%;border:1px solid #e1e4e9;background:#fff;color:#343840;display:grid;place-items:center;cursor:pointer}
+.author-report-close:hover{background:#f3f4f6}
+.author-report-reasons{display:flex;flex-direction:column;gap:10px}
+.author-report-reasons button{min-height:50px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;border:1px solid #e2e5ea;border-radius:15px;background:#f7f8fa;color:#252830;font:600 14px 'Inter',sans-serif;cursor:pointer;text-align:left}
+.author-report-reasons button:hover{background:#f0f2f5}
+.author-report-reasons button.active{border-color:var(--accent,#ff7a00);background:color-mix(in srgb,var(--accent,#ff7a00) 10%,#fff);color:var(--accent,#ff7a00)}
+.author-report-reasons button i{font-size:12px}
+.author-report-comment{display:flex;flex-direction:column;gap:9px;margin-top:20px;color:#343840;font-size:14px;font-weight:600}
+.author-report-comment small{color:#9298a2;font-weight:500}
+.author-report-comment textarea{min-height:100px;resize:vertical;border:1px solid #e2e5ea;border-radius:15px;padding:13px 14px;background:#fff;color:#20232a;font:14px/1.45 'Inter',sans-serif;outline:none}
+.author-report-comment textarea:focus{border-color:var(--accent,#ff7a00);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent,#ff7a00) 14%,transparent)}
+.author-report-submit{width:100%;min-height:50px;margin-top:18px;border:0;border-radius:15px;background:var(--accent,#ff7a00);color:#fff;font:700 15px 'Inter',sans-serif;cursor:pointer}
+.author-report-submit:disabled{opacity:.45;cursor:not-allowed}
+body.author-report-open{overflow:hidden}
+body.global-dark-theme .author-report-menu-btn{background:#1d2028;border-color:#2d323e;color:#f3f5f8}
+body.global-dark-theme .author-report-menu-btn:hover{background:#272b36}
+body.global-dark-theme .author-report-dialog{background:#1b1e25;border-color:#2a2f3a}
+body.global-dark-theme .author-report-head h2{color:#f5f6fa}
+body.global-dark-theme .author-report-head p{color:#9ba2af}
+body.global-dark-theme .author-report-close{background:#242833;border-color:#323744;color:#f5f6fa}
+body.global-dark-theme .author-report-close:hover{background:#2d3240}
+body.global-dark-theme .author-report-reasons button{background:#242833;border-color:#303643;color:#eef1f5}
+body.global-dark-theme .author-report-reasons button:hover{background:#2b3040}
+body.global-dark-theme .author-report-reasons button.active{background:color-mix(in srgb,var(--accent,#ff7a00) 18%,#242833);border-color:var(--accent,#ff7a00);color:var(--accent,#ff7a00)}
+body.global-dark-theme .author-report-comment{color:#eef1f5}
+body.global-dark-theme .author-report-comment textarea{background:#242833;border-color:#303643;color:#eef1f5}
+@media(max-width:600px){.author-report-overlay{align-items:flex-end;padding:12px}.author-report-dialog{width:100%;border-radius:24px 24px 18px 18px;padding:20px}}

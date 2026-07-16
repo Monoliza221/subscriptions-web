@@ -1,0 +1,42 @@
+.author-media-card{cursor:pointer}
+.author-media-card .author-content-cover{position:relative}
+.author-media-play{position:absolute;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.92);color:#1b1d22;box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.author-media-overlay{position:fixed;inset:0;z-index:16000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(12,14,18,.58);backdrop-filter:blur(8px)}
+.author-media-overlay.is-open{display:flex}
+.author-media-dialog{width:min(680px,calc(100vw - 32px));max-height:86vh;overflow:auto;border-radius:24px;background:#fff;color:#1b1d22;box-shadow:0 28px 90px rgba(0,0,0,.28)}
+.author-media-head{display:flex;justify-content:space-between;gap:20px;padding:24px 26px;border-bottom:1px solid #e8ebef}
+.author-media-head span{display:inline-block;margin-bottom:7px;color:#ff6a22;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.author-media-head h2{margin:0;font-size:24px;line-height:1.2}
+.author-media-head p{margin:7px 0 0;color:#8a8f98;font-size:13px}
+.author-media-close{width:38px;height:38px;flex:0 0 auto;border:1px solid #dde1e7;border-radius:12px;background:#fff;color:#343840;cursor:pointer}
+.author-media-close:hover{background:#f3f5f7}
+.author-media-view{padding:26px}
+.author-media-preview{height:280px;border-radius:20px;display:grid;place-items:center;color:#fff;font-size:70px}
+.author-media-view>p{margin:22px 0;color:#555b65;font-size:15px;line-height:1.65}
+.author-media-action{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;border:0;border-radius:14px;background:#1b1d22;color:#fff;font-weight:700;cursor:pointer}
+body.author-media-open{overflow:hidden}
+body.global-dark-theme .author-media-dialog{background:#191c22;color:#f5f6fa;border:1px solid #303540}
+body.global-dark-theme .author-media-head{border-bottom-color:#303540}
+body.global-dark-theme .author-media-head p,body.global-dark-theme .author-media-view>p{color:#9ba2b1}
+body.global-dark-theme .author-media-close{background:#242832;border-color:#343a47;color:#f5f6fa}
+body.global-dark-theme .author-media-close:hover{background:#2d3240}
+body.global-dark-theme .author-media-action{background:#f5f6fa;color:#17191e}
+@media(max-width:700px){.author-media-preview{height:210px}.author-media-head,.author-media-view{padding:20px}}
+
+
+.author-calendar-list{display:flex;flex-direction:column;gap:12px;width:100%}
+.author-calendar-item{min-height:76px;display:flex;align-items:center;gap:14px;padding:10px 14px;border:1px solid rgba(26,28,33,.06);border-radius:19px;background:#fff;box-shadow:0 8px 20px rgba(20,24,32,.035)}
+.author-calendar-date{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#f4eeff;color:#7c3aed;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.author-calendar-date strong{font-size:17px;line-height:.95}
+.author-calendar-date span{margin-top:3px;font-size:10.5px;font-weight:700;line-height:1}
+.author-calendar-info{min-width:0;flex:1}
+.author-calendar-info h3{margin:0;font-size:15px;font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.author-calendar-info p{margin:6px 0 0;color:#8b9099;font-size:13px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.author-calendar-info p i{font-size:14px}
+.author-calendar-bell{font-size:22px;color:#1d2026;flex:0 0 auto}
+body.global-dark-theme .author-calendar-item{background:#1b1e25;border-color:#303540;box-shadow:none}
+body.global-dark-theme .author-calendar-date{background:#2b2340;color:#b994ff}
+body.global-dark-theme .author-calendar-info h3{color:#f4f5f8}
+body.global-dark-theme .author-calendar-info p{color:#9299a7}
+body.global-dark-theme .author-calendar-bell{color:#f4f5f8}
+@media(max-width:700px){.author-calendar-item{gap:11px;padding:10px 12px}.author-calendar-info h3{font-size:14px}.author-calendar-info p{font-size:12px}.author-calendar-bell{font-size:20px}}

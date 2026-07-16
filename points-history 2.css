@@ -1,0 +1,40 @@
+.points-history-overlay{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(7,10,16,.68);backdrop-filter:blur(8px)}
+.points-history-overlay.open{display:flex}
+.points-history-modal{width:min(560px,100%);max-height:min(760px,calc(100vh - 48px));overflow:auto;border-radius:26px;padding:22px;background:#fff;border:1px solid rgba(15,23,42,.12);box-shadow:0 24px 70px rgba(15,23,42,.24);color:#111827}
+.points-history-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.points-history-head h2{margin:1px 0 4px;font-size:24px;line-height:1.1}
+.points-history-head p{margin:0;color:#6b7280;font-size:13px;line-height:1.45}
+.points-history-back{flex:0 0 42px;width:42px;height:42px;border-radius:14px;border:1px solid #e5e7eb;background:#fff;color:#111827;display:grid;place-items:center;cursor:pointer;transition:.18s ease}
+.points-history-back:hover{background:#f5f6f8;border-color:#d1d5db;transform:translateY(-1px)}
+.points-history-summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px;border:1px solid #e5e7eb;border-radius:19px;background:#fafafa;margin-bottom:14px}
+.points-history-summary span{font-size:13px;color:#6b7280}
+.points-history-summary strong{font-size:24px;letter-spacing:-.4px}
+.points-history-summary small{font-size:12px;font-weight:500;color:#6b7280;margin-left:4px}
+.points-history-list{display:grid;gap:10px}
+.points-history-item{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;padding:14px;border:1px solid #e5e7eb;border-radius:18px;background:#fff}
+.points-history-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:16px}
+.points-history-item.positive .points-history-icon{background:rgba(22,163,74,.12);color:#16a34a}
+.points-history-item.negative .points-history-icon{background:rgba(229,62,62,.12);color:#e53e3e}
+.points-history-copy strong{display:block;font-size:14px;margin-bottom:4px}
+.points-history-copy span{display:block;color:#6b7280;font-size:12px;line-height:1.35}
+.points-history-amount{text-align:right;font-weight:800;font-size:15px;white-space:nowrap}
+.points-history-item.positive .points-history-amount{color:#16a34a}
+.points-history-item.negative .points-history-amount{color:#e53e3e}
+.points-history-date{display:block;margin-top:4px;color:#9ca3af;font-size:11px;font-weight:500}
+.points-history-empty{padding:34px 18px;text-align:center;border:1px dashed #d1d5db;border-radius:18px;color:#6b7280}
+#profilePointsHistoryTrigger{cursor:pointer;border-radius:14px;padding:5px 7px;margin:-5px -7px;transition:.18s ease}
+#profilePointsHistoryTrigger:hover,#profilePointsHistoryTrigger:focus-visible{background:rgba(127,127,127,.10);outline:none}
+body.global-dark-theme .points-history-modal{background:#171a20;border-color:#343946;color:#f5f7fb}
+body.global-dark-theme .points-history-head p,body.global-dark-theme .points-history-summary span,body.global-dark-theme .points-history-summary small,body.global-dark-theme .points-history-copy span{color:#9ca3af}
+body.global-dark-theme .points-history-back{background:#20242d;border-color:#343946;color:#f5f7fb}
+body.global-dark-theme .points-history-back:hover{background:#292e39;border-color:#454b59}
+body.global-dark-theme .points-history-summary,body.global-dark-theme .points-history-item{background:#20242d;border-color:#343946}
+body.global-dark-theme .points-history-empty{border-color:#3b414f;color:#9ca3af}
+@media(max-width:640px){.points-history-overlay{padding:12px;align-items:flex-end}.points-history-modal{border-radius:24px 24px 0 0;max-height:88vh;padding:18px}.points-history-item{grid-template-columns:42px 1fr}.points-history-amount{grid-column:2;text-align:left}.points-history-head h2{font-size:21px}}
+
+body.global-dark-theme .points-history-modal{scrollbar-color:#555d6d #171a20}
+body.global-dark-theme .points-history-modal::-webkit-scrollbar{width:10px}
+body.global-dark-theme .points-history-modal::-webkit-scrollbar-track{background:#171a20;border-radius:10px}
+body.global-dark-theme .points-history-modal::-webkit-scrollbar-thumb{background:#555d6d;border:2px solid #171a20;border-radius:10px}
+body.global-dark-theme .points-history-copy strong,body.global-dark-theme .points-history-head h2,body.global-dark-theme .points-history-summary strong{color:#f5f7fb}
+body.global-dark-theme .points-history-date{color:#7f8796}

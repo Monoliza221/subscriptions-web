@@ -1,0 +1,68 @@
+.feed-web-search-panel{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:0 0 18px;
+    padding:12px 14px;
+    border:1px solid #e1e4ea;
+    border-radius:16px;
+    background:#fff;
+}
+.feed-web-search-panel[hidden]{display:none!important}
+.feed-web-search-panel>i{color:#8a8f98;font-size:15px}
+.feed-web-search-panel input{
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:#1c1d21;
+    font:500 14px/1.4 'Inter',system-ui,sans-serif;
+}
+.feed-web-search-panel input::placeholder{color:#9aa0aa}
+.feed-web-search-panel button{
+    width:32px;
+    height:32px;
+    border:0;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:#f3f4f6;
+    color:#60646d;
+    cursor:pointer;
+}
+.feed-web-search-panel button:hover{background:#e9ebef}
+.feed-web-card[hidden]{display:none!important}
+.feed-web-empty-state{
+    min-height:220px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    padding:32px;
+    border-radius:22px;
+    background:#fff;
+    color:#8a8f98;
+    text-align:center;
+}
+.feed-web-empty-state[hidden]{display:none!important}
+.feed-web-empty-state i{font-size:28px;color:#a0a5ae}
+.feed-web-empty-state strong{color:#2a2d33;font-size:16px}
+.feed-web-empty-state span{font-size:13px}
+body.global-dark-theme .feed-web-search-panel,
+body.global-dark-theme .feed-web-empty-state{
+    background:#1d2028;
+    border-color:#2a2e38;
+}
+body.global-dark-theme .feed-web-search-panel input,
+body.global-dark-theme .feed-web-empty-state strong{color:#f5f6fa}
+body.global-dark-theme .feed-web-search-panel input::placeholder,
+body.global-dark-theme .feed-web-search-panel>i,
+body.global-dark-theme .feed-web-empty-state,
+body.global-dark-theme .feed-web-empty-state i{color:#9ba2b1}
+body.global-dark-theme .feed-web-search-panel button{
+    background:#252936;
+    color:#f5f6fa;
+}
+body.global-dark-theme .feed-web-search-panel button:hover{background:#2e3341}

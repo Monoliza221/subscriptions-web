@@ -5,35 +5,81 @@
     <!-- PROTECTED: meta type -->
     <meta name="type" value="app" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои Подписки — все подписки в одном месте</title>
-    <meta property="og:title" content="Мои Подписки">
+    <title>SubMart — все подписки в одном месте</title>
+    <meta property="og:title" content="SubMart">
+    <link rel="icon" type="image/png" href="submart-logo.png">
     <meta property="og:description" content="Сервис, который собирает все ваши подписки из разных экосистем в одном месте и помогает экономить.">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="profile-notifications.css">
+    <link rel="stylesheet" href="profile-avatar.css">
+    <link rel="stylesheet" href="achievement-details.css">
+    <link rel="stylesheet" href="friend-profile-theme.css">
+    <link rel="stylesheet" href="points-history.css">
+    <link rel="stylesheet" href="feed-comments.css">
+    <link rel="stylesheet" href="feed-filter.css">
+    <link rel="stylesheet" href="author-report.css">
+    <link rel="stylesheet" href="author-reviews.css">
+    <link rel="stylesheet" href="author-reviewer-details.css">
+    <link rel="stylesheet" href="author-favorites.css">
+    <link rel="stylesheet" href="author-share.css">
+    <link rel="stylesheet" href="author-actions.css">
+    <link rel="stylesheet" href="author-plan-picker.css">
+    <link rel="stylesheet" href="author-notifications.css">
+    <link rel="stylesheet" href="author-materials.css">
+    <link rel="stylesheet" href="author-content-tabs.css">
+    <link rel="stylesheet" href="author-content-favorites.css">
+    <link rel="stylesheet" href="author-material-engagement.css">
+    <link rel="stylesheet" href="author-cancel-subscription.css">
 </head>
 <body>
+
+<!-- ========== ONBOARDING ========== -->
+<div id="onboardingScreen" class="onboarding-screen" aria-hidden="true">
+    <div class="onboarding-card" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+        <button class="onboarding-skip" type="button" onclick="completeOnboarding()">Пропустить</button>
+        <div class="onboarding-visual" id="onboardingVisual"><i class="fa-solid fa-table-columns"></i></div>
+        <div class="onboarding-copy">
+            <h1 id="onboardingTitle">Управляй подписками</h1>
+            <p id="onboardingText">Добавляй сервисы, контролируй списания и держи расходы под рукой.</p>
+        </div>
+        <div class="onboarding-dots" id="onboardingDots" aria-label="Шаги знакомства"></div>
+        <button class="btn btn-primary onboarding-next" id="onboardingNext" type="button" onclick="nextOnboardingSlide()">Далее</button>
+    </div>
+</div>
 
 <!-- ========== AUTH ========== -->
 <div id="authScreen" class="auth-screen">
     <div class="auth-card">
         <div class="logo">
-            <div class="logo-badge"><i class="fa-solid fa-layer-group"></i></div>
-            Мои Подписки
+            <div class="logo-badge logo-badge-image"><img src="submart-logo.png" alt="SubMart"></div>
+            SubMart
         </div>
         <div id="authStep1">
             <h1>Вход без пароля</h1>
             <p>Введите номер телефона — вышлем код в SMS</p>
             <div class="field">
                 <label>Номер телефона</label>
-                <input type="tel" id="phoneInput" placeholder="+7 912 345-67-89" value="+7">
+                <input type="tel" id="phoneInput" placeholder="+7 (999) 999-99-99" value="+7" inputmode="numeric" autocomplete="tel" maxlength="18">
             </div>
             <div class="checkbox-row">
                 <input type="checkbox" id="consent">
                 <label for="consent">Согласен с <a href="#">политикой конфиденциальности</a> и <a href="#">офертой</a></label>
             </div>
             <button class="btn btn-primary" onclick="sendCode()">Получить код <i class="fa-solid fa-arrow-right"></i></button>
+            <div class="auth-social-divider"><span>или</span></div>
+            <div class="auth-social-actions">
+                <button class="auth-social-btn" type="button" onclick="socialLogin('Яндекс')">
+                    <i class="fa-brands fa-yandex-international"></i>
+                    <span>Войти через Яндекс</span>
+                </button>
+                <button class="auth-social-btn" type="button" onclick="socialLogin('VK')">
+                    <i class="fa-brands fa-vk"></i>
+                    <span>Войти через VK</span>
+                </button>
+            </div>
         </div>
         <div id="authStep2" style="display:none;">
             <h1>Введите код</h1>
@@ -52,8 +98,8 @@
 <div id="appRoot" class="app" style="display:none;">
     <aside class="sidebar">
         <div class="logo">
-            <div class="logo-badge"><i class="fa-solid fa-layer-group"></i></div>
-            Мои Подписки
+            <div class="logo-badge logo-badge-image"><img src="submart-logo.png" alt="SubMart"></div>
+            SubMart
         </div>
         <nav class="nav">
             <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i> Обзор</button>
@@ -64,14 +110,13 @@
             <button class="nav-item" data-view="calendar"><i class="fa-solid fa-calendar-days"></i> Календарь</button>
             <button class="nav-item" data-view="wallet"><i class="fa-solid fa-wallet"></i> Кошелёк</button>
             <button class="nav-item" data-view="history"><i class="fa-solid fa-clock-rotate-left"></i> История</button>
-            <button class="nav-item" data-view="merchant"><i class="fa-solid fa-store"></i> Мои подписки для продаж</button>
             <button class="nav-item" data-view="profile"><i class="fa-solid fa-user"></i> Профиль</button>
             <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> Настройки</button>
         </nav>
         <div class="sidebar-foot">
             <a href="#">Политика конфиденциальности</a>
             <a href="#">Пользовательское соглашение</a>
-            <div style="margin-top:8px;">© 2026 Мои Подписки</div>
+            <div style="margin-top:8px;">© 2026 SubMart</div>
         </div>
     </aside>
 
@@ -224,7 +269,7 @@
 
                             <div class="timecalc-note">
                                 <i class="fa-solid fa-circle-info"></i>
-                                <span>Автоматически подставляется из модуля «Мои подписки».</span>
+                                <span>Автоматически подставляется из модуля «SubMart».</span>
                             </div>
                         </div>
                     </div>
@@ -400,28 +445,28 @@
                                 <div class="analytics-m-icon" style="background:#fff0e6;color:#f97316;"><i class="fa-solid fa-money-bill"></i></div>
                                 <div class="analytics-m-label">Всего за месяц</div>
                                 <div class="analytics-m-value">3 636 ₽</div>
-                                <div class="analytics-m-foot">без исто… <a href="#" style="color:#f97316;">Подробнее</a></div>
+                                <div class="analytics-m-foot">без истории <a href="#" style="color:#f97316;">Подробнее</a></div>
                             </div>
                             <div class="analytics-metric">
                                 <div class="analytics-deco" style="background:#dfe9ff;"></div>
                                 <div class="analytics-m-icon" style="background:#e8f0ff;color:#2563eb;"><i class="fa-solid fa-receipt"></i></div>
                                 <div class="analytics-m-label">Средний чек</div>
                                 <div class="analytics-m-value">727 ₽</div>
-                                <div class="analytics-m-foot">без исто… <a href="#" style="color:#2563eb;">Подробнее</a></div>
+                                <div class="analytics-m-foot">без истории <a href="#" style="color:#2563eb;">Подробнее</a></div>
                             </div>
                             <div class="analytics-metric">
                                 <div class="analytics-deco" style="background:#e6e0ff;"></div>
                                 <div class="analytics-m-icon" style="background:#efeaff;color:#6c2bd9;"><i class="fa-solid fa-arrow-trend-up"></i></div>
                                 <div class="analytics-m-label">Прогноз года</div>
                                 <div class="analytics-m-value">43 632 ₽</div>
-                                <div class="analytics-m-foot">текущий… <a href="#" style="color:#e8443c;">Подробнее</a></div>
+                                <div class="analytics-m-foot">текущий прогноз <a href="#" style="color:#e8443c;">Подробнее</a></div>
                             </div>
                             <div class="analytics-metric">
                                 <div class="analytics-deco" style="background:#d6f2e4;"></div>
                                 <div class="analytics-m-icon" style="background:#e4f6ee;color:#22a565;"><i class="fa-solid fa-piggy-bank"></i></div>
                                 <div class="analytics-m-label">Можно сэкономить</div>
                                 <div class="analytics-m-value">0 ₽</div>
-                                <div class="analytics-m-foot">рекомен… <a href="#" style="color:#22a565;">Подробнее</a></div>
+                                <div class="analytics-m-foot">рекомендации <a href="#" style="color:#22a565;">Подробнее</a></div>
                             </div>
                         </div>
                     </div>
@@ -586,7 +631,13 @@
                 </div>
             </div>
 
-            
+            <div class="authors-search-wrap">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="authorsSearchInput" type="search" placeholder="Найти автора..." autocomplete="off" aria-label="Найти автора">
+                <button id="authorsSearchClear" class="authors-search-clear" type="button" aria-label="Очистить поиск" hidden><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="authors-empty" id="authorsEmpty" hidden>Авторы не найдены</div>
+
             <div class="authors-grid" id="authorsGrid">
                 <article class="author-card">
                     <div class="author-card-top">
@@ -661,10 +712,31 @@
         <section class="view" id="view-author-profile">
             <div class="author-profile-page">
                 <div class="author-profile-top">
-                    <button class="author-back-btn" type="button" onclick="switchView('authors')">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <h1>Профиль автора</h1>
+                    <div class="author-profile-top-main">
+                        <button class="author-back-btn" type="button" onclick="switchView('authors')">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <h1>Профиль автора</h1>
+                    </div>
+                    <div class="author-profile-top-actions author-actions-wrap">
+                        <button class="author-report-menu-btn" id="authorActionsMenuButton" type="button" onclick="toggleAuthorActionsMenu(event)" aria-label="Действия с автором" title="Действия с автором" aria-haspopup="menu" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <div class="author-actions-menu" id="authorActionsMenu" role="menu" aria-hidden="true">
+                            <button type="button" role="menuitem" onclick="runAuthorAction('notifications')">
+                                <i class="fa-regular fa-bell"></i>
+                                <span>Уведомления</span>
+                            </button>
+                            <button type="button" role="menuitem" onclick="runAuthorAction('share')">
+                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                <span>Поделиться профилем</span>
+                            </button>
+                            <button class="author-actions-danger" type="button" role="menuitem" onclick="runAuthorAction('report')">
+                                <i class="fa-regular fa-flag"></i>
+                                <span>Пожаловаться на автора</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="author-profile-layout">
@@ -675,12 +747,15 @@
                             <div class="author-handle" id="authorProfileHandle">@maria_designs</div>
                             <p id="authorProfileBio">Делюсь секретами UI/UX дизайна, кейсами и инсайтами из мира digital. Эксклюзивный контент каждую неделю ✨</p>
 
-                            <div class="author-stats-line">
-                                <div><i class="fa-solid fa-star"></i> <strong id="authorProfileRating">4.9</strong></div>
-                                <span>·</span>
-                                <div><strong id="authorProfileReviews">247</strong> отзывов</div>
-                                <span>·</span>
-                                <div><strong id="authorProfileFollowers">12,4К</strong> подписчиков</div>
+                            <div class="author-stats-review-block">
+                                <div class="author-stats-line">
+                                    <div><i class="fa-solid fa-star"></i> <strong id="authorProfileRating">4.9</strong></div>
+                                    <span>·</span>
+                                    <div><strong id="authorProfileReviews">247</strong> отзывов</div>
+                                    <span>·</span>
+                                    <div><strong id="authorProfileFollowers">12,4К</strong> подписчиков</div>
+                                </div>
+                                <button class="author-leave-review-link" type="button" onclick="openAuthorReviewComposer()">Оставить отзыв</button>
                             </div>
 
                             <button class="author-subscribe-btn" type="button">
@@ -691,18 +766,21 @@
 
                         <div class="author-plan-card">
                             <span>Текущий тариф</span>
-                            <h3>Premium <i class="fa-solid fa-star"></i></h3>
+                            <h3>Pro <i class="fa-solid fa-star"></i></h3>
                             <p>490 ₽/мес · Следующее списание: 27.06.2026</p>
                             <button type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Изменить</button>
                         </div>
                     </aside>
 
                     <div class="author-profile-content">
-                        <div class="author-tabs">
-                            <button class="active" type="button">Статьи</button>
-                            <button type="button">Видео</button>
-                            <button type="button">Аудио</button>
-                            <button type="button">Галерея</button>
+                        <div class="author-tabs" id="authorContentTabs">
+                            <button class="active" type="button" data-author-content-tab="all">Все</button>
+                            <button type="button" data-author-content-tab="articles">Статьи</button>
+                            <button type="button" data-author-content-tab="video">Видео</button>
+                            <button type="button" data-author-content-tab="audio">Аудио</button>
+                            <button type="button" data-author-content-tab="gallery">Галерея</button>
+                            <button type="button" data-author-content-tab="calendar">Календарь</button>
+                            <button type="button" data-author-content-tab="favorites"><i class="fa-regular fa-bookmark"></i> Избранные</button>
                         </div>
 
                         <div class="author-content-grid" id="authorContentGrid"></div>
@@ -724,8 +802,16 @@
                         <button class="tab active" data-filter="active">Активные</button>
                         <button class="tab" data-filter="archived">Архив</button>
                     </div>
+                    <button class="btn" type="button" onclick="exportExcel()"><i class="fa-solid fa-file-arrow-up"></i> Экспорт</button>
                     <button class="btn btn-accent" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Добавить</button>
                 </div>
+            </div>
+            <div class="subscription-search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="subscriptionSearchInput" type="search" placeholder="Поиск по названию" autocomplete="off" oninput="setSubscriptionSearch(this.value)" aria-label="Поиск подписок по названию">
+                <button id="subscriptionSearchClear" type="button" onclick="clearSubscriptionSearch()" aria-label="Очистить поиск" hidden>
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
             <div id="subList" class="sub-list"></div>
         </section>
@@ -829,13 +915,18 @@
 
         <!-- CALENDAR -->
         <section class="view" id="view-calendar">
-            <div class="topbar">
+            <div class="topbar calendar-page-topbar">
                 <div>
                     <h1 class="page-title">Календарь списаний</h1>
                     <div class="page-sub">Когда и что с вас спишут</div>
                 </div>
+                <div class="calendar-view-switch" role="group" aria-label="Вид календаря">
+                    <button id="calendarMonthMode" class="calendar-view-button active" type="button" onclick="setCalendarViewMode('month')">Месяц</button>
+                    <button id="calendarListMode" class="calendar-view-button" type="button" onclick="setCalendarViewMode('list')">Строкой</button>
+                </div>
             </div>
-            <div id="calList" class="sub-list cal-list"></div>
+            <div id="calendarMonthView"></div>
+            <div id="calList" class="sub-list cal-list" hidden></div>
         </section>
 
         <!-- WALLET -->
@@ -855,6 +946,7 @@
                     <div class="wallet-actions">
                         <button class="btn" onclick="openDepositModal()"><i class="fa-solid fa-plus"></i> Пополнить</button>
                         <button class="btn" onclick="openAutoTopupModal()"><i class="fa-solid fa-rotate"></i> Автопополнение</button>
+                        <button class="btn" onclick="openWithdrawModal()"><i class="fa-solid fa-arrow-up-from-bracket"></i> Вывести</button>
                     </div>
                 </div>
                 <div class="card">
@@ -868,40 +960,32 @@
         <section class="view" id="view-history">
             <div class="topbar">
                 <div>
-                    <h1 class="page-title">История списаний</h1>
+                    <h1 class="page-title">История оплат</h1>
                     <div class="page-sub">Все платежи по вашим подпискам</div>
                 </div>
                 <div class="tabs" id="histTabs">
                     <button class="tab active" data-period="month">Месяц</button>
-                    <button class="tab" data-period="quarter">3 месяца</button>
+                    <button class="tab" data-period="quarter">Квартал</button>
                     <button class="tab" data-period="year">Год</button>
                 </div>
             </div>
+            <div class="history-paid-summary card" id="historyPaidSummary">
+                <div class="history-paid-summary-label">Оплачено за месяц</div>
+                <div class="history-paid-summary-value" id="historyPaidSummaryValue">0 ₽</div>
+                <div class="history-paid-summary-note" id="historyPaidSummaryNote">За текущий месяц операций не было</div>
+            </div>
+            <h2 class="history-operations-title">Операции</h2>
             <div class="card" id="historyList"></div>
         </section>
 
-        <!-- MERCHANT -->
-        <section class="view" id="view-merchant">
-            <div class="topbar">
-                <div>
-                    <h1 class="page-title">Подписки для продаж</h1>
-                    <div class="page-sub">Создавайте свои подписки и принимайте платежи</div>
-                </div>
-                <button class="btn btn-accent" onclick="openMerchantModal()"><i class="fa-solid fa-plus"></i> Создать</button>
-            </div>
-            <div id="merchantList" class="merch-grid"></div>
-        </section>
-
-
-
-        <!-- FEED -->
+<!-- FEED -->
         <section class="view" id="view-feed">
             <div class="feed-web-page">
                 <div class="feed-web-layout">
                     <div class="feed-web-head">
                         <h1>Лента</h1>
                         <div class="feed-web-head-actions">
-                            <button class="feed-web-icon-btn" type="button" title="Поиск" onclick="toast('Поиск по ленте')">
+                            <button class="feed-web-icon-btn" id="feedSearchToggle" type="button" title="Поиск" aria-label="Открыть поиск по ленте" aria-expanded="false">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
                             <button class="feed-web-icon-btn" type="button" title="Уведомления" onclick="toast('Уведомления ленты')">
@@ -910,15 +994,21 @@
                         </div>
                     </div>
 
-                    <div class="feed-web-tabs" id="feedTabs">
-                        <button class="feed-web-tab active" type="button">Рекомендации</button>
-                        <button class="feed-web-tab" type="button">Новости</button>
-                        <button class="feed-web-tab" type="button">Авторы</button>
-                        <button class="feed-web-tab" type="button">Советы</button>
+                    <div class="feed-web-search-panel" id="feedSearchPanel" hidden>
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="feedSearchInput" type="search" placeholder="Поиск по публикациям" autocomplete="off">
+                        <button id="feedSearchClear" type="button" aria-label="Очистить поиск"><i class="fa-solid fa-xmark"></i></button>
                     </div>
 
-                    <div class="feed-web-grid">
-                        <article class="feed-web-card">
+                    <div class="feed-web-tabs" id="feedTabs">
+                        <button class="feed-web-tab active" type="button" data-feed-filter="all">Рекомендации</button>
+                        <button class="feed-web-tab" type="button" data-feed-filter="Новости">Новости</button>
+                        <button class="feed-web-tab" type="button" data-feed-filter="Авторы">Авторы</button>
+                        <button class="feed-web-tab" type="button" data-feed-filter="Советы">Советы</button>
+                    </div>
+
+                    <div class="feed-web-grid" id="feedWebGrid">
+                        <article class="feed-web-card" data-feed-category="Авторы">
                             <div class="feed-web-card-top">
                                 <div class="feed-web-author">
                                     <div class="feed-web-avatar" style="background:#6c5ce7;">K</div>
@@ -945,13 +1035,13 @@
                             </div>
                         </article>
 
-                        <article class="feed-web-card">
+                        <article class="feed-web-card" data-feed-category="Новости">
                             <div class="feed-web-card-top">
                                 <div class="feed-web-author">
-                                    <div class="feed-web-avatar" style="background:#8b5cf6;">M</div>
+                                    <div class="feed-web-avatar" style="background:#8b5cf6;">S</div>
                                     <div>
                                         <div class="feed-web-name-row">
-                                            <strong>Мои подписки</strong>
+                                            <strong>SubMart</strong>
                                             <span class="feed-web-badge">Project</span>
                                         </div>
                                         <div class="feed-web-meta">Новости • 2 ч назад</div>
@@ -971,7 +1061,7 @@
                             </div>
                         </article>
 
-                        <article class="feed-web-card">
+                        <article class="feed-web-card" data-feed-category="Советы">
                             <div class="feed-web-card-top">
                                 <div class="feed-web-author">
                                     <div class="feed-web-avatar" style="background:#0ea5e9;">D</div>
@@ -998,7 +1088,7 @@
                             </div>
                         </article>
 
-                        <article class="feed-web-card">
+                        <article class="feed-web-card" data-feed-category="Авторы">
                             <div class="feed-web-card-top">
                                 <div class="feed-web-author">
                                     <div class="feed-web-avatar" style="background:#f59e0b;">A</div>
@@ -1024,6 +1114,11 @@
                             </div>
                         </article>
                     </div>
+                    <div class="feed-web-empty-state" id="feedEmptyState" hidden>
+                        <i class="fa-regular fa-file-lines"></i>
+                        <strong>Публикации не найдены</strong>
+                        <span>Попробуйте изменить вкладку или поисковый запрос</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1036,8 +1131,9 @@
                     <div class="profile-web-topbar">
                         <h1>Профиль</h1>
                         <div class="profile-web-actions">
-                            <button class="profile-web-icon-btn" type="button" onclick="toast('Уведомления профиля')">
+                            <button class="profile-web-icon-btn profile-notifications-trigger" id="profileNotificationsTrigger" type="button" onclick="openProfileNotifications()" aria-label="Уведомления">
                                 <i class="fa-regular fa-bell"></i>
+                                <span class="profile-notifications-badge" id="profileNotificationsBadge" aria-label="Непрочитанные уведомления" hidden>0</span>
                             </button>
                             <button class="profile-web-icon-btn" type="button" onclick="switchView('settings')">
                                 <i class="fa-solid fa-gear"></i>
@@ -1050,24 +1146,24 @@
                             <div class="profile-web-card">
                                 <div class="profile-web-head">
                                     <div class="profile-web-avatar-wrap">
-                                        <div class="profile-web-avatar">Д</div>
+                                        <div class="profile-web-avatar" id="profileAvatarLetter">Д</div>
                                         <button class="profile-web-cam" type="button" onclick="toast('Выбор аватара')">
                                             <i class="fa-solid fa-camera"></i>
                                         </button>
                                     </div>
                                     <div>
                                         <div class="profile-web-name-row">
-                                            <h2>Данияр</h2>
-                                            <button class="profile-web-edit" type="button" onclick="toast('Редактирование профиля')">
+                                            <h2 id="profileDisplayName">Данияр</h2>
+                                            <button class="profile-web-edit" type="button" onclick="openAccountSettingsModal()">
                                                 <i class="fa-solid fa-pen"></i>
                                             </button>
                                         </div>
                                         <div class="profile-web-email">
-                                            a.kravtsov@mail.ru
+                                            <span id="profileEmailText">a.kravtsov@mail.ru</span>
                                             <i class="fa-solid fa-circle-check profile-web-verified"></i>
                                         </div>
-                                        <div class="profile-web-gender">Мужской</div>
-                                        <button class="profile-web-bday" type="button" onclick="toast('Дата рождения будет добавлена')">
+                                        <div class="profile-web-gender" id="profileGenderText">Мужской</div>
+                                        <button class="profile-web-bday" id="profileBirthDateButton" type="button" onclick="openAccountSettingsModal()">
                                             <i class="fa-solid fa-cake-candles"></i>
                                             Добавить дату рождения · +10 баллов
                                         </button>
@@ -1081,7 +1177,7 @@
                                         <div class="profile-web-level-title">Магистр подписок 4-го уровня</div>
                                         <div class="profile-web-level-sub">До «Стратег подписок» — 435 XP</div>
                                     </div>
-                                    <div class="profile-web-points">
+                                    <div class="profile-web-points" id="profilePointsHistoryTrigger" role="button" tabindex="0" aria-label="Открыть историю баллов">
                                         <div class="profile-web-num">2 800</div>
                                         <div class="profile-web-lbl">баллов</div>
                                     </div>
@@ -1097,10 +1193,6 @@
                                     <button class="profile-web-btn profile-web-btn-dark" type="button" onclick="openRewardsShop()">
                                         <i class="fa-solid fa-gift"></i>
                                         Магазин наград
-                                    </button>
-                                    <button class="profile-web-btn profile-web-btn-ghost" type="button" onclick="openReferralProgram()">
-                                        <i class="fa-solid fa-share-nodes"></i>
-                                        Пригласить
                                     </button>
                                 </div>
 
@@ -1133,7 +1225,6 @@
                                     <button class="profile-web-ach" type="button" style="background:#ff9a3d;" onclick="openOwnAchievements()"><i class="fa-solid fa-piggy-bank"></i></button>
                                     <button class="profile-web-ach" type="button" style="background:#8b5cf6;" onclick="toast('Меломан')"><i class="fa-solid fa-headphones"></i></button>
                                     <button class="profile-web-ach" type="button" style="background:#ef4444;" onclick="toast('Киноман')"><i class="fa-solid fa-clapperboard"></i></button>
-                                    <button class="profile-web-ach" type="button" style="background:#3b82f6;" onclick="toast('Душа компании')"><i class="fa-solid fa-users"></i></button>
                                 </div>
                                 <div class="profile-web-ach-list">
                                     <button class="profile-web-ach-item" type="button" onclick="toast('Экономист')">
@@ -1148,13 +1239,6 @@
                                         <div>
                                             <div class="profile-web-ach-t">Меломан</div>
                                             <div class="profile-web-ach-d">Подключено 3 музыкальных сервиса</div>
-                                        </div>
-                                    </button>
-                                    <button class="profile-web-ach-item" type="button" onclick="toast('Душа компании')">
-                                        <div class="profile-web-ach-ic" style="background:#3b82f6;"><i class="fa-solid fa-users"></i></div>
-                                        <div>
-                                            <div class="profile-web-ach-t">Душа компании</div>
-                                            <div class="profile-web-ach-d">Пригласите 5 друзей</div>
                                         </div>
                                     </button>
                                 </div>
@@ -1331,21 +1415,6 @@
                         <article class="achievements-web-card locked">
                             <div class="achievements-web-card-top">
                                 <div class="achievements-web-icon" style="background:#eef6ee;color:#3aa657;">
-                                    <i class="fa-solid fa-user-plus"></i>
-                                </div>
-                                <div class="achievements-web-check"><i class="fa-solid fa-lock"></i></div>
-                            </div>
-                            <h3>Друг в деле</h3>
-                            <p>Пригласите друга в приложение</p>
-                            <div class="achievements-web-foot">
-                                <span>Обычное</span>
-                                <span class="achievements-web-points"><span></span>+30</span>
-                            </div>
-                        </article>
-
-                        <article class="achievements-web-card locked">
-                            <div class="achievements-web-card-top">
-                                <div class="achievements-web-icon" style="background:#eef6ee;color:#3aa657;">
                                     <i class="fa-solid fa-plus"></i>
                                 </div>
                                 <div class="achievements-web-check"><i class="fa-solid fa-lock"></i></div>
@@ -1426,47 +1495,6 @@
         </section>
 
 
-        <!-- REFERRAL PROGRAM -->
-        <section class="view" id="view-referral-program">
-            <div class="referral-page">
-                <div class="referral-wrap">
-                    <div class="referral-topbar">
-                        <button class="referral-back" type="button" onclick="closeReferralProgram()" aria-label="Назад">
-                            <i class="fa-solid fa-arrow-left"></i>
-                        </button>
-                        <h1>Реферальная программа</h1>
-                    </div>
-
-                    <div class="referral-main-card">
-                        <div class="referral-gift-icon"><i class="fa-solid fa-gift"></i></div>
-                        <h2>Приглашайте друзей</h2>
-                        <p>Получайте 100 баллов за каждого друга, который установит SubHub и оформит подписку</p>
-
-                        <button class="referral-code-box" type="button" onclick="copyReferralCode()" aria-label="Скопировать реферальный код">
-                            <span>Ваш код</span>
-                            <strong id="referralCodeValue">SUBHUB-7QX3</strong>
-                            <i class="fa-regular fa-copy"></i>
-                        </button>
-
-                        <button class="referral-share-button" type="button" onclick="shareReferralInvite()">
-                            <i class="fa-solid fa-share-nodes"></i>
-                            Поделиться ссылкой
-                        </button>
-                    </div>
-
-                    <div class="referral-stats-card">
-                        <h3>Статистика</h3>
-                        <div class="referral-stats-grid">
-                            <div class="referral-stat"><strong id="referralInvitedCount">0</strong><span>приглашено</span></div>
-                            <div class="referral-stat"><strong id="referralPaidCount">0</strong><span>платящих</span></div>
-                            <div class="referral-stat"><strong id="referralBonusPoints">0</strong><span>бонусов</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
         <!-- SETTINGS -->
         <section class="view" id="view-settings">
             <div class="topbar">
@@ -1476,28 +1504,137 @@
                 </div>
             </div>
             <div class="grid" style="grid-template-columns:1fr 1fr; gap:20px;">
-                <div class="card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Уведомления</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Когда напомнить о списании</div>
-                    <div class="field"><label><input type="checkbox" checked> За 7 дней</label></div>
-                    <div class="field"><label><input type="checkbox" checked> За 3 дня</label></div>
-                    <div class="field"><label><input type="checkbox"> За 1 день</label></div>
-                    <div class="field" style="margin-top:16px;">
-                        <label>Канал</label>
-                        <select><option>Web Push</option><option>Telegram</option><option>Оба</option></select>
+                <div class="card settings-notifications-card">
+                    <div class="settings-notifications-head">
+                        <span class="settings-notifications-icon"><i class="fa-solid fa-bell"></i></span>
+                        <div>
+                            <h3>Уведомления</h3>
+                            <div class="muted">Напоминания о предстоящих списаниях</div>
+                        </div>
+                    </div>
+                    <div class="settings-notifications-list">
+                        <button class="settings-notification-row" type="button" data-notification-key="pushEnabled" aria-pressed="true">
+                            <span><strong>Push-уведомления</strong><small>На устройство</small></span>
+                            <span class="settings-notification-switch" aria-hidden="true"></span>
+                        </button>
+                        <button class="settings-notification-row" type="button" data-notification-key="emailEnabled" aria-pressed="true">
+                            <span><strong>Email-рассылка</strong><small>Раз в неделю</small></span>
+                            <span class="settings-notification-switch" aria-hidden="true"></span>
+                        </button>
+                        <button class="settings-notification-row" type="button" data-notification-key="notify7Days" aria-pressed="true">
+                            <span><strong>За 7 дней</strong><small>Предупредить заранее</small></span>
+                            <span class="settings-notification-switch" aria-hidden="true"></span>
+                        </button>
+                        <button class="settings-notification-row" type="button" data-notification-key="notify3Days" aria-pressed="true">
+                            <span><strong>За 3 дня</strong><small>Напомнить ближе к списанию</small></span>
+                            <span class="settings-notification-switch" aria-hidden="true"></span>
+                        </button>
+                        <button class="settings-notification-row" type="button" data-notification-key="notify1Day" aria-pressed="false">
+                            <span><strong>За 1 день</strong><small>Последнее напоминание</small></span>
+                            <span class="settings-notification-switch" aria-hidden="true"></span>
+                        </button>
+                        <button class="settings-notification-row" type="button" data-notification-key="soundEnabled" aria-pressed="true">
+                            <span><strong>Звук</strong><small>Звуковые уведомления от сервиса</small></span>
+                            <span class="settings-notification-switch" aria-hidden="true"></span>
+                        </button>
                     </div>
                 </div>
                 <div class="card">
                     <h3 style="font-size:17px; margin-bottom:4px;">Аккаунт</h3>
                     <div class="muted" style="font-size:13px; margin-bottom:18px;">Управление профилем</div>
+                    <button class="settings-account-profile-row" type="button" onclick="openAccountSettingsModal()">
+                        <span class="settings-account-profile-icon"><i class="fa-solid fa-user"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong id="settingsAccountName">Данияр</strong>
+                            <small>Имя пользователя и профиль</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                     <div class="field"><label>Телефон</label><input type="tel" id="settingsPhone" readonly></div>
-                    <div class="field"><label>Часовой пояс</label>
-                        <select><option>Europe/Moscow (UTC+3)</option><option>Europe/Kaliningrad (UTC+2)</option><option>Asia/Yekaterinburg (UTC+5)</option></select>
-                    </div>
+                    <button class="settings-account-profile-row settings-timezone-row" type="button" onclick="openTimezoneModal()">
+                        <span class="settings-account-profile-icon"><i class="fa-solid fa-clock"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong>Часовой пояс</strong>
+                            <small id="settingsTimezoneValue">Europe/Moscow (UTC+3)</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                     <div style="display:flex; gap:10px; margin-top:18px;">
                         <button class="btn btn-ghost" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выйти</button>
-                        <button class="btn btn-danger" onclick="deleteAccount()"><i class="fa-solid fa-trash"></i> Удалить аккаунт</button>
                     </div>
+                </div>
+                <div class="card settings-payment-section-card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Способы оплаты</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Управление банковскими картами</div>
+                    <button class="settings-account-profile-row settings-payment-row" type="button" onclick="openPaymentMethodsModal()">
+                        <span class="settings-account-profile-icon settings-payment-icon"><i class="fa-solid fa-credit-card"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong>Банковские карты</strong>
+                            <small id="settingsPaymentSummary">Способы оплаты не добавлены</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="card settings-tariff-section-card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Тарифы</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Текущий план и доступные возможности</div>
+                    <button class="settings-account-profile-row settings-tariff-row" type="button" onclick="openTariffsModal()">
+                        <span class="settings-account-profile-icon settings-tariff-icon"><i class="fa-solid fa-crown"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong>Тарифный план</strong>
+                            <small id="settingsTariffSummary">Base — бесплатно</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="card settings-security-section-card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Безопасность</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Пароль, вход и защита аккаунта</div>
+                    <button class="settings-account-profile-row settings-security-row" type="button" onclick="openSecurityModal()">
+                        <span class="settings-account-profile-icon settings-security-icon"><i class="fa-solid fa-lock"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong>Настройки безопасности</strong>
+                            <small>Код входа, двухфакторная защита и биометрия</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="card settings-system-notifications-card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Системные уведомления</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Планирование, тест и список</div>
+                    <button class="settings-account-profile-row settings-system-notifications-row" type="button" onclick="openSystemNotificationsModal()">
+                        <span class="settings-account-profile-icon settings-system-notifications-icon"><i class="fa-solid fa-bell"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong>Управление уведомлениями</strong>
+                            <small id="settingsSystemNotificationsSummary">Не настроены</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="card settings-privacy-section-card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Приватность</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Кто видит подписки, достижения и баллы</div>
+                    <button class="settings-account-profile-row settings-privacy-row" type="button" onclick="openPrivacyModal()">
+                        <span class="settings-account-profile-icon settings-privacy-icon"><i class="fa-solid fa-eye"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong>Настройки приватности</strong>
+                            <small id="settingsPrivacySummary">Подписки: друзья</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="card settings-language-section-card">
+                    <h3 style="font-size:17px; margin-bottom:4px;">Язык</h3>
+                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Язык интерфейса</div>
+                    <button class="settings-account-profile-row settings-language-row" type="button" onclick="openLanguageModal()" aria-label="Выбрать язык интерфейса">
+                        <span class="settings-account-profile-icon"><i class="fa-solid fa-language"></i></span>
+                        <span class="settings-account-profile-copy">
+                            <strong>Русский</strong>
+                            <small>Текущий язык интерфейса</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
 
@@ -1509,16 +1646,32 @@
 
                     <div class="settings-personalization-grid">
                         <div>
-                            <div class="settings-personalization-card">
-                                <div class="settings-theme-row">
+                            <div class="settings-personalization-card settings-theme-mode-card">
+                                <div class="settings-theme-mode-head">
                                     <div class="settings-theme-icon">
-                                        <i class="fa-solid fa-moon"></i>
+                                        <i class="fa-solid fa-circle-half-stroke"></i>
                                     </div>
                                     <div class="settings-theme-txt">
-                                        <h3>Тёмная</h3>
-                                        <p>Всегда использовать тёмную тему</p>
+                                        <h3>Тема интерфейса</h3>
+                                        <p>Выберите постоянную тему или повторяйте настройки устройства</p>
                                     </div>
-                                    <button class="settings-theme-switch off" id="settingsThemeSwitch" type="button" aria-label="Переключить тему"></button>
+                                </div>
+                                <div class="settings-theme-mode-options" role="radiogroup" aria-label="Тема интерфейса">
+                                    <button class="settings-theme-mode-option" type="button" data-theme-mode="system" onclick="selectThemeMode('system')" role="radio" aria-checked="false">
+                                        <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+                                        <span><strong>Как в системе</strong><small>Повторять тему устройства</small></span>
+                                        <i class="fa-solid fa-check settings-theme-mode-check"></i>
+                                    </button>
+                                    <button class="settings-theme-mode-option" type="button" data-theme-mode="light" onclick="selectThemeMode('light')" role="radio" aria-checked="false">
+                                        <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-sun"></i></span>
+                                        <span><strong>Светлая</strong><small>Всегда светлый интерфейс</small></span>
+                                        <i class="fa-solid fa-check settings-theme-mode-check"></i>
+                                    </button>
+                                    <button class="settings-theme-mode-option" type="button" data-theme-mode="dark" onclick="selectThemeMode('dark')" role="radio" aria-checked="false">
+                                        <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-moon"></i></span>
+                                        <span><strong>Тёмная</strong><small>Всегда тёмный интерфейс</small></span>
+                                        <i class="fa-solid fa-check settings-theme-mode-check"></i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -1661,6 +1814,22 @@
     </div>
 </div>
 
+<!-- MODAL: Withdraw wallet balance -->
+<div class="modal-backdrop" id="withdrawModal">
+    <div class="modal">
+        <h2>Вывод средств</h2>
+        <p class="sub" id="withdrawModalText">Укажите сумму, которую хотите вывести</p>
+        <div class="field">
+            <label>Сумма вывода</label>
+            <input type="number" id="withdrawAmount" placeholder="0" min="0.01" step="0.01" inputmode="decimal">
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Отмена</button>
+            <button class="btn btn-primary" onclick="withdrawConfirm()">Вывести</button>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL: Auto topup -->
 <div class="modal-backdrop" id="autoTopupModal">
     <div class="modal">
@@ -1677,26 +1846,6 @@
     </div>
 </div>
 
-<!-- MODAL: Merchant -->
-<div class="modal-backdrop" id="merchantModal">
-    <div class="modal">
-        <h2>Своя подписка</h2>
-        <p class="sub">Поделитесь ссылкой, чтобы другие могли подписаться</p>
-        <div class="field"><label>Название</label><input type="text" id="mName" placeholder="Закрытый канал"></div>
-        <div class="field"><label>Описание</label><textarea id="mDesc" rows="3" placeholder="Что получит подписчик"></textarea></div>
-        <div class="field-row">
-            <div class="field"><label>Цена, ₽</label><input type="number" id="mAmount" placeholder="199"></div>
-            <div class="field"><label>Периодичность</label>
-                <select id="mCycle"><option value="monthly">Ежемесячно</option><option value="yearly">Ежегодно</option></select>
-            </div>
-        </div>
-        <div class="modal-actions">
-            <button class="btn btn-ghost" onclick="closeModal('merchantModal')">Отмена</button>
-            <button class="btn btn-primary" onclick="saveMerchant()">Создать</button>
-        </div>
-    </div>
-</div>
-
 <!-- MODAL: Confirm cancel -->
 <div class="modal-backdrop" id="confirmModal">
     <div class="modal" style="max-width:420px;">
@@ -1709,8 +1858,464 @@
     </div>
 </div>
 
+
+
+    <div class="modal-backdrop" id="accountSettingsModal">
+        <div class="modal settings-account-modal-card settings-profile-editor-modal">
+            <div class="modal-head">
+                <div>
+                    <h3>Редактирование профиля</h3>
+                    <p>Обновите личные данные, пол и местоположение</p>
+                </div>
+                <button class="icon-btn" type="button" onclick="closeAccountSettingsModal()" aria-label="Закрыть">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="settings-account-edit-preview">
+                <div class="settings-account-edit-avatar" id="accountEditAvatar">Д</div>
+                <div><strong id="accountEditPreviewName">Данияр</strong><span id="accountEditPreviewMeta">Профиль пользователя</span></div>
+            </div>
+            <div class="settings-profile-editor-grid">
+                <div class="settings-profile-editor-section">
+                    <h4>Основные данные</h4>
+                    <div class="field"><label for="accountNameInput">Имя</label><input id="accountNameInput" type="text" maxlength="40" placeholder="Введите имя"></div>
+                    <div class="field"><label for="accountBirthDateInput">Дата рождения</label><input id="accountBirthDateInput" type="text" inputmode="numeric" maxlength="10" placeholder="ДД.ММ.ГГГГ"></div>
+                    <div class="field"><label for="accountEmailInput">Почта</label><input id="accountEmailInput" type="email" maxlength="80" placeholder="name@example.com"><div class="settings-account-help" id="accountEmailError"></div></div>
+                    <div class="field"><label for="accountPhoneInput">Телефон</label><input id="accountPhoneInput" type="tel" maxlength="18" placeholder="+7 (999) 999-99-99"></div>
+                </div>
+                <div class="settings-profile-editor-section">
+                    <h4>Пол</h4>
+                    <div class="settings-gender-grid" id="accountGenderOptions">
+                        <button type="button" data-gender="Мужской">Мужской</button>
+                        <button type="button" data-gender="Женский">Женский</button>
+                        <button type="button" data-gender="Не указывать">Не указывать</button>
+                        <button type="button" data-gender="Другое">Другое</button>
+                    </div>
+                    <h4 class="settings-location-title">Местоположение</h4>
+                    <div class="field"><label for="accountCountryInput">Страна</label><input id="accountCountryInput" list="accountCountryList" placeholder="Выберите страну"><datalist id="accountCountryList"><option>Россия</option><option>Армения</option><option>Азербайджан</option><option>Беларусь</option><option>Казахстан</option><option>Кыргызстан</option><option>Молдова</option><option>Таджикистан</option><option>Туркменистан</option><option>Узбекистан</option></datalist></div>
+                    <div class="field"><label for="accountCityInput">Город</label><input id="accountCityInput" type="text" maxlength="60" placeholder="Введите название города"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" type="button" onclick="closeAccountSettingsModal()">Отмена</button>
+                <button class="btn btn-primary" type="button" onclick="saveAccountProfileDetails()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+<div class="modal-backdrop" id="paymentMethodsModal">
+    <div class="modal settings-payment-modal-card">
+        <div class="modal-head">
+            <div>
+                <h3>Способы оплаты</h3>
+                <p>Добавляйте и удаляйте карты для оплаты тарифов</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closePaymentMethodsModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="paymentMethodsList" class="settings-payment-list"></div>
+        <button class="settings-payment-add" type="button" onclick="showPaymentAddForm()">
+            <span><i class="fa-solid fa-plus"></i></span>
+            <div><strong>Добавить способ</strong><small>Добавить карту для оплаты тарифов</small></div>
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <div id="paymentAddForm" class="settings-payment-form" hidden>
+            <div class="field">
+                <label for="paymentCardNumber">Номер карты</label>
+                <input id="paymentCardNumber" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000">
+            </div>
+            <div class="settings-payment-form-grid">
+                <div class="field"><label for="paymentExpiry">Срок</label><input id="paymentExpiry" inputmode="numeric" maxlength="5" placeholder="ММ/ГГ"></div>
+                <div class="field"><label for="paymentCvv">CVV</label><input id="paymentCvv" inputmode="numeric" maxlength="3" placeholder="•••"></div>
+            </div>
+            <div class="field"><label for="paymentHolder">Имя владельца</label><input id="paymentHolder" maxlength="40" placeholder="IVAN IVANOV"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" type="button" onclick="hidePaymentAddForm()">Отмена</button>
+                <button class="btn btn-primary" type="button" onclick="savePaymentMethod()">Добавить карту</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="timezoneModal">
+    <div class="modal settings-timezone-modal-card">
+        <div class="modal-head">
+            <div>
+                <h3>Часовой пояс</h3>
+                <p>Выберите часовой пояс для отображения времени</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closeTimezoneModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="settings-timezone-options" role="radiogroup" aria-label="Выбор часового пояса">
+            <button type="button" class="settings-timezone-option" data-timezone="Europe/Moscow" onclick="selectTimezone('Europe/Moscow')">
+                <span><strong>Europe/Moscow</strong><small>Москва, UTC+3</small></span>
+                <i class="fa-solid fa-check"></i>
+            </button>
+            <button type="button" class="settings-timezone-option" data-timezone="Europe/Berlin" onclick="selectTimezone('Europe/Berlin')">
+                <span><strong>Europe/Berlin</strong><small>Берлин</small></span>
+                <i class="fa-solid fa-check"></i>
+            </button>
+            <button type="button" class="settings-timezone-option" data-timezone="Asia/Almaty" onclick="selectTimezone('Asia/Almaty')">
+                <span><strong>Asia/Almaty</strong><small>Алматы</small></span>
+                <i class="fa-solid fa-check"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="languageModal">
+    <div class="modal settings-language-modal-card">
+        <div class="modal-head">
+            <div>
+                <h3>Язык интерфейса</h3>
+                <p>Выберите язык приложения</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closeLanguageModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="settings-language-options" role="radiogroup" aria-label="Выбор языка интерфейса">
+            <button type="button" class="settings-language-option active" aria-checked="true" onclick="selectLanguage('ru')">
+                <span class="settings-language-option-icon"><i class="fa-solid fa-language"></i></span>
+                <span><strong>Русский</strong><small>Текущий язык интерфейса</small></span>
+                <i class="fa-solid fa-check"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="systemNotificationsModal">
+    <div class="modal settings-system-notifications-modal-card">
+        <div class="modal-head">
+            <div>
+                <h3>Системные уведомления</h3>
+                <p>Планируйте напоминания о будущих списаниях</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closeSystemNotificationsModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="settings-system-notifications-status">
+            <span class="settings-system-notifications-status-icon"><i class="fa-solid fa-bell"></i></span>
+            <div>
+                <strong id="systemNotificationsPermissionTitle">Уведомления не включены</strong>
+                <small id="systemNotificationsPermissionSubtitle">Разрешение браузера ещё не запрошено</small>
+            </div>
+        </div>
+
+        <div class="settings-system-notifications-actions">
+            <button class="btn btn-primary" type="button" onclick="enableAndScheduleSystemNotifications()">
+                <i class="fa-solid fa-bell"></i> Включить и запланировать
+            </button>
+            <button class="btn btn-ghost" type="button" onclick="sendSystemTestNotification()">
+                <i class="fa-solid fa-paper-plane"></i> Отправить тест
+            </button>
+            <button class="btn btn-ghost" type="button" onclick="showScheduledSystemNotifications()">
+                <i class="fa-regular fa-clock"></i> Показать запланированные
+            </button>
+        </div>
+
+        <div class="settings-system-notifications-info">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Количество уведомлений рассчитывается по активным подпискам и включённым напоминаниям за 7, 3 и 1 день.</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="privacyModal">
+    <div class="modal settings-privacy-modal-card">
+        <div class="modal-head">
+            <div>
+                <h3>Приватность</h3>
+                <p>Настройте видимость данных профиля</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closePrivacyModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="settings-privacy-tariff-note" id="privacyTariffNote">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Редактирование приватности доступно на тарифах Pro и Premium.</span>
+        </div>
+        <div class="settings-privacy-list">
+            <div class="settings-privacy-group" data-privacy-key="subscriptionsVisibility">
+                <div class="settings-privacy-label">Кто видит мои подписки</div>
+                <div class="settings-privacy-options" role="radiogroup" aria-label="Кто видит мои подписки"></div>
+            </div>
+            <div class="settings-privacy-group" data-privacy-key="achievementsVisibility">
+                <div class="settings-privacy-label">Кто видит мои достижения</div>
+                <div class="settings-privacy-options" role="radiogroup" aria-label="Кто видит мои достижения"></div>
+            </div>
+            <div class="settings-privacy-group" data-privacy-key="pointsVisibility">
+                <div class="settings-privacy-label">Кто видит мои баллы</div>
+                <div class="settings-privacy-options" role="radiogroup" aria-label="Кто видит мои баллы"></div>
+            </div>
+            <div class="settings-privacy-group" data-privacy-key="challengeVisibility">
+                <div class="settings-privacy-label">Кто видит прогресс челленджа</div>
+                <div class="settings-privacy-options" role="radiogroup" aria-label="Кто видит прогресс челленджа"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="securityModal">
+    <div class="modal settings-security-modal-card">
+        <div class="modal-head">
+            <div>
+                <h3>Безопасность</h3>
+                <p>Управляйте кодом входа и дополнительной защитой</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closeSecurityModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <button class="settings-security-action" type="button" onclick="showPasscodeForm()">
+            <span class="settings-security-action-icon"><i class="fa-solid fa-key"></i></span>
+            <span><strong>Сменить код входа</strong><small>Код из 6 цифр</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <div id="securityPasscodeForm" class="settings-security-passcode-form" hidden>
+            <div class="field settings-password-field">
+                <label for="securityCurrentPasscode">Текущий код</label>
+                <div class="settings-password-input-wrap">
+                    <input id="securityCurrentPasscode" type="password" inputmode="numeric" maxlength="6" placeholder="••••••">
+                    <button type="button" onclick="toggleSecurityPassword('securityCurrentPasscode', this)" aria-label="Показать код"><i class="fa-solid fa-eye"></i></button>
+                </div>
+            </div>
+            <div class="field settings-password-field">
+                <label for="securityNewPasscode">Новый код</label>
+                <div class="settings-password-input-wrap">
+                    <input id="securityNewPasscode" type="password" inputmode="numeric" maxlength="6" placeholder="6 цифр">
+                    <button type="button" onclick="toggleSecurityPassword('securityNewPasscode', this)" aria-label="Показать код"><i class="fa-solid fa-eye"></i></button>
+                </div>
+            </div>
+            <div class="field settings-password-field">
+                <label for="securityConfirmPasscode">Повторите новый код</label>
+                <div class="settings-password-input-wrap">
+                    <input id="securityConfirmPasscode" type="password" inputmode="numeric" maxlength="6" placeholder="6 цифр">
+                    <button type="button" onclick="toggleSecurityPassword('securityConfirmPasscode', this)" aria-label="Показать код"><i class="fa-solid fa-eye"></i></button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" type="button" onclick="hidePasscodeForm()">Отмена</button>
+                <button class="btn btn-primary" type="button" onclick="saveSecurityPasscode()">Сохранить код</button>
+            </div>
+        </div>
+
+        <div class="settings-security-options">
+            <button class="settings-security-switch-row" type="button" data-security-key="twoFactorEnabled" aria-pressed="false">
+                <span><strong>Двухфакторная аутентификация</strong><small>Подтверждение входа через SMS</small></span>
+                <span class="settings-security-switch" aria-hidden="true"></span>
+            </button>
+            <button class="settings-security-switch-row" type="button" data-security-key="biometricEnabled" aria-pressed="false">
+                <span><strong>Биометрия</strong><small>Вход по Face ID или отпечатку</small></span>
+                <span class="settings-security-switch" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal-backdrop" id="tariffsModal">
+    <div class="modal settings-tariffs-modal-card" role="dialog" aria-modal="true" aria-labelledby="tariffsModalTitle">
+        <div class="modal-head">
+            <div>
+                <h3 id="tariffsModalTitle">Тарифы</h3>
+                <p>Выберите подходящий план</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closeTariffsModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="settings-tariff-list" id="settingsTariffList"></div>
+    </div>
+</div>
+
+<div class="profile-notifications-overlay" id="profileNotificationsOverlay" aria-hidden="true">
+    <div class="profile-notifications-modal" role="dialog" aria-modal="true" aria-labelledby="profileNotificationsTitle">
+        <div class="profile-notifications-head">
+            <button class="profile-notifications-back" type="button" onclick="closeProfileNotifications()" aria-label="Закрыть уведомления"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2 id="profileNotificationsTitle">Уведомления</h2>
+        </div>
+        <div class="profile-notifications-actions" id="profileNotificationsActions">
+            <button type="button" onclick="markAllProfileNotificationsRead()"><i class="fa-solid fa-check-double"></i><span>Прочитать все</span></button>
+            <button type="button" onclick="clearProfileNotifications()"><i class="fa-regular fa-trash-can"></i><span>Очистить</span></button>
+        </div>
+        <div class="profile-notifications-card" id="profileNotificationsList"></div>
+    </div>
+</div>
+
+<div class="points-history-overlay" id="pointsHistoryOverlay" aria-hidden="true">
+    <div class="points-history-modal" role="dialog" aria-modal="true" aria-labelledby="pointsHistoryTitle">
+        <div class="points-history-head">
+            <button class="points-history-back" id="pointsHistoryClose" type="button" aria-label="Закрыть историю баллов"><i class="fa-solid fa-arrow-left"></i></button>
+            <div>
+                <h2 id="pointsHistoryTitle">История баллов</h2>
+                <p>Начисления за достижения и списания в магазине наград</p>
+            </div>
+        </div>
+        <div class="points-history-summary">
+            <span>Доступно сейчас</span>
+            <strong id="pointsHistoryBalance">2 800 <small>баллов</small></strong>
+        </div>
+        <div class="points-history-list" id="pointsHistoryList"></div>
+    </div>
+</div>
+
+
+<div class="author-report-overlay" id="authorReportOverlay" aria-hidden="true">
+    <div class="author-report-dialog" role="dialog" aria-modal="true" aria-labelledby="authorReportTitle">
+        <div class="author-report-head">
+            <div>
+                <h2 id="authorReportTitle">Пожаловаться на автора</h2>
+                <p id="authorReportSubtitle">Выберите причину жалобы</p>
+            </div>
+            <button class="author-report-close" type="button" onclick="closeAuthorReport()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="author-report-reasons" id="authorReportReasons">
+            <button type="button" data-reason="Спам или реклама"><span>Спам или реклама</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button type="button" data-reason="Оскорбления или травля"><span>Оскорбления или травля</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button type="button" data-reason="Мошенничество"><span>Мошенничество</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button type="button" data-reason="Неподходящий контент"><span>Неподходящий контент</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button type="button" data-reason="Другое"><span>Другое</span><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <label class="author-report-comment" for="authorReportComment">
+            <span>Комментарий <small>необязательно</small></span>
+            <textarea id="authorReportComment" maxlength="500" placeholder="Опишите проблему подробнее"></textarea>
+        </label>
+        <button class="author-report-submit" id="authorReportSubmit" type="button" disabled>Отправить жалобу</button>
+    </div>
+</div>
+
+<div class="author-reviews-overlay" id="authorReviewsOverlay" aria-hidden="true">
+    <div class="author-reviews-dialog" role="dialog" aria-modal="true" aria-labelledby="authorReviewsTitle">
+        <div class="author-reviews-head">
+            <div>
+                <h2 id="authorReviewsTitle">Отзывы</h2>
+                <p id="authorReviewsSubtitle">Отзывы об авторе</p>
+            </div>
+            <button class="author-reviews-close" type="button" id="authorReviewsClose" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="author-reviews-summary">
+            <div class="author-reviews-score"><strong id="authorReviewsScore">4.9</strong><span>из 5</span></div>
+            <div class="author-reviews-summary-copy"><div class="author-reviews-stars" id="authorReviewsSummaryStars"></div><span id="authorReviewsCount">247 отзывов</span></div>
+            <button class="author-reviews-add" type="button" id="authorReviewsAdd">Оставить отзыв</button>
+        </div>
+        <div class="author-review-form" id="authorReviewForm" hidden>
+            <h3>Ваш отзыв</h3>
+            <div class="author-review-rating" id="authorReviewRating" aria-label="Оценка">
+                <button type="button" data-rating="1"><i class="fa-regular fa-star"></i></button>
+                <button type="button" data-rating="2"><i class="fa-regular fa-star"></i></button>
+                <button type="button" data-rating="3"><i class="fa-regular fa-star"></i></button>
+                <button type="button" data-rating="4"><i class="fa-regular fa-star"></i></button>
+                <button type="button" data-rating="5"><i class="fa-regular fa-star"></i></button>
+            </div>
+            <textarea id="authorReviewText" maxlength="600" placeholder="Расскажите о впечатлениях"></textarea>
+            <div class="author-review-form-actions">
+                <button type="button" class="author-review-cancel" id="authorReviewCancel">Отмена</button>
+                <button type="button" class="author-review-submit" id="authorReviewSubmit" disabled>Опубликовать</button>
+            </div>
+        </div>
+        <div class="author-reviews-list" id="authorReviewsList"></div>
+    </div>
+</div>
+
+
+<div class="author-plan-overlay" id="authorPlanOverlay" aria-hidden="true">
+    <div class="author-plan-dialog" role="dialog" aria-modal="true" aria-labelledby="authorPlanTitle">
+        <div class="author-plan-head">
+            <div>
+                <h2 id="authorPlanTitle">Тариф автора</h2>
+                <p>Выберите подходящий вариант подписки</p>
+            </div>
+            <button class="author-plan-close" id="authorPlanClose" type="button" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="author-plan-options" id="authorPlanOptions"></div>
+        <button class="author-plan-save" id="authorPlanSave" type="button">Сохранить тариф</button>
+    </div>
+</div>
+
+
+<div class="modal-backdrop analytics-details-modal" id="analyticsDetailsModal" aria-hidden="true">
+    <div class="modal analytics-details-card" role="dialog" aria-modal="true" aria-labelledby="analyticsDetailsTitle">
+        <button class="modal-close analytics-details-close" type="button" onclick="closeModal('analyticsDetailsModal')" aria-label="Закрыть">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="analytics-details-icon" id="analyticsDetailsIcon"><i class="fa-solid fa-chart-pie"></i></div>
+        <h2 id="analyticsDetailsTitle">Подробности</h2>
+        <p id="analyticsDetailsText"></p>
+        <div class="analytics-details-list" id="analyticsDetailsList"></div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="account-storage.js"></script>
 <script src="main.js"></script>
+<script src="profile-notifications.js"></script>
+<script src="profile-avatar.js"></script>
+<script src="achievement-details.js"></script>
+<script src="points-history.js"></script>
+<script src="feed-comments.js"></script>
+<script src="feed-filter.js"></script>
+
+<div class="author-notifications-overlay" id="authorNotificationsOverlay" aria-hidden="true">
+    <div class="author-notifications-dialog" role="dialog" aria-modal="true" aria-labelledby="authorNotificationsTitle">
+        <div class="author-notifications-head">
+            <div>
+                <h2 id="authorNotificationsTitle">Уведомления от автора</h2>
+                <p>Что присылать вам</p>
+            </div>
+            <button class="author-notifications-close" type="button" onclick="closeAuthorNotifications()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="author-notifications-list">
+            <label class="author-notification-row">
+                <span>Новые публикации</span>
+                <input id="authorNotifyPosts" type="checkbox">
+                <span class="author-notification-switch" aria-hidden="true"></span>
+            </label>
+            <label class="author-notification-row">
+                <span>Прямые эфиры</span>
+                <input id="authorNotifyLive" type="checkbox">
+                <span class="author-notification-switch" aria-hidden="true"></span>
+            </label>
+            <label class="author-notification-row">
+                <span>Ответы на комментарии</span>
+                <input id="authorNotifyComments" type="checkbox">
+                <span class="author-notification-switch" aria-hidden="true"></span>
+            </label>
+        </div>
+        <button class="author-notifications-save" type="button" onclick="saveAuthorNotifications()">Сохранить</button>
+    </div>
+</div>
+
+<script src="author-report.js"></script>
+<script src="author-reviews.js"></script>
+<script src="author-reviewer-details.js"></script>
+<script src="author-favorites.js"></script>
+    <script src="author-share.js"></script>
+    <script src="author-actions.js"></script>
+    <script src="author-plan-picker.js"></script>
+    <script src="author-notifications.js"></script>
+    <script src="author-materials.js"></script>
+    <script src="author-content-tabs.js"></script>
+    <script src="author-content-favorites.js"></script>
+    <script src="author-material-engagement.js"></script>
+    <script src="author-cancel-subscription.js"></script>
 </body>
 </html>

@@ -1,0 +1,45 @@
+#authorContentTabs [data-author-content-tab="favorites"]{display:inline-flex;align-items:center;gap:8px}
+.author-content-cover{position:relative}
+.author-content-favorite-btn{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:4;
+  width:38px;
+  height:38px;
+  border:1px solid rgba(255,255,255,.34);
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:rgba(18,20,25,.72);
+  color:#fff;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  transition:transform .18s ease,background .18s ease,color .18s ease;
+}
+.author-content-favorite-btn:hover{transform:translateY(-1px);background:rgba(18,20,25,.9)}
+.author-content-favorite-btn.is-active{background:#fff;color:#ff6a2b;border-color:#fff}
+.author-content-favorites-empty{
+  grid-column:1/-1;
+  min-height:260px;
+  padding:42px 24px;
+  border:1px dashed #d5d9e0;
+  border-radius:22px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:#fff;
+  color:#8a8f98;
+}
+.author-content-favorites-empty>i{font-size:32px;margin-bottom:14px;color:#a1a6b0}
+.author-content-favorites-empty h3{margin:0;color:#1c1d21;font-size:18px}
+.author-content-favorites-empty p{max-width:430px;margin:8px 0 0;font-size:14px;line-height:1.5}
+body.global-dark-theme .author-content-favorites-empty{background:#1d2028;border-color:#353a46;color:#9ba2b1}
+body.global-dark-theme .author-content-favorites-empty h3{color:#f5f6fa}
+body.global-dark-theme .author-content-favorites-empty>i{color:#8f96a5}
+
+/* Ensure non-favorite cards stay hidden even when card layout sets display:flex. */
+#view-author-profile .author-content-card.author-content-favorite-hidden{display:none !important;}

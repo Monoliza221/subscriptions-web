@@ -5,6 +5,7 @@ function createEmptyState(){
         user: null,
         subscriptions: [],
         wallet: { balance: 0, autoTopup: null, transactions: [] },
+        merchants: [],
         history: [],
         customCategories: [],
         deletedCategoryKeys: [],
@@ -109,68 +110,20 @@ function seedDemo(phone){
         { date:addDays(-22), name:'Netflix', amount:799, currency:'RUB', status:'success' },
         { date:addDays(-35), name:'GitHub Copilot', amount:900, currency:'RUB', status:'success' },
     ];
+    state.merchants = [
+        { id:uid(), name:'Закрытый клуб инвесторов', desc:'Еженедельные обзоры рынка и рекомендации', amount:490, cycle:'monthly', subscribers:23, earned:11270 },
+    ];
     saveState();
 }
 
 // ================== AUTH ==================
-function normalizeRussianPhoneDigits(value){
-    let digits = String(value || '').replace(/\D/g, '');
-    if(digits.startsWith('8')) digits = `7${digits.slice(1)}`;
-    else if(digits && !digits.startsWith('7')) digits = `7${digits}`;
-    if(!digits) digits = '7';
-    return digits.slice(0, 11);
-}
-
-function formatRussianPhone(value){
-    const digits = normalizeRussianPhoneDigits(value);
-    const local = digits.slice(1);
-    let result = '+7';
-
-    if(local.length > 0) result += ` (${local.slice(0, 3)}`;
-    if(local.length >= 3) result += ')';
-    if(local.length > 3) result += ` ${local.slice(3, 6)}`;
-    if(local.length > 6) result += `-${local.slice(6, 8)}`;
-    if(local.length > 8) result += `-${local.slice(8, 10)}`;
-
-    return result;
-}
-
-function initPhoneInputMask(){
-    const input = document.getElementById('phoneInput');
-    if(!input || input.dataset.phoneMaskReady === 'true') return;
-    input.dataset.phoneMaskReady = 'true';
-
-    const applyMask = () => {
-        input.value = formatRussianPhone(input.value);
-        try{ input.setSelectionRange(input.value.length, input.value.length); }catch(error){}
-    };
-
-    input.addEventListener('input', applyMask);
-    input.addEventListener('focus', () => {
-        if(!input.value.trim()) input.value = '+7';
-    });
-    input.addEventListener('keydown', event => {
-        if((event.key === 'Backspace' || event.key === 'Delete') && normalizeRussianPhoneDigits(input.value).length <= 1){
-            event.preventDefault();
-            input.value = '+7';
-        }
-    });
-
-    applyMask();
-}
-
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPhoneInputMask, {once:true});
-else initPhoneInputMask();
 function sendCode(){
-    const phoneInput = document.getElementById('phoneInput');
-    const phoneDigits = normalizeRussianPhoneDigits(phoneInput?.value || '');
+    const phone = document.getElementById('phoneInput').value.trim();
     const consent = document.getElementById('consent').checked;
-    if(phoneDigits.length !== 11){ toast('Введите номер полностью'); return; }
+    if(phone.replace(/\D/g,'').length < 10){ toast('Введите корректный номер'); return; }
     if(!consent){ toast('Нужно согласие с условиями'); return; }
-    const formattedPhone = formatRussianPhone(phoneDigits);
-    if(phoneInput) phoneInput.value = formattedPhone;
-    tmpPhone = `+${phoneDigits}`;
-    document.getElementById('phoneDisplay').textContent = formattedPhone;
+    tmpPhone = phone;
+    document.getElementById('phoneDisplay').textContent = phone;
     document.getElementById('authStep1').style.display = 'none';
     document.getElementById('authStep2').style.display = 'block';
     document.getElementById('codeInput').focus();
@@ -178,34 +131,6 @@ function sendCode(){
 function backToStep1(){
     document.getElementById('authStep1').style.display = 'block';
     document.getElementById('authStep2').style.display = 'none';
-}
-function socialLogin(provider){
-    const normalizedProvider = String(provider || '').trim();
-    if(!['Яндекс','VK'].includes(normalizedProvider)) return;
-
-    const accountId = `social:${normalizedProvider.toLowerCase()}`;
-    AccountStorage.setActiveAccount(accountId);
-    window.dispatchEvent(new CustomEvent('account-changed', { detail: { accountId } }));
-
-    state = loadState() || createEmptyState();
-    if(!state.user){
-        seedDemo('');
-        state.user.name = 'Пользователь';
-        state.user.authProvider = normalizedProvider;
-        saveState();
-    }else{
-        let changed = false;
-        if(!state.user.authProvider){
-            state.user.authProvider = normalizedProvider;
-            changed = true;
-        }
-        if(/^Вход через\s+/i.test(String(state.user.phone || ''))){
-            state.user.phone = '';
-            changed = true;
-        }
-        if(changed) saveState();
-    }
-    enterApp();
 }
 function verifyCode(){
     const code = document.getElementById('codeInput').value.trim();
@@ -221,20 +146,14 @@ function verifyCode(){
     AccountStorage.setActiveAccount(tmpPhone);
     window.dispatchEvent(new CustomEvent('account-changed', { detail: { accountId: AccountStorage.getActiveAccount() } }));
     state = loadState() || createEmptyState();
-    if(!state.user) seedDemo(formatRussianPhone(tmpPhone));
+    if(!state.user) seedDemo(tmpPhone);
     enterApp();
 }
 function enterApp(){
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('appRoot').style.display = 'grid';
+    document.getElementById('settingsPhone').value = state.user.phone;
     renderAll();
-    // These modules and tariff constants are declared later in the page scripts.
-    // Defer account-scoped refresh until the current script stack is complete.
-    setTimeout(() => {
-        if(typeof renderTariffSettings === 'function') renderTariffSettings();
-        if(typeof window.refreshProfileNotificationsBadge === 'function') window.refreshProfileNotificationsBadge();
-        if(typeof window.refreshSystemNotificationsSummary === 'function') window.refreshSystemNotificationsSummary();
-    }, 0);
 }
 function logout(){
     saveState();
@@ -246,10 +165,22 @@ function logout(){
     document.getElementById('appRoot').style.display = 'none';
     const phoneInput = document.getElementById('phoneInput');
     const codeInput = document.getElementById('codeInput');
-    if(phoneInput) phoneInput.value = '+7';
+    if(phoneInput) phoneInput.value = '';
     if(codeInput) codeInput.value = '';
     backToStep1();
 }
+function deleteAccount(){
+    const activeAccount = AccountStorage.getActiveAccount();
+    AccountStorage.removeAccount(activeAccount);
+    AccountStorage.clearActiveAccount();
+    window.dispatchEvent(new CustomEvent('account-changed', { detail: { accountId: '' } }));
+    state = createEmptyState();
+    document.getElementById('authScreen').style.display = 'grid';
+    document.getElementById('appRoot').style.display = 'none';
+    backToStep1();
+    toast('Аккаунт удалён');
+}
+
 // ================== NAV ==================
 document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => switchView(btn.dataset.view));
@@ -274,6 +205,7 @@ function renderAll(){
     renderCalendar();
     renderWallet();
     renderHistory();
+    renderMerchants();
 }
 
 function getActive(){ return state.subscriptions.filter(s => s.active); }
@@ -469,24 +401,6 @@ function subRow(s){
 }
 
 let subFilter = 'active';
-let subscriptionSearchQuery = '';
-
-function setSubscriptionSearch(value){
-    subscriptionSearchQuery = String(value || '').trim().toLocaleLowerCase('ru-RU');
-    const clearButton = document.getElementById('subscriptionSearchClear');
-    if(clearButton) clearButton.hidden = subscriptionSearchQuery.length === 0;
-    renderSubscriptions();
-}
-
-function clearSubscriptionSearch(){
-    const input = document.getElementById('subscriptionSearchInput');
-    if(input){
-        input.value = '';
-        input.focus();
-    }
-    setSubscriptionSearch('');
-}
-
 document.querySelectorAll('#subTabs .tab').forEach(t => {
     t.addEventListener('click', () => {
         document.querySelectorAll('#subTabs .tab').forEach(x => x.classList.remove('active'));
@@ -496,22 +410,9 @@ document.querySelectorAll('#subTabs .tab').forEach(t => {
 
 function renderSubscriptions(){
     const list = document.getElementById('subList');
-    if(!list) return;
-    const items = state.subscriptions.filter(subscription => {
-        const matchesStatus = subFilter === 'active' ? subscription.active : !subscription.active;
-        const matchesSearch = !subscriptionSearchQuery || String(subscription.name || '')
-            .toLocaleLowerCase('ru-RU')
-            .includes(subscriptionSearchQuery);
-        return matchesStatus && matchesSearch;
-    });
+    const items = state.subscriptions.filter(s => subFilter === 'active' ? s.active : !s.active);
     list.innerHTML = '';
-    if(items.length === 0){
-        const message = subscriptionSearchQuery
-            ? 'По вашему запросу ничего не найдено'
-            : (subFilter === 'active' ? 'Добавьте первую подписку' : 'В архиве пусто');
-        list.innerHTML = emptyHTML(message, subscriptionSearchQuery ? 'magnifying-glass' : 'box');
-        return;
-    }
+    if(items.length === 0){ list.innerHTML = emptyHTML(subFilter==='active' ? 'Добавьте первую подписку' : 'В архиве пусто', 'box'); return; }
     items.forEach(s => list.appendChild(subRow(s)));
 }
 
@@ -864,34 +765,51 @@ document.querySelectorAll('#histTabs .tab').forEach(t => {
 });
 function renderHistory(){
     const el = document.getElementById('historyList');
-    const summary = document.getElementById('historyPaidSummary');
-    const summaryValue = document.getElementById('historyPaidSummaryValue');
-    const summaryNote = document.getElementById('historyPaidSummaryNote');
     const days = histPeriod === 'month' ? 30 : histPeriod === 'quarter' ? 90 : 365;
     const items = state.history.filter(h => daysUntil(h.date) >= -days).sort((a,b) => new Date(b.date) - new Date(a.date));
-    const total = items.reduce((a,b) => a + b.amount, 0);
-    const periodLabels = { month:'месяц', quarter:'квартал', year:'год' };
-    const emptyLabels = {
-        month:'За текущий месяц операций не было',
-        quarter:'За текущий квартал операций не было',
-        year:'За текущий год операций не было'
-    };
-    if(summary){
-        summary.querySelector('.history-paid-summary-label').textContent = `Оплачено за ${periodLabels[histPeriod]}`;
-        summaryValue.textContent = fmt(total);
-        summaryNote.textContent = items.length ? `${items.length} ${items.length === 1 ? 'операция' : items.length < 5 ? 'операции' : 'операций'}` : emptyLabels[histPeriod];
-    }
     if(items.length === 0){ el.innerHTML = emptyHTML('Нет операций за период','clock-rotate-left'); return; }
-    el.innerHTML = items.map(h => `
-        <div class="hist-row">
-            <div class="hist-left">
-                <div class="hist-dot"></div>
+    const total = items.reduce((a,b) => a + b.amount, 0);
+    el.innerHTML = `
+        <div style="display:flex; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:6px;">
+            <div class="muted" style="font-size:13px;">Всего за период</div>
+            <div style="font-weight:600; font-family:'Space Grotesk';">${fmt(total)}</div>
+        </div>
+        ${items.map(h => `
+            <div class="hist-row">
+                <div class="hist-left">
+                    <div class="hist-dot"></div>
+                    <div>
+                        <div style="font-weight:500;">${h.name}</div>
+                        <div class="hist-date">${formatDate(h.date)}</div>
+                    </div>
+                </div>
+                <div class="hist-amount">${fmt(h.amount, h.currency)}</div>
+            </div>
+        `).join('')}
+    `;
+}
+
+function renderMerchants(){
+    const el = document.getElementById('merchantList');
+    if(state.merchants.length === 0){ el.innerHTML = emptyHTML('Создайте свою подписку и зарабатывайте','store'); return; }
+    el.innerHTML = state.merchants.map(m => `
+        <div class="merch-card">
+            <div class="merch-top">
+                <div class="merch-avatar"><i class="fa-solid fa-store"></i></div>
                 <div>
-                    <div style="font-weight:500;">${h.name}</div>
-                    <div class="hist-date">Оплачено ${formatDate(h.date)}</div>
+                    <h3>${m.name}</h3>
+                    <div class="muted" style="font-size:12.5px;">${fmt(m.amount)} / ${m.cycle==='monthly'?'мес':'год'}</div>
                 </div>
             </div>
-            <div class="hist-amount history-paid-amount">${fmt(Math.abs(h.amount), h.currency)}</div>
+            <div class="merch-desc">${m.desc || ''}</div>
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <button class="btn btn-ghost btn-sm" onclick="copyShareLink('${m.id}')"><i class="fa-solid fa-link"></i> Ссылка</button>
+                <button class="btn btn-ghost btn-sm" onclick="withdraw('${m.id}')"><i class="fa-solid fa-arrow-down"></i> Вывод</button>
+            </div>
+            <div class="merch-stats">
+                <div><div class="muted">Подписчики</div><strong>${m.subscribers}</strong></div>
+                <div><div class="muted">Доход</div><strong>${fmt(m.earned)}</strong></div>
+            </div>
         </div>
     `).join('');
 }
@@ -1131,63 +1049,37 @@ function saveAutoTopup(){
     saveState(); closeModal('autoTopupModal'); renderWallet(); toast('Автопополнение включено');
 }
 
+function openMerchantModal(){
+    document.getElementById('mName').value=''; document.getElementById('mDesc').value='';
+    document.getElementById('mAmount').value=''; document.getElementById('mCycle').value='monthly';
+    openModal('merchantModal');
+}
+function saveMerchant(){
+    const name = document.getElementById('mName').value.trim();
+    const desc = document.getElementById('mDesc').value.trim();
+    const amount = parseFloat(document.getElementById('mAmount').value);
+    const cycle = document.getElementById('mCycle').value;
+    if(!name || !amount){ toast('Заполните поля'); return; }
+    state.merchants.push({ id:uid(), name, desc, amount, cycle, subscribers:0, earned:0 });
+    saveState(); closeModal('merchantModal'); renderMerchants(); toast('Подписка создана');
+}
+function copyShareLink(id){
+    const link = `https://subapp.example/s/${id}`;
+    navigator.clipboard?.writeText(link);
+    toast('Ссылка скопирована: ' + link);
+}
+function withdraw(id){
+    const m = state.merchants.find(x => x.id === id);
+    if(!m || m.earned < 100){ toast('Минимальная сумма вывода 100 ₽'); return; }
+    toast(`Запрос на вывод ${fmt(m.earned)} отправлен`);
+    m.earned = 0; saveState(); renderMerchants();
+}
+
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-backdrop').forEach(m => {
     m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); });
 });
-
-// ================== ONBOARDING ==================
-const ONBOARDING_STORAGE_KEY = 'mysubs_onboarding_seen_v1';
-const onboardingSlides = [
-    { icon:'fa-table-columns', title:'Управляй подписками', text:'Добавляй сервисы, контролируй списания и держи расходы под рукой.' },
-    { icon:'fa-user-group', title:'Авторы и лента', text:'Следи за авторами, делись активностью и находи полезные рекомендации.' },
-    { icon:'fa-chart-line', title:'Аналитика и подсказки', text:'Смотри статистику, получай советы и планируй подписки заранее.' }
-];
-let onboardingPage = 0;
-function renderOnboarding(){
-    const slide = onboardingSlides[onboardingPage];
-    const visual = document.getElementById('onboardingVisual');
-    const title = document.getElementById('onboardingTitle');
-    const text = document.getElementById('onboardingText');
-    const dots = document.getElementById('onboardingDots');
-    const next = document.getElementById('onboardingNext');
-    if(!slide || !visual || !title || !text || !dots || !next) return;
-    visual.innerHTML = `<i class="fa-solid ${slide.icon}"></i>`;
-    title.textContent = slide.title;
-    text.textContent = slide.text;
-    dots.innerHTML = onboardingSlides.map((_, index) => `<button type="button" class="onboarding-dot${index === onboardingPage ? ' active' : ''}" aria-label="Шаг ${index + 1}" onclick="setOnboardingSlide(${index})"></button>`).join('');
-    next.textContent = onboardingPage === onboardingSlides.length - 1 ? 'Начать' : 'Далее';
-}
-function setOnboardingSlide(index){
-    onboardingPage = Math.max(0, Math.min(onboardingSlides.length - 1, Number(index) || 0));
-    renderOnboarding();
-}
-function nextOnboardingSlide(){
-    if(onboardingPage >= onboardingSlides.length - 1){ completeOnboarding(); return; }
-    onboardingPage += 1;
-    renderOnboarding();
-}
-function completeOnboarding(){
-    try{ localStorage.setItem(ONBOARDING_STORAGE_KEY, '1'); }catch(error){}
-    document.getElementById('onboardingScreen')?.classList.remove('open');
-    document.getElementById('onboardingScreen')?.setAttribute('aria-hidden','true');
-    document.getElementById('authScreen')?.classList.remove('onboarding-hidden');
-    document.getElementById('appRoot')?.classList.remove('onboarding-hidden');
-}
-function initOnboarding(){
-    let seen = false;
-    try{ seen = localStorage.getItem(ONBOARDING_STORAGE_KEY) === '1'; }catch(error){}
-    if(seen) return;
-    onboardingPage = 0;
-    renderOnboarding();
-    document.getElementById('onboardingScreen')?.classList.add('open');
-    document.getElementById('onboardingScreen')?.setAttribute('aria-hidden','false');
-    document.getElementById('authScreen')?.classList.add('onboarding-hidden');
-    document.getElementById('appRoot')?.classList.add('onboarding-hidden');
-}
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initOnboarding, {once:true});
-else initOnboarding();
 
 // ================== INIT ==================
 if(state.user){ enterApp(); }
@@ -1206,15 +1098,10 @@ const authorMaterials = [
     {type:'Статья',icon:'fa-layer-group',cover:'linear-gradient(135deg,#10b981,#06b6d4)',title:'Дизайн-система с нуля за один спринт',desc:'Токены, компоненты и документация — собираем масштабируемую систему шаг за шагом...',meta:'2 недели назад · 12 мин',likes:401,comments:9,shares:22},
 ];
 
-let authorsSearchQuery = '';
 function renderAuthors(){
     const root = document.getElementById('authorsGrid');
     if(!root) return;
-    const query = authorsSearchQuery.trim().toLocaleLowerCase('ru-RU');
-    const filteredAuthors = query ? authors.filter(author =>
-        [author.name, author.handle, author.bio].some(value => String(value).toLocaleLowerCase('ru-RU').includes(query))
-    ) : authors;
-    root.innerHTML = filteredAuthors.map(author => `
+    root.innerHTML = authors.map(author => `
         <article class="author-card">
             <div class="author-card-top">
                 <div class="author-card-avatar" style="background:${author.color}">${author.initials}</div>
@@ -1232,31 +1119,7 @@ function renderAuthors(){
             </div>
         </article>
     `).join('');
-    const empty = document.getElementById('authorsEmpty');
-    if(empty) empty.hidden = filteredAuthors.length !== 0;
 }
-
-function initAuthorSearch(){
-    const input = document.getElementById('authorsSearchInput');
-    const clear = document.getElementById('authorsSearchClear');
-    if(!input || input.dataset.ready === 'true') return;
-    input.dataset.ready = 'true';
-    input.addEventListener('input', () => {
-        authorsSearchQuery = input.value;
-        if(clear) clear.hidden = !authorsSearchQuery;
-        renderAuthors();
-    });
-    clear?.addEventListener('click', () => {
-        input.value = '';
-        authorsSearchQuery = '';
-        clear.hidden = true;
-        renderAuthors();
-        input.focus();
-    });
-    renderAuthors();
-}
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAuthorSearch, {once:true});
-else initAuthorSearch();
 
 function openAuthorProfile(id){
     const author = authors.find(a => a.id === id) || authors[0];
@@ -1347,9 +1210,9 @@ const authorButtonState = {
     shares: {},
 };
 const authorTariffs = [
-    { name:'Base', price:'199 ₽/мес · Следующее списание: 27.06.2026' },
-    { name:'Pro', price:'490 ₽/мес · Следующее списание: 27.06.2026' },
-    { name:'Premium', price:'799 ₽/мес · Следующее списание: 27.06.2026' },
+    { name:'Premium', price:'490 ₽/мес · Следующее списание: 27.06.2026' },
+    { name:'Author', price:'790 ₽/мес · Следующее списание: 27.06.2026' },
+    { name:'Basic', price:'199 ₽/мес · Следующее списание: 27.06.2026' },
 ];
 
 function refreshAuthorSubscribeButton(){
@@ -1580,6 +1443,7 @@ const selfAchievementsWeb = [
     {title:'Постоянный клиент',desc:'Активные подписки 3 месяца',rarity:'Редкое',points:'+100',icon:'fa-user',bg:'#eef1fb',color:'#4a6cf7',received:true},
     {title:'Метроном',desc:'7 дней подряд в приложении',rarity:'Обычное',points:'+25',icon:'fa-fire',bg:'#eef6ee',color:'#3aa657',received:true},
     {title:'Первый анализ',desc:'Откройте отчёт «На что»',rarity:'Обычное',points:'+10',icon:'fa-chart-pie',bg:'#eef6ee',color:'#3aa657',received:true},
+    {title:'Друг в деле',desc:'Пригласите друга в приложение',rarity:'Обычное',points:'+30',icon:'fa-user-plus',bg:'#eef6ee',color:'#3aa657',received:false},
     {title:'Знакомство',desc:'Добавьте свою первую цель',rarity:'Обычное',points:'+5',icon:'fa-plus',bg:'#eef6ee',color:'#3aa657',received:false},
     {title:'Марафонец',desc:'30 дней подряд активности',rarity:'Легендарное',points:'+200',icon:'fa-trophy',bg:'#fbf1e8',color:'#ff5a1f',received:false},
     {title:'Мастер бюджета',desc:'Достигните всех финансовых целей',rarity:'Легендарное',points:'+300',icon:'fa-crown',bg:'#fbf1e8',color:'#ff5a1f',received:false}
@@ -1590,6 +1454,7 @@ const friendAchievementsWeb = [
     {title:'Постоянный клиент',desc:'Активные подписки 3 месяца',rarity:'Редкое',points:'+100',icon:'fa-user-check',bg:'#eef1fb',color:'#4a6cf7',received:true},
     {title:'Метроном',desc:'7 дней подряд в приложении',rarity:'Обычное',points:'+25',icon:'fa-fire',bg:'#eef6ee',color:'#3aa657',received:true},
     {title:'Первый анализ',desc:'Откройте отчёт «На что уходят деньги»',rarity:'Обычное',points:'+10',icon:'fa-chart-pie',bg:'#eef6ee',color:'#3aa657',received:true},
+    {title:'Друг в деле',desc:'Пригласите 1 друга',rarity:'Обычное',points:'+50',icon:'fa-user-plus',bg:'#eef6ee',color:'#3aa657',received:true},
     {title:'Знакомство',desc:'Добавьте свою первую подписку',rarity:'Обычное',points:'+5',icon:'fa-plus',bg:'#eef6ee',color:'#3aa657',received:true},
     {title:'Архивариус',desc:'Добавьте 5 подписок вручную',rarity:'Обычное',points:'+20',icon:'fa-folder-tree',bg:'#eef6ee',color:'#3aa657',received:true},
     {title:'Полное досье',desc:'Заполните профиль полностью',rarity:'Обычное',points:'+15',icon:'fa-address-card',bg:'#eef6ee',color:'#3aa657',received:true}
@@ -2099,67 +1964,47 @@ document.addEventListener('click', function(e){
     }
 });
 
-// ================== GLOBAL THEME FROM SETTINGS ==================
-let systemThemeMedia = null;
-
-function getSavedThemeMode(){
-    try{
-        const saved = localStorage.getItem('globalThemeMode');
-        if(['system','light','dark'].includes(saved)) return saved;
-        return localStorage.getItem('globalDarkTheme') === '1' ? 'dark' : 'light';
-    }catch(e){
-        return 'light';
-    }
-}
-
-function systemPrefersDark(){
-    return Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-}
-
-function resolveThemeMode(mode){
-    return mode === 'dark' || (mode === 'system' && systemPrefersDark());
-}
-
+// ================== GLOBAL DARK THEME FROM SETTINGS ==================
 function applyGlobalDarkTheme(isDark){
     document.body.classList.toggle('global-dark-theme', Boolean(isDark));
-    try{ localStorage.setItem('globalDarkTheme', isDark ? '1' : '0'); }catch(e){}
+    try{
+        localStorage.setItem('globalDarkTheme', isDark ? '1' : '0');
+    }catch(e){}
 }
 
-function syncThemeModeControls(){
-    const mode = getSavedThemeMode();
-    document.querySelectorAll('[data-theme-mode]').forEach(button => {
-        const selected = button.dataset.themeMode === mode;
-        button.classList.toggle('active', selected);
-        button.setAttribute('aria-checked', selected ? 'true' : 'false');
-    });
-    applyGlobalDarkTheme(resolveThemeMode(mode));
-}
+function syncGlobalThemeSwitch(){
+    const themeSwitch = document.getElementById('settingsThemeSwitch');
+    let isDark = false;
+    try{
+        isDark = localStorage.getItem('globalDarkTheme') === '1';
+    }catch(e){}
 
-function selectThemeMode(mode){
-    if(!['system','light','dark'].includes(mode)) return;
-    try{ localStorage.setItem('globalThemeMode', mode); }catch(e){}
-    syncThemeModeControls();
-    if(typeof toast === 'function'){
-        const labels = {system:'Тема будет меняться как в системе',light:'Светлая тема включена',dark:'Тёмная тема включена'};
-        toast(labels[mode]);
+    applyGlobalDarkTheme(isDark);
+
+    if(themeSwitch){
+        themeSwitch.classList.toggle('off', !isDark);
     }
 }
 
-function initSystemThemeListener(){
-    if(!window.matchMedia) return;
-    systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
-    const update = () => {
-        if(getSavedThemeMode() === 'system') syncThemeModeControls();
-    };
-    if(systemThemeMedia.addEventListener) systemThemeMedia.addEventListener('change', update);
-    else if(systemThemeMedia.addListener) systemThemeMedia.addListener(update);
-}
+document.addEventListener('click', function(e){
+    const themeSwitch = e.target.closest('#settingsThemeSwitch');
+    if(!themeSwitch) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-    syncThemeModeControls();
-    initSystemThemeListener();
-});
-setTimeout(syncThemeModeControls, 0);
+    e.preventDefault();
+    e.stopPropagation();
+
+    const willBeDark = themeSwitch.classList.contains('off');
+    themeSwitch.classList.toggle('off', !willBeDark);
+    applyGlobalDarkTheme(willBeDark);
+
+    if(typeof toast === 'function'){
+        toast(willBeDark ? 'Тёмная тема включена' : 'Тёмная тема выключена');
+    }
+}, true);
+
+document.addEventListener('DOMContentLoaded', syncGlobalThemeSwitch);
+setTimeout(syncGlobalThemeSwitch, 0);
+
 
 // ================== SUBSCRIPTION TEST ==================
 const subscriptionTestQuestions = [
@@ -2986,7 +2831,7 @@ function refreshFriendSubscriptionsOverlay(){
 const REWARDS_SHOP_KEY = 'subscriptions_rewards_shop_v1';
 const rewardsShopCatalog = [
     {id:'discount10',title:'Скидка 10% на любую подписку',desc:'Одноразовая скидка на следующую оплату любой активной подписки.',cost:500,icon:'fa-percent'},
-    {id:'pro100',title:'Подписка Pro бесплатно',desc:'Полная скидка 100% на один месяц тарифа Pro.',cost:500,icon:'fa-crown'}
+    {id:'pro100',title:'Подписка PRO бесплатно',desc:'Полная скидка 100% на один месяц тарифа PRO.',cost:500,icon:'fa-crown'}
 ];
 let rewardsShopTab='active';
 function loadRewardsShopState(){
@@ -3043,6 +2888,60 @@ function copyRewardCode(code){
 }
 
 
+// ================== REFERRAL PROGRAM ==================
+function buildReferralCode(){
+    const source=[state?.user?.phone,state?.user?.name,'SubHub'].filter(Boolean).join('|');
+    if(!source) return 'SUBHUB-7QX3';
+    let hash=0;
+    for(const ch of source) hash=(hash*31+ch.charCodeAt(0))&0x7fffffff;
+    const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let suffix='';
+    let value=hash||9173;
+    for(let i=0;i<4;i++){
+        suffix+=alphabet[value%alphabet.length];
+        value=Math.floor(value/alphabet.length)||hash+i*19+41;
+    }
+    return `SUBHUB-${suffix}`;
+}
+function referralStats(){
+    const active=(state.subscriptions||[]).filter(item=>item.active);
+    const archived=(state.subscriptions||[]).filter(item=>!item.active);
+    const paid=Math.max(0,Math.min(99,Math.floor(active.length/2)));
+    const invited=Math.max(paid,Math.min(99,paid+archived.length+2));
+    return {code:buildReferralCode(),invited,paid,bonus:paid*100+invited*50};
+}
+function renderReferralProgram(){
+    const data=referralStats();
+    const code=document.getElementById('referralCodeValue');
+    const invited=document.getElementById('referralInvitedCount');
+    const paid=document.getElementById('referralPaidCount');
+    const bonus=document.getElementById('referralBonusPoints');
+    if(code) code.textContent=data.code;
+    if(invited) invited.textContent=data.invited;
+    if(paid) paid.textContent=data.paid;
+    if(bonus) bonus.textContent=data.bonus.toLocaleString('ru-RU');
+}
+function openReferralProgram(){ renderReferralProgram(); switchView('referral-program'); }
+function closeReferralProgram(){ switchView('profile'); }
+function copyReferralCode(){
+    const code=referralStats().code;
+    if(navigator.clipboard?.writeText){
+        navigator.clipboard.writeText(code).then(()=>toast('Код скопирован')).catch(()=>toast(code));
+    }else toast(code);
+}
+async function shareReferralInvite(){
+    const code=referralStats().code;
+    const text=`Присоединяйся к SubHub и следи за подписками. Мой код: ${code}`;
+    const url=`${location.origin}${location.pathname}?ref=${encodeURIComponent(code)}`;
+    if(navigator.share){
+        try{ await navigator.share({title:'SubHub',text,url}); return; }catch(error){ if(error?.name==='AbortError') return; }
+    }
+    const payload=`${text}\n${url}`;
+    if(navigator.clipboard?.writeText){
+        navigator.clipboard.writeText(payload).then(()=>toast('Ссылка приглашения скопирована')).catch(()=>toast(text));
+    }else toast(text);
+}
+
 // ================== ACCOUNT SETTINGS ==================
 function ensureProfileState(){
     if(!state.user) state.user = { phone:'', name:'Данияр' };
@@ -3086,11 +2985,7 @@ function renderAccountIdentity(){
     Object.entries(values).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v;});
     const b=document.getElementById('profileBirthDateButton');
     if(b){ const age=profileAge(p.birthDate); b.innerHTML=`<i class="fa-solid fa-cake-candles"></i> ${age!==null ? age+' '+(age%10===1&&age%100!==11?'год':age%10>=2&&age%10<=4&&(age%100<10||age%100>=20)?'года':'лет') : 'Добавить дату рождения'}${age===null?' · +10 баллов':''}`; }
-    const phone=document.getElementById('settingsPhone');
-    if(phone){
-        const provider = String(state.user.authProvider || '').trim();
-        phone.value = state.user.phone || (provider ? `Вход через ${provider}` : '');
-    }
+    const phone=document.getElementById('settingsPhone'); if(phone) phone.value=state.user.phone||'';
 }
 function setSelectedGender(value){
     document.querySelectorAll('#accountGenderOptions [data-gender]').forEach(b=>b.classList.toggle('active',b.dataset.gender===value));
@@ -3108,9 +3003,7 @@ function saveAccountProfileDetails(){
     const name=document.getElementById('accountNameInput')?.value.trim().replace(/\s+/g,' ')||'';
     const birth=document.getElementById('accountBirthDateInput')?.value.trim()||'';
     const email=document.getElementById('accountEmailInput')?.value.trim()||'';
-    const phoneInputValue=document.getElementById('accountPhoneInput')?.value.trim()||'';
-    const phoneDigits=String(phoneInputValue).replace(/\D/g,'');
-    const phone=phoneDigits.length<=1 ? '' : phoneInputValue;
+    const phone=document.getElementById('accountPhoneInput')?.value.trim()||'';
     const country=document.getElementById('accountCountryInput')?.value.trim().replace(/\s+/g,' ')||'';
     const city=document.getElementById('accountCityInput')?.value.trim().replace(/\s+/g,' ')||'';
     const gender=document.querySelector('#accountGenderOptions [data-gender].active')?.dataset.gender||'Не указывать';
@@ -3118,7 +3011,7 @@ function saveAccountProfileDetails(){
     if(name.length>40){toast('Имя должно быть не длиннее 40 символов');return;}
     if(birth && profileAge(birth)===null){toast('Введите корректную дату рождения в формате ДД.ММ.ГГГГ');return;}
     if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Введите корректную почту');return;}
-    if(phone && phoneDigits.length!==11){toast('Введите корректный телефон');return;}
+    if(phone && String(phone).replace(/\D/g,'').length!==11){toast('Введите корректный телефон');return;}
     state.user.name=name; state.user.phone=phone;
     Object.assign(state.user.profile,{birthDate:birth,email,gender,country,city});
     saveState(); renderAccountIdentity(); closeAccountSettingsModal(); toast('Данные аккаунта обновлены');
@@ -3248,11 +3141,11 @@ document.addEventListener('keydown', event => {
 // ================== NOTIFICATION REMINDERS ==================
 function ensureNotificationSettings(){
     if(!state.notificationSettings || typeof state.notificationSettings !== 'object'){
-        state.notificationSettings = { pushEnabled:true, emailEnabled:true, notify7Days:true, notify3Days:true, notify1Day:false, soundEnabled:true };
+        state.notificationSettings = { notify7Days:true, notify3Days:true, notify1Day:false };
     }
-    ['pushEnabled','emailEnabled','notify7Days','notify3Days','notify1Day','soundEnabled'].forEach((key) => {
+    ['notify7Days','notify3Days','notify1Day'].forEach((key, index) => {
         if(typeof state.notificationSettings[key] !== 'boolean'){
-            state.notificationSettings[key] = key !== 'notify1Day';
+            state.notificationSettings[key] = index < 2;
         }
     });
 }
@@ -3269,13 +3162,7 @@ function toggleNotificationSetting(key){
     state.notificationSettings[key] = !state.notificationSettings[key];
     saveState();
     renderNotificationSettings();
-    const messages = {
-        soundEnabled:['Звук включён','Звук выключен'],
-        pushEnabled:['Push-уведомления включены','Push-уведомления выключены'],
-        emailEnabled:['Email-рассылка включена','Email-рассылка выключена']
-    };
-    const pair = messages[key] || ['Напоминание включено','Напоминание выключено'];
-    toast(state.notificationSettings[key] ? pair[0] : pair[1]);
+    toast(state.notificationSettings[key] ? 'Напоминание включено' : 'Напоминание выключено');
 }
 document.querySelectorAll('[data-notification-key]').forEach(row => {
     row.addEventListener('click', () => toggleNotificationSetting(row.dataset.notificationKey));
@@ -3302,11 +3189,11 @@ function ensurePrivacySettings(){
     Object.keys(defaults).forEach(key => {
         if(!allowed.includes(state.privacySettings[key])) state.privacySettings[key] = defaults[key];
     });
-    if(typeof state.tariffPlan !== 'string') state.tariffPlan = 'base';
+    if(typeof state.tariffPlan !== 'string') state.tariffPlan = 'basic';
 }
 function canEditPrivacySettings(){
     ensurePrivacySettings();
-    return ['pro','premium'].includes(String(state.tariffPlan).toLowerCase());
+    return ['pro','premium','business'].includes(String(state.tariffPlan).toLowerCase());
 }
 function privacyIcon(value){
     if(value === 'Только я') return 'fa-lock';
@@ -3342,7 +3229,7 @@ function closePrivacyModal(){
 function selectPrivacyOption(key, value){
     ensurePrivacySettings();
     if(!canEditPrivacySettings()){
-        toast('Приватность редактируется на тарифах Pro и Premium.');
+        toast('Приватность редактируется на тарифах PRO, Premium и Business.');
         return;
     }
     const allowed = ['Только я','Друзья','Все'];
@@ -3364,28 +3251,24 @@ document.addEventListener('DOMContentLoaded', renderPrivacySettings);
 // ================== TARIFF SETTINGS ==================
 const settingsTariffs = [
     {
-        id:'base', title:'Base', price:'Бесплатно', subtitle:'Для контроля личного бюджета',
+        id:'basic', title:'Базовый', price:'Бесплатно', subtitle:'Для контроля личного бюджета',
         features:['Ручное добавление подписок','Напоминания о списаниях','Базовая статистика расходов','Базовые достижения','Светлая и тёмная темы']
     },
     {
-        id:'pro', title:'Pro', price:'199 ₽ / мес.', subtitle:'Расширенное управление подписками',
-        features:['Всё из тарифа «Base»','Аналитика','Настройка темы и акцентного цвета','Настройки приватности','Экспорт данных']
+        id:'pro', title:'PRO', price:'199 ₽ / мес.', subtitle:'Расширенное управление подписками',
+        features:['Всё из тарифа «Базовый»','Аналитика','Настройка темы и акцентного цвета','Настройки приватности','Экспорт данных']
     },
     {
-        id:'premium', title:'Premium', price:'799 ₽ / мес.', subtitle:'Максимальные возможности приложения',
-        features:['Всё из тарифа «Pro»','Эксклюзивные достижения','Умные рекомендации по экономии','Расширенная аналитика','Публикации в общей ленте','Инструменты продвижения']
+        id:'premium', title:'Premium', price:'799 ₽ / мес.', subtitle:'Расширенные возможности приложения',
+        features:['Всё из тарифа «PRO»','Эксклюзивные достижения','Умные рекомендации по экономии','Расширенная аналитика']
+    },
+    {
+        id:'business', title:'Author', price:'1999 ₽ / мес.', subtitle:'План для авторов и продавцов',
+        features:['Всё из тарифа «Premium»','Создание и продажа подписок','Публикации в общей ленте','Инструменты продвижения']
     }
 ];
 function ensureTariffPlan(){
-    const current = String(state.tariffPlan || '').toLowerCase();
-    const migrations = {
-        basic:'base',
-        базовый:'base',
-        business:'premium',
-        author:'premium'
-    };
-    state.tariffPlan = migrations[current] || current || 'base';
-    if(!settingsTariffs.some(item => item.id === state.tariffPlan)) state.tariffPlan='base';
+    if(!settingsTariffs.some(item => item.id === state.tariffPlan)) state.tariffPlan='basic';
 }
 function renderTariffSettings(){
     ensureTariffPlan();
@@ -3773,7 +3656,7 @@ document.addEventListener('DOMContentLoaded',renderSecuritySettings);
 
         if(permission === 'granted'){
             try{
-                new Notification('SubMart', { body:'Тестовое уведомление работает.' });
+                new Notification('Мои Подписки', { body:'Тестовое уведомление работает.' });
                 if(typeof toast === 'function') toast('Тестовое уведомление отправлено');
             }catch(error){
                 if(typeof toast === 'function') toast('Не удалось отправить уведомление');
@@ -3801,8 +3684,6 @@ document.addEventListener('DOMContentLoaded',renderSecuritySettings);
         }
     };
 
-    window.refreshSystemNotificationsSummary = render;
-
     function init(){
         render();
         const modal = document.getElementById('systemNotificationsModal');
@@ -3818,11 +3699,6 @@ document.addEventListener('DOMContentLoaded',renderSecuritySettings);
         if(event.key === 'Escape' && document.getElementById('systemNotificationsModal')?.classList.contains('open')){
             window.closeSystemNotificationsModal();
         }
-    });
-
-    window.addEventListener('account-changed', () => {
-        window.closeSystemNotificationsModal();
-        render();
     });
 
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});

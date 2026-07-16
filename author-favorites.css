@@ -1,0 +1,184 @@
+.author-card-actions .mini.author-favorite-active{
+    color:#e5484d;
+    background:#fff1f2;
+    border-color:#fecdd3;
+}
+.author-card-actions .mini.author-favorite-active:hover{
+    background:#ffe4e6;
+}
+.author-profile-favorite-btn{
+    width:100%;
+    min-height:46px;
+    margin-top:10px;
+    border:1px solid #e4e7ec;
+    border-radius:14px;
+    background:#fff;
+    color:#3d4148;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    font:600 14px 'Inter',system-ui,sans-serif;
+    cursor:pointer;
+    transition:background .2s,border-color .2s,color .2s,transform .2s;
+}
+.author-profile-favorite-btn:hover{
+    background:#f6f7f9;
+    transform:translateY(-1px);
+}
+.author-profile-favorite-btn.active{
+    color:#e5484d;
+    background:#fff1f2;
+    border-color:#fecdd3;
+}
+body.global-dark-theme .author-card-actions .mini.author-favorite-active,
+body.global-dark-theme .author-profile-favorite-btn.active{
+    color:#ff8790;
+    background:#3a2329;
+    border-color:#5c3038;
+}
+body.global-dark-theme .author-profile-favorite-btn{
+    background:#252936;
+    border-color:#303544;
+    color:#f5f6fa;
+}
+body.global-dark-theme .author-profile-favorite-btn:hover{
+    background:#2b3040;
+}
+
+.authors-favorites-filter{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin:22px 0 18px;
+    padding:5px;
+    border:1px solid #e4e7ec;
+    border-radius:14px;
+    background:#fff;
+}
+.authors-favorites-filter button{
+    min-height:38px;
+    padding:0 15px;
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    color:#6b7078;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font:600 14px 'Inter',system-ui,sans-serif;
+    cursor:pointer;
+    transition:background .2s,color .2s,transform .2s;
+}
+.authors-favorites-filter button:hover{
+    background:#f4f6f8;
+    color:#23262c;
+}
+.authors-favorites-filter button.active{
+    background:#1c1d21;
+    color:#fff;
+}
+.authors-favorites-filter button span{
+    min-width:21px;
+    height:21px;
+    padding:0 6px;
+    border-radius:999px;
+    background:#f0f2f5;
+    color:#6b7078;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+}
+.authors-favorites-filter button.active span{
+    background:rgba(255,255,255,.16);
+    color:#fff;
+}
+#authorsGrid .author-card[hidden]{
+    display:none !important;
+}
+#authorsGrid.is-empty-filter{
+    display:none;
+}
+.authors-favorites-empty{
+    min-height:230px;
+    padding:36px 24px;
+    border:1px dashed #d5d9e0;
+    border-radius:20px;
+    background:#fff;
+    color:#838892;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+.authors-favorites-empty[hidden]{
+    display:none !important;
+}
+.authors-favorites-empty > i{
+    width:58px;
+    height:58px;
+    margin-bottom:16px;
+    border-radius:50%;
+    background:#fff1f2;
+    color:#e5484d;
+    display:grid;
+    place-items:center;
+    font-size:24px;
+}
+.authors-favorites-empty strong{
+    color:#25282e;
+    font-size:17px;
+}
+.authors-favorites-empty span{
+    max-width:390px;
+    margin-top:8px;
+    font-size:14px;
+    line-height:1.5;
+}
+body.global-dark-theme .authors-favorites-filter{
+    background:#1d2028;
+    border-color:#2f3440;
+}
+body.global-dark-theme .authors-favorites-filter button{
+    color:#a9afbb;
+}
+body.global-dark-theme .authors-favorites-filter button:hover{
+    background:#272c38;
+    color:#f5f6fa;
+}
+body.global-dark-theme .authors-favorites-filter button.active{
+    background:#f5f6fa;
+    color:#17191e;
+}
+body.global-dark-theme .authors-favorites-filter button span{
+    background:#2a2f3a;
+    color:#b8beca;
+}
+body.global-dark-theme .authors-favorites-filter button.active span{
+    background:rgba(23,25,30,.12);
+    color:#17191e;
+}
+body.global-dark-theme .authors-favorites-empty{
+    background:#1d2028;
+    border-color:#3b414f;
+    color:#9ba2b1;
+}
+body.global-dark-theme .authors-favorites-empty strong{
+    color:#f5f6fa;
+}
+body.global-dark-theme .authors-favorites-empty > i{
+    background:#3a2329;
+    color:#ff8790;
+}
+@media(max-width:600px){
+    .authors-favorites-filter{
+        display:flex;
+        width:100%;
+    }
+    .authors-favorites-filter button{
+        flex:1;
+    }
+}

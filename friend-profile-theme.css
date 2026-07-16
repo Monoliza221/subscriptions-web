@@ -1,0 +1,462 @@
+/* Friend profile visual alignment with the user's profile screen. */
+#view-friend-profile{
+    background:#eef0f3;
+    color:#1c1d21;
+    font-family:'Inter',system-ui,sans-serif;
+    margin:-36px -48px -80px;
+    min-height:100vh;
+}
+#view-friend-profile .friend-profile-web-page{
+    min-height:100vh;
+    padding:40px 24px 80px;
+}
+#view-friend-profile .friend-profile-web-shell{
+    max-width:1100px;
+}
+#view-friend-profile .friend-profile-web-topbar{
+    margin-bottom:28px;
+}
+#view-friend-profile .friend-profile-web-title-row h1{
+    color:#1c1d21;
+    font-family:'Inter',system-ui,sans-serif;
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:-.5px;
+}
+#view-friend-profile .friends-web-back,
+#view-friend-profile .friends-web-search-toggle{
+    width:44px;
+    height:44px;
+    border:0;
+    border-radius:50%;
+    background:#fff;
+    color:#55585f;
+    box-shadow:none;
+    transition:background .2s,transform .2s;
+}
+#view-friend-profile .friends-web-back:hover,
+#view-friend-profile .friends-web-search-toggle:hover{
+    background:#f3f4f6;
+    transform:translateY(-1px);
+}
+#view-friend-profile .friend-profile-web-grid{
+    grid-template-columns:1.4fr 1fr;
+    gap:24px;
+}
+#view-friend-profile .friend-profile-web-column{
+    gap:24px;
+}
+#view-friend-profile .friend-profile-web-card{
+    background:#fff;
+    border:0;
+    border-radius:24px;
+    padding:28px;
+    box-shadow:none;
+}
+#view-friend-profile .friend-profile-web-main-card{
+    min-height:0;
+}
+#view-friend-profile .friend-profile-web-header{
+    gap:24px;
+}
+#view-friend-profile .friend-profile-web-avatar{
+    width:96px;
+    height:96px;
+    font-size:28px;
+}
+#view-friend-profile .friend-profile-web-name{
+    color:#1c1d21;
+    font-family:'Inter',system-ui,sans-serif;
+    font-size:26px;
+    font-weight:800;
+}
+#view-friend-profile .friend-profile-web-age{
+    color:#4a4d54;
+}
+#view-friend-profile .friend-profile-web-level{
+    background:#f1f2f5;
+    border:1px solid #e1e4ea;
+    color:#656a73;
+}
+#view-friend-profile .friend-profile-web-actions{
+    margin-top:24px;
+}
+#view-friend-profile .friend-profile-web-primary{
+    min-height:48px;
+    background:#f7f8fa;
+    border:1px solid #e2e5eb;
+    color:#1c1d21;
+}
+#view-friend-profile .friend-profile-web-primary:hover{
+    background:#eef0f4;
+}
+#view-friend-profile .friend-profile-web-stats{
+    gap:14px;
+    margin-top:16px;
+}
+#view-friend-profile .friend-profile-web-stat{
+    min-height:72px;
+    background:#f1f2f5;
+    border:1px solid #e1e4ea;
+    border-radius:18px;
+}
+#view-friend-profile .friend-profile-web-stat:hover{
+    background:#e9ebf0;
+}
+#view-friend-profile .friend-profile-web-stat strong,
+#view-friend-profile .friend-profile-web-section-title h3,
+#view-friend-profile .friend-profile-web-sub strong{
+    color:#1c1d21;
+}
+#view-friend-profile .friend-profile-web-section-title h3{
+    font-size:20px;
+    font-weight:800;
+}
+#view-friend-profile .friend-profile-web-section-link,
+#view-friend-profile .friend-profile-web-section-title > span{
+    color:#ff7a00;
+}
+#view-friend-profile .friend-profile-web-more{
+    background:#f1f2f5;
+    border:1px solid #e1e4ea;
+    color:#55585f;
+}
+#view-friend-profile .friend-profile-web-more:hover{
+    background:#e9ebf0;
+}
+#view-friend-profile .friend-profile-web-sub{
+    background:#f7f8fa;
+    border:1px solid #e1e4ea;
+    box-shadow:none;
+}
+#view-friend-profile .friend-profile-web-sub:hover{
+    background:#f0f2f5;
+    box-shadow:none;
+}
+#view-friend-profile .friend-profile-web-ach-wrap strong,
+#view-friend-profile .friend-profile-web-sub span,
+#view-friend-profile .friend-profile-web-sub-copy small,
+#view-friend-profile .friend-profile-web-stat small,
+#view-friend-profile .friend-profile-web-common-person{
+    color:#8a8f98;
+}
+#view-friend-profile .friend-profile-web-ach-wrap > span{
+    background:#f1f2f5;
+    border:1px solid #e1e4ea;
+    color:#656a73;
+}
+#view-friend-profile .friend-profile-web-common-card{
+    color:#1c1d21;
+}
+#view-friend-profile .friend-profile-web-common-card:hover{
+    transform:none;
+    box-shadow:none;
+}
+#view-friend-profile .friends-web-empty.compact{
+    background:#f7f8fa;
+    border-color:#cfd3da;
+    color:#656a73;
+}
+
+body.global-dark-theme #view-friend-profile,
+body.global-dark-theme #view-friend-profile .friend-profile-web-page{
+    background:#111318 !important;
+    color:#f5f6fa !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-title-row h1,
+body.global-dark-theme #view-friend-profile .friend-profile-web-name,
+body.global-dark-theme #view-friend-profile .friend-profile-web-section-title h3,
+body.global-dark-theme #view-friend-profile .friend-profile-web-stat strong,
+body.global-dark-theme #view-friend-profile .friend-profile-web-sub strong{
+    color:#f5f6fa !important;
+}
+body.global-dark-theme #view-friend-profile .friends-web-back,
+body.global-dark-theme #view-friend-profile .friends-web-search-toggle{
+    background:#1d2028 !important;
+    border:1px solid #2a2e38 !important;
+    color:#f5f6fa !important;
+}
+body.global-dark-theme #view-friend-profile .friends-web-back:hover,
+body.global-dark-theme #view-friend-profile .friends-web-search-toggle:hover{
+    background:#252936 !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-card{
+    background:#1d2028 !important;
+    border:1px solid #2a2e38 !important;
+    box-shadow:none !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-age,
+body.global-dark-theme #view-friend-profile .friend-profile-web-stat small,
+body.global-dark-theme #view-friend-profile .friend-profile-web-ach-wrap strong,
+body.global-dark-theme #view-friend-profile .friend-profile-web-sub span,
+body.global-dark-theme #view-friend-profile .friend-profile-web-sub-copy small,
+body.global-dark-theme #view-friend-profile .friend-profile-web-common-person{
+    color:#9ba2b1 !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-level,
+body.global-dark-theme #view-friend-profile .friend-profile-web-stat,
+body.global-dark-theme #view-friend-profile .friend-profile-web-sub,
+body.global-dark-theme #view-friend-profile .friend-profile-web-more,
+body.global-dark-theme #view-friend-profile .friend-profile-web-ach-wrap > span{
+    background:#252936 !important;
+    border-color:#303544 !important;
+    color:#f5f6fa !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-primary{
+    background:#f5f6fa !important;
+    border-color:#f5f6fa !important;
+    color:#15171d !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-primary:hover{
+    background:#e5e7ec !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-stat:hover,
+body.global-dark-theme #view-friend-profile .friend-profile-web-sub:hover,
+body.global-dark-theme #view-friend-profile .friend-profile-web-more:hover{
+    background:#2b3040 !important;
+}
+body.global-dark-theme #view-friend-profile .friends-web-empty.compact{
+    background:#171a20 !important;
+    border-color:#59606d !important;
+    color:#c1c6d0 !important;
+}
+
+@media(max-width:900px){
+    #view-friend-profile .friend-profile-web-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+    #view-friend-profile{margin:-24px -16px -60px}
+    #view-friend-profile .friend-profile-web-page{padding:24px 14px 60px}
+}
+
+/* Friend profile aligned closer to the user's own profile card layout */
+#view-friend-profile .friend-profile-web-main-card-similar{
+    display:flex;
+    flex-direction:column;
+}
+#view-friend-profile .friend-profile-web-name-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+}
+#view-friend-profile .friend-profile-web-divider{
+    border:none;
+    border-top:1px solid #eceef1;
+    margin:26px 0;
+}
+#view-friend-profile .friend-profile-web-level-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+}
+#view-friend-profile .friend-profile-web-level-title{
+    font-size:19px;
+    font-weight:700;
+    color:#1c1d21;
+}
+#view-friend-profile .friend-profile-web-level-sub{
+    margin-top:6px;
+    color:#8a8f98;
+    font-size:14px;
+}
+#view-friend-profile .friend-profile-web-points{
+    text-align:right;
+    flex-shrink:0;
+}
+#view-friend-profile .friend-profile-web-num{
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:-.5px;
+    color:#1c1d21;
+}
+#view-friend-profile .friend-profile-web-lbl{
+    color:#8a8f98;
+    font-size:14px;
+}
+#view-friend-profile .friend-profile-web-bar{
+    height:8px;
+    border-radius:8px;
+    background:#f4f6f8;
+    margin:22px 0 12px;
+    overflow:hidden;
+}
+#view-friend-profile .friend-profile-web-bar > span{
+    display:block;
+    height:100%;
+    border-radius:8px;
+    background:#ff7a00;
+}
+#view-friend-profile .friend-profile-web-bar-labels{
+    display:flex;
+    justify-content:space-between;
+    color:#8a8f98;
+    font-size:13px;
+}
+#view-friend-profile .friend-profile-web-achievements-card,
+#view-friend-profile .friend-profile-web-subscriptions-card{
+    min-height:0;
+}
+#view-friend-profile .friend-profile-web-ach-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+}
+#view-friend-profile .friend-profile-web-ach-head h3{
+    margin:0;
+    color:#1c1d21;
+    font-size:20px;
+    font-weight:800;
+}
+#view-friend-profile .friend-profile-web-ach-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+}
+#view-friend-profile .friend-profile-web-ach{
+    aspect-ratio:1;
+    border:none;
+    border-radius:20px;
+    display:grid;
+    place-items:center;
+    color:#fff;
+    font-size:26px;
+    cursor:pointer;
+    transition:transform .2s;
+}
+#view-friend-profile .friend-profile-web-ach:hover{
+    transform:translateY(-3px);
+}
+#view-friend-profile .friend-profile-web-ach-list{
+    margin-top:22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+#view-friend-profile .friend-profile-web-ach-item{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:16px;
+    background:#f4f6f8;
+    text-align:left;
+    cursor:pointer;
+}
+#view-friend-profile .friend-profile-web-ach-item:hover{
+    background:#eceff2;
+}
+#view-friend-profile .friend-profile-web-ach-ic{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    display:grid;
+    place-items:center;
+    color:#fff;
+    font-size:18px;
+    flex-shrink:0;
+}
+#view-friend-profile .friend-profile-web-ach-t{
+    color:#1c1d21;
+    font-weight:600;
+    font-size:15px;
+}
+#view-friend-profile .friend-profile-web-ach-d{
+    color:#8a8f98;
+    font-size:13px;
+    margin-top:2px;
+}
+#view-friend-profile .friend-profile-web-common-card{
+    padding:28px;
+}
+#view-friend-profile .friend-profile-web-subscriptions{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+#view-friend-profile .friend-profile-web-sub{
+    width:100%;
+    text-align:left;
+    border-radius:18px;
+    padding:14px;
+    background:#f4f6f8;
+}
+#view-friend-profile .friend-profile-web-sub-copy strong{
+    font-size:15px;
+}
+#view-friend-profile .friend-profile-web-sub-copy span{
+    margin-top:4px;
+    font-size:13px;
+}
+#view-friend-profile .friend-profile-web-sub-copy small{
+    margin-top:4px;
+    font-size:13px;
+}
+#view-friend-profile .friend-profile-web-stat{
+    padding:18px 20px;
+    background:#f4f6f8;
+    border:none;
+}
+#view-friend-profile .friend-profile-web-stat i{
+    color:#8a8f98;
+}
+#view-friend-profile .friend-profile-web-stat:hover{
+    background:#eceff2;
+}
+#view-friend-profile .friend-profile-web-primary{
+    min-height:48px;
+    background:#f4f6f8;
+    border:1px solid #e2e5eb;
+    color:#1c1d21;
+}
+#view-friend-profile .friend-profile-web-primary:hover{
+    background:#eceff2;
+}
+
+body.global-dark-theme #view-friend-profile .friend-profile-web-divider{
+    border-top-color:#2a2e38;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-level-title,
+body.global-dark-theme #view-friend-profile .friend-profile-web-num,
+body.global-dark-theme #view-friend-profile .friend-profile-web-ach-head h3,
+body.global-dark-theme #view-friend-profile .friend-profile-web-ach-t{
+    color:#f5f6fa;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-level-sub,
+body.global-dark-theme #view-friend-profile .friend-profile-web-lbl,
+body.global-dark-theme #view-friend-profile .friend-profile-web-bar-labels,
+body.global-dark-theme #view-friend-profile .friend-profile-web-ach-d{
+    color:#9ba2b1;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-bar{
+    background:#252936;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-ach-item,
+body.global-dark-theme #view-friend-profile .friend-profile-web-stat,
+body.global-dark-theme #view-friend-profile .friend-profile-web-sub,
+body.global-dark-theme #view-friend-profile .friend-profile-web-primary{
+    background:#252936 !important;
+    border-color:#303544 !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-ach-item:hover,
+body.global-dark-theme #view-friend-profile .friend-profile-web-stat:hover,
+body.global-dark-theme #view-friend-profile .friend-profile-web-sub:hover,
+body.global-dark-theme #view-friend-profile .friend-profile-web-primary:hover{
+    background:#2b3040 !important;
+}
+body.global-dark-theme #view-friend-profile .friend-profile-web-primary{
+    color:#f5f6fa !important;
+}
+
+@media(max-width:900px){
+    #view-friend-profile .friend-profile-web-ach-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
+}
+@media(max-width:600px){
+    #view-friend-profile .friend-profile-web-level-top{flex-direction:column;}
+    #view-friend-profile .friend-profile-web-points{text-align:left;}
+    #view-friend-profile .friend-profile-web-ach-grid{gap:10px;}
+}

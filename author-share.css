@@ -1,0 +1,29 @@
+.author-profile-top-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.author-share-profile-btn{
+    width:44px;
+    height:44px;
+    border:1px solid var(--line,#e5e7eb);
+    border-radius:50%;
+    background:#fff;
+    color:#55585f;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    transition:background .2s,transform .2s,border-color .2s;
+}
+.author-share-profile-btn:hover{
+    background:#f3f4f6;
+    transform:translateY(-1px);
+}
+body.global-dark-theme .author-share-profile-btn{
+    background:#1d2028;
+    border-color:#2a2e38;
+    color:#f5f6fa;
+}
+body.global-dark-theme .author-share-profile-btn:hover{
+    background:#252936;
+}
