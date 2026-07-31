@@ -183,7 +183,7 @@
     const card = e.target.closest('#view-author-profile .author-content-card');
     if(!card) return;
     if(card.classList.contains('author-media-card')) return;
-    if(e.target.closest('.author-content-reactions, .author-paywall button')) return;
+    if(e.target.closest('.author-content-reactions, .author-paywall button, .author-content-favorite-btn')) return;
     const cards = Array.from(document.querySelectorAll('#view-author-profile .author-content-card'));
     const index = cards.indexOf(card);
     if(index < 0) return;

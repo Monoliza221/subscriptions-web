@@ -12,7 +12,7 @@
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260731-1102">
     <link rel="stylesheet" href="profile-notifications.css">
     <link rel="stylesheet" href="profile-avatar.css">
     <link rel="stylesheet" href="achievement-details.css">
@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="author-content-favorites.css">
     <link rel="stylesheet" href="author-material-engagement.css">
     <link rel="stylesheet" href="author-cancel-subscription.css">
+    <link rel="stylesheet" href="author-profile-vk.css">
+    <link rel="stylesheet" href="friend-profile-fullwidth.css?v=20260729-1657">
 </head>
 <body>
 
@@ -106,10 +108,6 @@
             <button class="nav-item" data-view="analytics"><i class="fa-solid fa-chart-pie"></i> Аналитика</button>
             <button class="nav-item" data-view="feed"><i class="fa-solid fa-newspaper"></i> Лента</button>
             <button class="nav-item" data-view="authors"><i class="fa-solid fa-user-pen"></i> Авторы</button>
-            <button class="nav-item" data-view="subscriptions"><i class="fa-solid fa-rectangle-list"></i> Подписки</button>
-            <button class="nav-item" data-view="calendar"><i class="fa-solid fa-calendar-days"></i> Календарь</button>
-            <button class="nav-item" data-view="wallet"><i class="fa-solid fa-wallet"></i> Кошелёк</button>
-            <button class="nav-item" data-view="history"><i class="fa-solid fa-clock-rotate-left"></i> История</button>
             <button class="nav-item" data-view="profile"><i class="fa-solid fa-user"></i> Профиль</button>
             <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> Настройки</button>
         </nav>
@@ -130,23 +128,14 @@
                         <div class="dashboard-greeting" id="dashboardGreeting">Добрый день 👋</div>
                         <h1 class="dashboard-name">Ваш бюджет</h1>
                     </div>
-                    <button class="dashboard-balance-pill" type="button" onclick="switchView('wallet')">
-                        <span class="dashboard-avatar">👤</span>
-                        <span>Баланс: <strong id="dashboardTopBalance">0 ₽</strong></span>
-                        <em>3</em>
-                    </button>
                 </div>
 
-                <div class="dashboard-hero-area">
-                    <div class="dashboard-budget-card">
+                <div class="dashboard-hero-area dashboard-hero-split">
+                    <div class="dashboard-budget-card dashboard-budget-card-with-calendar">
                         <div class="dashboard-budget-info">
                             <div class="dashboard-budget-label">Траты в месяц</div>
                             <div class="dashboard-budget-value" id="kpiMonthly">0 ₽</div>
                             <div class="dashboard-budget-sub">Активных подписок: <span id="kpiCount">0</span></div>
-                        </div>
-                        <div class="dashboard-budget-promo">
-                            <div class="promo-ring"></div>
-                            <div class="promo-text">открывается<br>в подписке</div>
                         </div>
                         <div class="dashboard-budget-bottom">
                             <div class="dashboard-budget-line"></div>
@@ -167,15 +156,18 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-feature-grid">
-                        <button class="dashboard-feature-card" type="button" onclick="openTimeCalculatorFromDashboard()">
-                            <span class="dashboard-feature-icon pink"><i class="fa-solid fa-calculator"></i></span>
-                            <span>Калькулятор</span>
-                        </button>
-                        <button class="dashboard-feature-card" type="button" onclick="openSubscriptionTestFromDashboard()">
-                            <span class="dashboard-feature-icon mint"><i class="fa-solid fa-circle-question"></i></span>
-                            <span>Тесты</span>
-                        </button>
+                    <div class="dashboard-hero-side">
+                        <div id="dashboardMiniCalendar" class="dashboard-mini-calendar-host"></div>
+                        <div class="dashboard-feature-grid">
+                            <button class="dashboard-feature-card" type="button" onclick="openTimeCalculatorFromDashboard()">
+                                <span class="dashboard-feature-icon pink"><i class="fa-solid fa-calculator"></i></span>
+                                <span>Калькулятор</span>
+                            </button>
+                            <button class="dashboard-feature-card" type="button" onclick="openSubscriptionTestFromDashboard()">
+                                <span class="dashboard-feature-icon mint"><i class="fa-solid fa-circle-question"></i></span>
+                                <span>Тесты</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -198,22 +190,24 @@
                     </button>
                 </div>
 
-                <div class="dashboard-calendar-block">
-                    <div class="dashboard-calendar-head">
-                        <div>
-                            <h2>Календарь списаний</h2>
+                <div id="dashboardCalendarDetails" class="dashboard-calendar-details" hidden>
+                    <div class="dashboard-calendar-block">
+                        <div class="dashboard-calendar-head">
+                            <div>
+                                <h2>Календарь списаний</h2>
+                            </div>
+                            <button type="button" onclick="toggleDashboardCalendar(false)">Свернуть</button>
                         </div>
-                        <button type="button" onclick="switchView('calendar')">Все</button>
+                        <div id="dashboardCalendarDays"></div>
+                        <div id="dashboardCalendarEvents"></div>
                     </div>
-                    <div id="dashboardCalendarDays"></div>
-                    <div id="dashboardCalendarEvents"></div>
-                </div>
 
-                <div class="dashboard-section-title">
-                    <h2>Ближайшие списания</h2>
-                    <button type="button" onclick="switchView('subscriptions')">Все</button>
+                    <div class="dashboard-section-title">
+                        <h2>Ближайшие списания</h2>
+                        <button type="button" onclick="switchView('subscriptions')">Все</button>
+                    </div>
+                    <div id="dashUpcoming" class="dashboard-upcoming-list"></div>
                 </div>
-                <div id="dashUpcoming" class="dashboard-upcoming-list"></div>
             </div>
         </section>
 
@@ -618,19 +612,6 @@
                 </div>
             </div>
 
-            <div class="authors-hero">
-                <div>
-                    <span class="authors-kicker">Авторский маркет</span>
-                    <h2>Найдите автора и подпишитесь на эксклюзивный контент</h2>
-                    <p>Статьи, видео, аудио, галереи и премиум-материалы в одном разделе.</p>
-                </div>
-                <div class="authors-hero-badge">
-                    <i class="fa-solid fa-star"></i>
-                    <strong>12,4К</strong>
-                    <span>подписчиков у топ-авторов</span>
-                </div>
-            </div>
-
             <div class="authors-search-wrap">
                 <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                 <input id="authorsSearchInput" type="search" placeholder="Найти автора..." autocomplete="off" aria-label="Найти автора">
@@ -740,37 +721,47 @@
                 </div>
 
                 <div class="author-profile-layout">
-                    <aside class="author-profile-left">
-                        <div class="author-main-card">
-                            <div class="author-avatar-big" id="authorProfileAvatar">МД</div>
-                            <h2 id="authorProfileName">Мария Дизайнова</h2>
-                            <div class="author-handle" id="authorProfileHandle">@maria_designs</div>
-                            <p id="authorProfileBio">Делюсь секретами UI/UX дизайна, кейсами и инсайтами из мира digital. Эксклюзивный контент каждую неделю ✨</p>
+                    <section class="author-profile-hero-card">
+                        <div class="author-profile-banner" id="authorProfileBanner" aria-label="Баннер профиля автора"></div>
 
-                            <div class="author-stats-review-block">
-                                <div class="author-stats-line">
-                                    <div><i class="fa-solid fa-star"></i> <strong id="authorProfileRating">4.9</strong></div>
-                                    <span>·</span>
-                                    <div><strong id="authorProfileReviews">247</strong> отзывов</div>
-                                    <span>·</span>
-                                    <div><strong id="authorProfileFollowers">12,4К</strong> подписчиков</div>
+                        <div class="author-profile-left">
+                            <div class="author-main-card">
+                                <div class="author-main-card-profile">
+                                    <div class="author-avatar-big" id="authorProfileAvatar">МД</div>
+                                    <div class="author-main-card-copy">
+                                        <h2 id="authorProfileName">Мария Дизайнова</h2>
+                                        <div class="author-handle" id="authorProfileHandle">@maria_designs</div>
+                                        <p id="authorProfileBio">Делюсь секретами UI/UX дизайна, кейсами и инсайтами из мира digital. Эксклюзивный контент каждую неделю ✨</p>
+
+                                        <div class="author-stats-review-block">
+                                            <div class="author-stats-line">
+                                                <div><i class="fa-solid fa-star"></i> <strong id="authorProfileRating">4.9</strong></div>
+                                                <span>·</span>
+                                                <div><strong id="authorProfileReviews">247</strong> отзывов</div>
+                                                <span>·</span>
+                                                <div><strong id="authorProfileFollowers">12,4К</strong> подписчиков</div>
+                                            </div>
+                                            <button class="author-leave-review-link" type="button" onclick="openAuthorReviewComposer()">Оставить отзыв</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button class="author-leave-review-link" type="button" onclick="openAuthorReviewComposer()">Оставить отзыв</button>
+
+                                <div class="author-main-card-actions">
+                                    <button class="author-subscribe-btn" type="button">
+                                        <i class="fa-solid fa-check"></i>
+                                        Подписан
+                                    </button>
+                                </div>
                             </div>
 
-                            <button class="author-subscribe-btn" type="button">
-                                <i class="fa-solid fa-check"></i>
-                                Подписан
-                            </button>
+                            <div class="author-plan-card">
+                                <span>Текущий тариф</span>
+                                <h3>Pro <i class="fa-solid fa-star"></i></h3>
+                                <p>490 ₽/мес · Следующее списание: 27.06.2026</p>
+                                <button type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Изменить</button>
+                            </div>
                         </div>
-
-                        <div class="author-plan-card">
-                            <span>Текущий тариф</span>
-                            <h3>Pro <i class="fa-solid fa-star"></i></h3>
-                            <p>490 ₽/мес · Следующее списание: 27.06.2026</p>
-                            <button type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Изменить</button>
-                        </div>
-                    </aside>
+                    </section>
 
                     <div class="author-profile-content">
                         <div class="author-tabs" id="authorContentTabs">
@@ -913,69 +904,61 @@
             </div>
         </section>
 
-        <!-- CALENDAR -->
-        <section class="view" id="view-calendar">
-            <div class="topbar calendar-page-topbar">
-                <div>
-                    <h1 class="page-title">Календарь списаний</h1>
-                    <div class="page-sub">Когда и что с вас спишут</div>
-                </div>
-                <div class="calendar-view-switch" role="group" aria-label="Вид календаря">
-                    <button id="calendarMonthMode" class="calendar-view-button active" type="button" onclick="setCalendarViewMode('month')">Месяц</button>
-                    <button id="calendarListMode" class="calendar-view-button" type="button" onclick="setCalendarViewMode('list')">Строкой</button>
-                </div>
-            </div>
-            <div id="calendarMonthView"></div>
-            <div id="calList" class="sub-list cal-list" hidden></div>
-        </section>
-
         <!-- WALLET -->
         <section class="view" id="view-wallet">
-            <div class="topbar">
+            <div class="topbar wallet-page-topbar">
                 <div>
                     <h1 class="page-title">Виртуальный кошелёк</h1>
                     <div class="page-sub">Оплачивайте подписки с баланса автоматически</div>
                 </div>
             </div>
-            <div class="grid wallet-layout">
-                <div class="card wallet-card">
-                    <div class="ring"></div>
-                    <div class="label">Доступно</div>
-                    <div class="balance" id="walletBalance">0 ₽</div>
-                    <div style="font-size:13px; opacity:0.9;">Автопополнение: <span id="autoTopupLabel">выключено</span></div>
-                    <div class="wallet-actions">
-                        <button class="btn" onclick="openDepositModal()"><i class="fa-solid fa-plus"></i> Пополнить</button>
-                        <button class="btn" onclick="openAutoTopupModal()"><i class="fa-solid fa-rotate"></i> Автопополнение</button>
-                        <button class="btn" onclick="openWithdrawModal()"><i class="fa-solid fa-arrow-up-from-bracket"></i> Вывести</button>
+
+            <div class="wallet-layout">
+                <div class="wallet-main-column">
+                    <div class="card wallet-card wallet-balance-column">
+                        <div class="ring"></div>
+                        <div class="label">Доступно</div>
+                        <div class="balance" id="walletBalance">0 ₽</div>
+                        <div class="wallet-auto-status">Автопополнение: <span id="autoTopupLabel">выключено</span></div>
+                        <div class="wallet-actions">
+                            <button class="btn" onclick="openDepositModal()"><i class="fa-solid fa-plus"></i><span>Пополнить</span></button>
+                            <button class="btn" onclick="openWithdrawModal()"><i class="fa-solid fa-arrow-up-from-bracket"></i><span>Вывести</span></button>
+                            <button class="btn wallet-auto-button" onclick="openAutoTopupModal()"><i class="fa-solid fa-rotate"></i><span>Автопополнение</span></button>
+                        </div>
+                    </div>
+
+                    <div class="card wallet-operations-card">
+                        <div class="wallet-column-heading">
+                            <div>
+                                <h2>Последние операции</h2>
+                                <p>Движение средств в кошельке</p>
+                            </div>
+                        </div>
+                        <div id="walletTx" class="wallet-transactions-list"></div>
                     </div>
                 </div>
-                <div class="card">
-                    <h3 style="font-size:16px; margin-bottom:14px;">Последние операции</h3>
-                    <div id="walletTx"></div>
-                </div>
-            </div>
-        </section>
 
-        <!-- HISTORY -->
-        <section class="view" id="view-history">
-            <div class="topbar">
-                <div>
-                    <h1 class="page-title">История оплат</h1>
-                    <div class="page-sub">Все платежи по вашим подпискам</div>
-                </div>
-                <div class="tabs" id="histTabs">
-                    <button class="tab active" data-period="month">Месяц</button>
-                    <button class="tab" data-period="quarter">Квартал</button>
-                    <button class="tab" data-period="year">Год</button>
+                <div class="wallet-history-column" id="walletHistoryPanel">
+                    <div class="wallet-history-head">
+                        <div>
+                            <h2>История оплат</h2>
+                            <p>Все платежи по подпискам</p>
+                        </div>
+                        <div class="tabs" id="histTabs">
+                            <button class="tab active" data-period="month">Месяц</button>
+                            <button class="tab" data-period="quarter">Квартал</button>
+                            <button class="tab" data-period="year">Год</button>
+                        </div>
+                    </div>
+                    <div class="history-paid-summary card" id="historyPaidSummary">
+                        <div class="history-paid-summary-label">Оплачено за месяц</div>
+                        <div class="history-paid-summary-value" id="historyPaidSummaryValue">0 ₽</div>
+                        <div class="history-paid-summary-note" id="historyPaidSummaryNote">За текущий месяц операций не было</div>
+                    </div>
+                    <h3 class="history-operations-title">Операции</h3>
+                    <div class="card wallet-history-list" id="historyList"></div>
                 </div>
             </div>
-            <div class="history-paid-summary card" id="historyPaidSummary">
-                <div class="history-paid-summary-label">Оплачено за месяц</div>
-                <div class="history-paid-summary-value" id="historyPaidSummaryValue">0 ₽</div>
-                <div class="history-paid-summary-note" id="historyPaidSummaryNote">За текущий месяц операций не было</div>
-            </div>
-            <h2 class="history-operations-title">Операции</h2>
-            <div class="card" id="historyList"></div>
         </section>
 
 <!-- FEED -->
@@ -1144,50 +1127,54 @@
                     <div class="profile-web-layout">
                         <div>
                             <div class="profile-web-card">
-                                <div class="profile-web-head">
-                                    <div class="profile-web-avatar-wrap">
-                                        <div class="profile-web-avatar" id="profileAvatarLetter">Д</div>
-                                        <button class="profile-web-cam" type="button" onclick="toast('Выбор аватара')">
-                                            <i class="fa-solid fa-camera"></i>
-                                        </button>
-                                    </div>
-                                    <div>
-                                        <div class="profile-web-name-row">
-                                            <h2 id="profileDisplayName">Данияр</h2>
-                                            <button class="profile-web-edit" type="button" onclick="openAccountSettingsModal()">
-                                                <i class="fa-solid fa-pen"></i>
+                                <div class="profile-web-overview">
+                                    <div class="profile-web-head">
+                                        <div class="profile-web-avatar-wrap">
+                                            <div class="profile-web-avatar" id="profileAvatarLetter">Д</div>
+                                            <button class="profile-web-cam" type="button" onclick="toast('Выбор аватара')">
+                                                <i class="fa-solid fa-camera"></i>
                                             </button>
                                         </div>
-                                        <div class="profile-web-email">
-                                            <span id="profileEmailText">a.kravtsov@mail.ru</span>
-                                            <i class="fa-solid fa-circle-check profile-web-verified"></i>
+                                        <div>
+                                            <div class="profile-web-name-row">
+                                                <h2 id="profileDisplayName">Данияр</h2>
+                                                <button class="profile-web-edit" type="button" onclick="openAccountSettingsModal()">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                            </div>
+                                            <div class="profile-web-email">
+                                                <span id="profileEmailText">a.kravtsov@mail.ru</span>
+                                                <i class="fa-solid fa-circle-check profile-web-verified"></i>
+                                            </div>
+                                            <div class="profile-web-gender" id="profileGenderText">Мужской</div>
+                                            <button class="profile-web-bday" id="profileBirthDateButton" type="button" onclick="openAccountSettingsModal()">
+                                                <i class="fa-solid fa-cake-candles"></i>
+                                                Добавить дату рождения · +10 баллов
+                                            </button>
                                         </div>
-                                        <div class="profile-web-gender" id="profileGenderText">Мужской</div>
-                                        <button class="profile-web-bday" id="profileBirthDateButton" type="button" onclick="openAccountSettingsModal()">
-                                            <i class="fa-solid fa-cake-candles"></i>
-                                            Добавить дату рождения · +10 баллов
-                                        </button>
+                                    </div>
+
+                                    <div class="profile-web-level-panel">
+                                        <div class="profile-web-level-top">
+                                            <div>
+                                                <div class="profile-web-level-title">Магистр подписок 4-го уровня</div>
+                                                <div class="profile-web-level-sub">До «Стратег подписок» — 435 XP</div>
+                                            </div>
+                                            <div class="profile-web-points" id="profilePointsHistoryTrigger" role="button" tabindex="0" aria-label="Открыть историю баллов">
+                                                <div class="profile-web-num">2 800</div>
+                                                <div class="profile-web-lbl">баллов</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="profile-web-bar"><span></span></div>
+                                        <div class="profile-web-bar-labels">
+                                            <span>Уровень 4</span>
+                                            <span>Уровень 5</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <hr class="profile-web-hr">
-
-                                <div class="profile-web-level-top">
-                                    <div>
-                                        <div class="profile-web-level-title">Магистр подписок 4-го уровня</div>
-                                        <div class="profile-web-level-sub">До «Стратег подписок» — 435 XP</div>
-                                    </div>
-                                    <div class="profile-web-points" id="profilePointsHistoryTrigger" role="button" tabindex="0" aria-label="Открыть историю баллов">
-                                        <div class="profile-web-num">2 800</div>
-                                        <div class="profile-web-lbl">баллов</div>
-                                    </div>
-                                </div>
-
-                                <div class="profile-web-bar"><span></span></div>
-                                <div class="profile-web-bar-labels">
-                                    <span>Уровень 4</span>
-                                    <span>Уровень 5</span>
-                                </div>
 
                                 <div class="profile-web-main-actions">
                                     <button class="profile-web-btn profile-web-btn-dark" type="button" onclick="openRewardsShop()">
@@ -1497,238 +1484,168 @@
 
         <!-- SETTINGS -->
         <section class="view" id="view-settings">
-            <div class="topbar">
-                <div>
-                    <h1 class="page-title">Настройки</h1>
-                    <div class="page-sub">Уведомления, безопасность и аккаунт</div>
-                </div>
-            </div>
-            <div class="grid" style="grid-template-columns:1fr 1fr; gap:20px;">
-                <div class="card settings-notifications-card">
-                    <div class="settings-notifications-head">
-                        <span class="settings-notifications-icon"><i class="fa-solid fa-bell"></i></span>
-                        <div>
-                            <h3>Уведомления</h3>
-                            <div class="muted">Напоминания о предстоящих списаниях</div>
-                        </div>
-                    </div>
-                    <div class="settings-notifications-list">
-                        <button class="settings-notification-row" type="button" data-notification-key="pushEnabled" aria-pressed="true">
-                            <span><strong>Push-уведомления</strong><small>На устройство</small></span>
-                            <span class="settings-notification-switch" aria-hidden="true"></span>
-                        </button>
-                        <button class="settings-notification-row" type="button" data-notification-key="emailEnabled" aria-pressed="true">
-                            <span><strong>Email-рассылка</strong><small>Раз в неделю</small></span>
-                            <span class="settings-notification-switch" aria-hidden="true"></span>
-                        </button>
-                        <button class="settings-notification-row" type="button" data-notification-key="notify7Days" aria-pressed="true">
-                            <span><strong>За 7 дней</strong><small>Предупредить заранее</small></span>
-                            <span class="settings-notification-switch" aria-hidden="true"></span>
-                        </button>
-                        <button class="settings-notification-row" type="button" data-notification-key="notify3Days" aria-pressed="true">
-                            <span><strong>За 3 дня</strong><small>Напомнить ближе к списанию</small></span>
-                            <span class="settings-notification-switch" aria-hidden="true"></span>
-                        </button>
-                        <button class="settings-notification-row" type="button" data-notification-key="notify1Day" aria-pressed="false">
-                            <span><strong>За 1 день</strong><small>Последнее напоминание</small></span>
-                            <span class="settings-notification-switch" aria-hidden="true"></span>
-                        </button>
-                        <button class="settings-notification-row" type="button" data-notification-key="soundEnabled" aria-pressed="true">
-                            <span><strong>Звук</strong><small>Звуковые уведомления от сервиса</small></span>
-                            <span class="settings-notification-switch" aria-hidden="true"></span>
-                        </button>
+            <div class="settings-mobile-page">
+                <div class="topbar settings-mobile-topbar">
+                    <div>
+                        <h1 class="page-title">Настройки</h1>
+                        <div class="page-sub">Управление аккаунтом и приложением</div>
                     </div>
                 </div>
-                <div class="card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Аккаунт</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Управление профилем</div>
-                    <button class="settings-account-profile-row" type="button" onclick="openAccountSettingsModal()">
-                        <span class="settings-account-profile-icon"><i class="fa-solid fa-user"></i></span>
-                        <span class="settings-account-profile-copy">
-                            <strong id="settingsAccountName">Данияр</strong>
-                            <small>Имя пользователя и профиль</small>
+
+                <div class="settings-mobile-card" aria-label="Основные настройки">
+                    <button class="settings-mobile-row" type="button" onclick="openAccountSettingsModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-account"><i class="fa-solid fa-user"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Аккаунт</strong>
+                            <small><span id="settingsAccountName">Данияр</span> · номер, имя пользователя, профиль</small>
                         </span>
-                        <i class="fa-solid fa-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
                     </button>
-                    <div class="field"><label>Телефон</label><input type="tel" id="settingsPhone" readonly></div>
-                    <button class="settings-account-profile-row settings-timezone-row" type="button" onclick="openTimezoneModal()">
-                        <span class="settings-account-profile-icon"><i class="fa-solid fa-clock"></i></span>
-                        <span class="settings-account-profile-copy">
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openNotificationPreferencesModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-notifications"><i class="fa-solid fa-bell"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Уведомления</strong>
+                            <small>Push, email и напоминания о списаниях</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
+                    </button>
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openPaymentMethodsModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-payment"><i class="fa-solid fa-credit-card"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Способы оплаты</strong>
+                            <small id="settingsPaymentSummary">Способы оплаты не добавлены</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
+                    </button>
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openAppearanceSettings()">
+                        <span class="settings-mobile-icon settings-mobile-icon-appearance"><i class="fa-solid fa-palette"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Внешний вид</strong>
+                            <small>Тема, оформление и цвет кнопок</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
+                    </button>
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openTariffsModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-tariff"><i class="fa-solid fa-gem"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Тарифы</strong>
+                            <small id="settingsTariffSummary">Base — бесплатно</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
+                    </button>
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openPrivacyModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-privacy"><i class="fa-solid fa-eye"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Приватность</strong>
+                            <small id="settingsPrivacySummary">Кто видит подписки, достижения и баллы</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
+                    </button>
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openSecurityModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-security"><i class="fa-solid fa-lock"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Безопасность</strong>
+                            <small>Код входа, двухфакторная защита и биометрия</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
+                    </button>
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openLanguageModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-language"><i class="fa-solid fa-language"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Язык</strong>
+                            <small>Русский</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
+                    </button>
+                </div>
+
+                <div class="settings-mobile-card settings-mobile-extra-card" aria-label="Дополнительные настройки">
+                    <button class="settings-mobile-row" type="button" onclick="openTimezoneModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-timezone"><i class="fa-solid fa-clock"></i></span>
+                        <span class="settings-mobile-copy">
                             <strong>Часовой пояс</strong>
                             <small id="settingsTimezoneValue">Europe/Moscow (UTC+3)</small>
                         </span>
-                        <i class="fa-solid fa-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
                     </button>
-                    <div style="display:flex; gap:10px; margin-top:18px;">
-                        <button class="btn btn-ghost" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выйти</button>
-                    </div>
-                </div>
-                <div class="card settings-payment-section-card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Способы оплаты</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Управление банковскими картами</div>
-                    <button class="settings-account-profile-row settings-payment-row" type="button" onclick="openPaymentMethodsModal()">
-                        <span class="settings-account-profile-icon settings-payment-icon"><i class="fa-solid fa-credit-card"></i></span>
-                        <span class="settings-account-profile-copy">
-                            <strong>Банковские карты</strong>
-                            <small id="settingsPaymentSummary">Способы оплаты не добавлены</small>
+                    <div class="settings-mobile-divider"></div>
+                    <button class="settings-mobile-row" type="button" onclick="openSystemNotificationsModal()">
+                        <span class="settings-mobile-icon settings-mobile-icon-system"><i class="fa-solid fa-bell"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Системные уведомления</strong>
+                            <small id="settingsSystemNotificationsSummary">Не настроены</small>
                         </span>
-                        <i class="fa-solid fa-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
                     </button>
                 </div>
 
-                <div class="card settings-tariff-section-card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Тарифы</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Текущий план и доступные возможности</div>
-                    <button class="settings-account-profile-row settings-tariff-row" type="button" onclick="openTariffsModal()">
-                        <span class="settings-account-profile-icon settings-tariff-icon"><i class="fa-solid fa-crown"></i></span>
-                        <span class="settings-account-profile-copy">
-                            <strong>Тарифный план</strong>
-                            <small id="settingsTariffSummary">Base — бесплатно</small>
+                <div class="settings-mobile-card settings-mobile-logout-card">
+                    <button class="settings-mobile-row settings-mobile-row-danger" type="button" onclick="logout()">
+                        <span class="settings-mobile-icon settings-mobile-icon-logout"><i class="fa-solid fa-right-from-bracket"></i></span>
+                        <span class="settings-mobile-copy">
+                            <strong>Выйти из аккаунта</strong>
                         </span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-                <div class="card settings-security-section-card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Безопасность</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Пароль, вход и защита аккаунта</div>
-                    <button class="settings-account-profile-row settings-security-row" type="button" onclick="openSecurityModal()">
-                        <span class="settings-account-profile-icon settings-security-icon"><i class="fa-solid fa-lock"></i></span>
-                        <span class="settings-account-profile-copy">
-                            <strong>Настройки безопасности</strong>
-                            <small>Код входа, двухфакторная защита и биометрия</small>
-                        </span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-                <div class="card settings-system-notifications-card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Системные уведомления</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Планирование, тест и список</div>
-                    <button class="settings-account-profile-row settings-system-notifications-row" type="button" onclick="openSystemNotificationsModal()">
-                        <span class="settings-account-profile-icon settings-system-notifications-icon"><i class="fa-solid fa-bell"></i></span>
-                        <span class="settings-account-profile-copy">
-                            <strong>Управление уведомлениями</strong>
-                            <small id="settingsSystemNotificationsSummary">Не настроены</small>
-                        </span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-                <div class="card settings-privacy-section-card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Приватность</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Кто видит подписки, достижения и баллы</div>
-                    <button class="settings-account-profile-row settings-privacy-row" type="button" onclick="openPrivacyModal()">
-                        <span class="settings-account-profile-icon settings-privacy-icon"><i class="fa-solid fa-eye"></i></span>
-                        <span class="settings-account-profile-copy">
-                            <strong>Настройки приватности</strong>
-                            <small id="settingsPrivacySummary">Подписки: друзья</small>
-                        </span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-                <div class="card settings-language-section-card">
-                    <h3 style="font-size:17px; margin-bottom:4px;">Язык</h3>
-                    <div class="muted" style="font-size:13px; margin-bottom:18px;">Язык интерфейса</div>
-                    <button class="settings-account-profile-row settings-language-row" type="button" onclick="openLanguageModal()" aria-label="Выбрать язык интерфейса">
-                        <span class="settings-account-profile-icon"><i class="fa-solid fa-language"></i></span>
-                        <span class="settings-account-profile-copy">
-                            <strong>Русский</strong>
-                            <small>Текущий язык интерфейса</small>
-                        </span>
-                        <i class="fa-solid fa-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right settings-mobile-chevron"></i>
                     </button>
                 </div>
             </div>
+        </section>
 
-                <div class="settings-personalization-bottom">
-                    <div class="settings-personalization-head">
-                        <h2>Персонализация</h2>
-                        <p>Настройте тему и акцентный цвет — изменения применяются мгновенно</p>
-                    </div>
+    </main>
+</div>
 
-                    <div class="settings-personalization-grid">
-                        <div>
-                            <div class="settings-personalization-card settings-theme-mode-card">
-                                <div class="settings-theme-mode-head">
-                                    <div class="settings-theme-icon">
-                                        <i class="fa-solid fa-circle-half-stroke"></i>
-                                    </div>
-                                    <div class="settings-theme-txt">
-                                        <h3>Тема интерфейса</h3>
-                                        <p>Выберите постоянную тему или повторяйте настройки устройства</p>
-                                    </div>
+
+<!-- ========== MODAL: Appearance / Personalization ========== -->
+<div class="modal-backdrop" id="appearanceSettingsModal">
+    <div class="modal settings-appearance-modal-card">
+        <div class="modal-head settings-appearance-modal-head">
+            <div>
+                <h3>Персонализация</h3>
+                <p>Настройте тему и акцентный цвет — изменения применяются мгновенно</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closeAppearanceSettings()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+                <div class="settings-personalization-bottom" id="settingsPersonalization">
+                    <div class="settings-personalization-grid settings-appearance-stack">
+                        <div class="settings-personalization-card settings-theme-mode-card">
+                            <div class="settings-theme-mode-head">
+                                <div class="settings-theme-icon">
+                                    <i class="fa-solid fa-circle-half-stroke"></i>
                                 </div>
-                                <div class="settings-theme-mode-options" role="radiogroup" aria-label="Тема интерфейса">
-                                    <button class="settings-theme-mode-option" type="button" data-theme-mode="system" onclick="selectThemeMode('system')" role="radio" aria-checked="false">
-                                        <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-mobile-screen"></i></span>
-                                        <span><strong>Как в системе</strong><small>Повторять тему устройства</small></span>
-                                        <i class="fa-solid fa-check settings-theme-mode-check"></i>
-                                    </button>
-                                    <button class="settings-theme-mode-option" type="button" data-theme-mode="light" onclick="selectThemeMode('light')" role="radio" aria-checked="false">
-                                        <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-sun"></i></span>
-                                        <span><strong>Светлая</strong><small>Всегда светлый интерфейс</small></span>
-                                        <i class="fa-solid fa-check settings-theme-mode-check"></i>
-                                    </button>
-                                    <button class="settings-theme-mode-option" type="button" data-theme-mode="dark" onclick="selectThemeMode('dark')" role="radio" aria-checked="false">
-                                        <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-moon"></i></span>
-                                        <span><strong>Тёмная</strong><small>Всегда тёмный интерфейс</small></span>
-                                        <i class="fa-solid fa-check settings-theme-mode-check"></i>
-                                    </button>
+                                <div class="settings-theme-txt">
+                                    <h3>Тема интерфейса</h3>
+                                    <p>Выберите постоянную тему или повторяйте настройки устройства</p>
                                 </div>
                             </div>
-
-                            <div class="settings-personalization-card">
-                                <div class="settings-preview-head">
-                                    <div class="settings-preview-avatar">П</div>
-                                    <div>
-                                        <h3>Предпросмотр</h3>
-                                        <p>Цвета применятся после сохранения</p>
-                                    </div>
-                                    <button class="settings-preview-gear" type="button" onclick="toast('Настройки предпросмотра')">
-                                        <i class="fa-solid fa-gear"></i>
-                                    </button>
-                                </div>
-
-                                <div class="settings-preview-tiles">
-                                    <div class="settings-preview-tile">
-                                        <div class="settings-preview-tile-ic">
-                                            <i class="fa-solid fa-chart-simple"></i>
-                                        </div>
-                                        <h4>Аналитика</h4>
-                                        <span>12 400 ₽</span>
-                                    </div>
-                                    <div class="settings-preview-tile">
-                                        <div class="settings-preview-tile-ic">
-                                            <i class="fa-solid fa-arrow-trend-up"></i>
-                                        </div>
-                                        <h4>Инсайды</h4>
-                                        <span>3 новых</span>
-                                    </div>
-                                </div>
-
-                                <div class="settings-preview-navbar">
-                                    <div class="settings-preview-nav-item active">
-                                        <i class="fa-solid fa-table-cells-large"></i>
-                                        Главная
-                                    </div>
-                                    <div class="settings-preview-nav-item">
-                                        <i class="fa-solid fa-store"></i>
-                                        Маркет
-                                    </div>
-                                    <div class="settings-preview-nav-plus">
-                                        <i class="fa-solid fa-plus"></i>
-                                    </div>
-                                    <div class="settings-preview-nav-item">
-                                        <i class="fa-solid fa-layer-group"></i>
-                                        Лента
-                                    </div>
-                                    <div class="settings-preview-nav-item">
-                                        <i class="fa-solid fa-user"></i>
-                                        Профиль
-                                    </div>
-                                </div>
+                            <div class="settings-theme-mode-options" role="radiogroup" aria-label="Тема интерфейса">
+                                <button class="settings-theme-mode-option" type="button" data-theme-mode="system" onclick="selectThemeMode('system')" role="radio" aria-checked="false">
+                                    <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+                                    <span><strong>Как в системе</strong><small>Повторять тему устройства</small></span>
+                                    <i class="fa-solid fa-check settings-theme-mode-check"></i>
+                                </button>
+                                <button class="settings-theme-mode-option" type="button" data-theme-mode="light" onclick="selectThemeMode('light')" role="radio" aria-checked="false">
+                                    <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-sun"></i></span>
+                                    <span><strong>Светлая</strong><small>Всегда светлый интерфейс</small></span>
+                                    <i class="fa-solid fa-check settings-theme-mode-check"></i>
+                                </button>
+                                <button class="settings-theme-mode-option" type="button" data-theme-mode="dark" onclick="selectThemeMode('dark')" role="radio" aria-checked="false">
+                                    <span class="settings-theme-mode-option-icon"><i class="fa-solid fa-moon"></i></span>
+                                    <span><strong>Тёмная</strong><small>Всегда тёмный интерфейс</small></span>
+                                    <i class="fa-solid fa-check settings-theme-mode-check"></i>
+                                </button>
                             </div>
                         </div>
 
-                        <div class="settings-personalization-card">
+                        <div class="settings-personalization-card settings-color-card-full">
                             <div class="settings-color-title">Цвет приложения</div>
                             <div class="settings-color-sub">Кнопки, иконки, активные вкладки и акценты</div>
 
@@ -1749,11 +1666,48 @@
                         </div>
                     </div>
                 </div>
+    </div>
+</div>
 
-
-        </section>
-
-    </main>
+<!-- ========== MODAL: Notification preferences ========== -->
+<div class="modal-backdrop" id="notificationPreferencesModal">
+    <div class="modal settings-notifications-modal-card">
+        <div class="modal-head">
+            <div>
+                <h3>Уведомления</h3>
+                <p>Push, email и напоминания о списаниях</p>
+            </div>
+            <button class="icon-btn" type="button" onclick="closeNotificationPreferencesModal()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="settings-notifications-list">
+            <button class="settings-notification-row" type="button" data-notification-key="pushEnabled" aria-pressed="true">
+                <span><strong>Push-уведомления</strong><small>На устройство</small></span>
+                <span class="settings-notification-switch" aria-hidden="true"></span>
+            </button>
+            <button class="settings-notification-row" type="button" data-notification-key="emailEnabled" aria-pressed="true">
+                <span><strong>Email-рассылка</strong><small>Раз в неделю</small></span>
+                <span class="settings-notification-switch" aria-hidden="true"></span>
+            </button>
+            <button class="settings-notification-row" type="button" data-notification-key="notify7Days" aria-pressed="true">
+                <span><strong>За 7 дней</strong><small>Предупредить заранее</small></span>
+                <span class="settings-notification-switch" aria-hidden="true"></span>
+            </button>
+            <button class="settings-notification-row" type="button" data-notification-key="notify3Days" aria-pressed="true">
+                <span><strong>За 3 дня</strong><small>Напомнить ближе к списанию</small></span>
+                <span class="settings-notification-switch" aria-hidden="true"></span>
+            </button>
+            <button class="settings-notification-row" type="button" data-notification-key="notify1Day" aria-pressed="false">
+                <span><strong>За 1 день</strong><small>Последнее напоминание</small></span>
+                <span class="settings-notification-switch" aria-hidden="true"></span>
+            </button>
+            <button class="settings-notification-row" type="button" data-notification-key="soundEnabled" aria-pressed="true">
+                <span><strong>Звук</strong><small>Звуковые уведомления от сервиса</small></span>
+                <span class="settings-notification-switch" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
 </div>
 
 <!-- ========== MODAL: Add Subscription ========== -->

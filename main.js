@@ -14,6 +14,7 @@ let state = loadState() || createEmptyState();
 let tmpPhone = '';
 let editingId = null;
 let dashboardCalendarMonth = null;
+let dashboardCalendarExpanded = false;
 let selectedSubscriptionId = null;
 let activeCategoryEditorKey = '';
 let pendingCategoryTransferSubscriptionId = null;
@@ -255,8 +256,15 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => switchView(btn.dataset.view));
 });
 function switchView(name){
+    const targetView = name === 'history' ? 'wallet' : name;
     document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === name));
-    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + targetView));
+    if(name === 'history'){
+        requestAnimationFrame(() => {
+            const historyPanel = document.getElementById('walletHistoryPanel');
+            if(historyPanel) historyPanel.scrollIntoView({ behavior:'smooth', block:'start', inline:'nearest' });
+        });
+    }
     if(name === 'categories') renderCategoriesUi();
     if(name === 'friends') renderFriendsScreen();
     if(name === 'friend-profile') renderFriendProfileScreen();
@@ -271,7 +279,6 @@ function renderAll(){
     renderPrivacySettings();
     renderDashboard();
     renderSubscriptions();
-    renderCalendar();
     renderWallet();
     renderHistory();
 }
@@ -312,9 +319,10 @@ function renderDashboard(){
 }
 
 function renderDashboardCalendar(sorted){
+    const miniBox = document.getElementById('dashboardMiniCalendar');
+    const details = document.getElementById('dashboardCalendarDetails');
     const daysBox = document.getElementById('dashboardCalendarDays');
     const eventsBox = document.getElementById('dashboardCalendarEvents');
-    if(!daysBox) return;
     if(eventsBox) eventsBox.innerHTML = '';
 
     const weekdays = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
@@ -329,19 +337,62 @@ function renderDashboardCalendar(sorted){
     const year = dashboardCalendarMonth.getFullYear();
     const month = dashboardCalendarMonth.getMonth();
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startOffset = (firstDay.getDay() + 6) % 7; // Monday-first
+    const startOffset = (firstDay.getDay() + 6) % 7;
     const gridStart = new Date(year, month, 1 - startOffset);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const miniWeeks = Math.ceil((startOffset + daysInMonth) / 7);
+    const miniCellCount = miniWeeks * 7;
+    const today = new Date();
+    today.setHours(0,0,0,0);
 
     const byDate = new Map();
-    items.forEach(s => {
-        const d = new Date(s.next);
-        if(isNaN(d)) return;
-        d.setHours(0,0,0,0);
-        const key = d.toISOString().slice(0,10);
+    items.forEach(subscription => {
+        const date = new Date(subscription.next);
+        if(Number.isNaN(date.getTime())) return;
+        date.setHours(0,0,0,0);
+        const key = calendarDateKey(date);
         if(!byDate.has(key)) byDate.set(key, []);
-        byDate.get(key).push(s);
+        byDate.get(key).push(subscription);
     });
+
+    if(details) details.hidden = !dashboardCalendarExpanded;
+
+    if(miniBox){
+        const cells = [];
+        for(let i = 0; i < miniCellCount; i++){
+            const date = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i);
+            date.setHours(0,0,0,0);
+            const key = calendarDateKey(date);
+            const payments = byDate.get(key) || [];
+            const classes = ['dashboard-mini-calendar-day'];
+            if(date.getMonth() !== month) classes.push('outside');
+            if(date.getTime() === today.getTime()) classes.push('today');
+            if(payments.length) classes.push('has-payment');
+
+            cells.push(`
+                <div class="${classes.join(' ')}" aria-label="${formatDate(key)}${payments.length ? `, списаний: ${payments.length}` : ''}">
+                    <span>${date.getDate()}</span>
+                    ${payments.length ? '<i></i>' : ''}
+                </div>`);
+        }
+
+        miniBox.innerHTML = `
+            <div class="dashboard-mini-calendar ${miniWeeks === 6 ? 'six-weeks' : ''}">
+                <div class="dashboard-mini-calendar-head">
+                    <button type="button" onclick="changeDashboardCalendarMonth(-1)" aria-label="Предыдущий месяц"><i class="fa-solid fa-chevron-left"></i></button>
+                    <strong>${months[month]} ${year}</strong>
+                    <button type="button" onclick="changeDashboardCalendarMonth(1)" aria-label="Следующий месяц"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="dashboard-mini-calendar-weekdays">${weekdays.map(day => `<span>${day}</span>`).join('')}</div>
+                <div class="dashboard-mini-calendar-grid">${cells.join('')}</div>
+                <button class="dashboard-mini-calendar-more" type="button" onclick="toggleDashboardCalendar(true)">Подробнее</button>
+            </div>`;
+    }
+
+    if(!daysBox || !dashboardCalendarExpanded){
+        if(daysBox) daysBox.innerHTML = '';
+        return;
+    }
 
     let html = `
         <div class="dashboard-calendar-month-card">
@@ -351,35 +402,28 @@ function renderDashboardCalendar(sorted){
                 <button class="dashboard-calendar-month-nav" type="button" onclick="changeDashboardCalendarMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
             <div class="dashboard-calendar-month-grid">
-                ${weekdays.map(d => `<div class="dashboard-calendar-month-head">${d}</div>`).join('')}
+                ${weekdays.map(day => `<div class="dashboard-calendar-month-head">${day}</div>`).join('')}
     `;
 
     for(let i = 0; i < 35; i++){
-        const d = new Date(gridStart);
-        d.setDate(gridStart.getDate() + i);
-        d.setHours(0,0,0,0);
-        const key = d.toISOString().slice(0,10);
-        const inMonth = d.getMonth() === month;
-        const isToday = (() => { const t = new Date(); t.setHours(0,0,0,0); return d.getTime() === t.getTime(); })();
-        const payments = (byDate.get(key) || []).sort((a,b) => (a.amount||0) - (b.amount||0));
+        const date = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i);
+        date.setHours(0,0,0,0);
+        const key = calendarDateKey(date);
+        const inMonth = date.getMonth() === month;
+        const isToday = date.getTime() === today.getTime();
+        const payments = (byDate.get(key) || []).sort((a,b) => (a.amount || 0) - (b.amount || 0));
 
-        let topMark = `<div class="dashboard-calendar-cell-number">${d.getDate()}</div>`;
-        if(payments.length === 0 && inMonth && (i === 8 || i === 13)){
-            topMark = `<div class="dashboard-calendar-cell-number dashboard-calendar-pill-day">${d.getDate()}</div>`;
-        }
-        let content = topMark;
-
+        let content = `<div class="dashboard-calendar-cell-number">${date.getDate()}</div>`;
         if(payments.length){
             const first = payments[0];
             const palette = ['orange','blue','green','gray'];
-            const tone = first.currency === 'USD' ? 'blue' : palette[(d.getDate() + payments.length) % palette.length];
+            const tone = first.currency === 'USD' ? 'blue' : palette[(date.getDate() + payments.length) % palette.length];
             content += `
                 <div class="dashboard-calendar-event-mini ${tone}">
                     <div class="dashboard-calendar-event-mini-name">${first.name}</div>
                     <div class="dashboard-calendar-event-mini-price">${fmt(first.amount, first.currency)}</div>
                     ${payments.length > 1 ? `<div class="dashboard-calendar-event-mini-more">+${payments.length - 1} ещё</div>` : ''}
-                </div>
-            `;
+                </div>`;
         }
 
         html += `<div class="dashboard-calendar-cell ${inMonth ? '' : 'muted'} ${isToday ? 'today' : ''}">${content}</div>`;
@@ -396,6 +440,17 @@ function changeDashboardCalendarMonth(offset){
     }
     dashboardCalendarMonth = new Date(dashboardCalendarMonth.getFullYear(), dashboardCalendarMonth.getMonth() + offset, 1);
     renderDashboard();
+}
+
+function toggleDashboardCalendar(expanded){
+    dashboardCalendarExpanded = Boolean(expanded);
+    renderDashboard();
+
+    if(dashboardCalendarExpanded){
+        requestAnimationFrame(() => {
+            document.getElementById('dashboardCalendarDetails')?.scrollIntoView({ behavior:'smooth', block:'start' });
+        });
+    }
 }
 
 function dashboardUpcomingRow(s){
@@ -2725,54 +2780,62 @@ function renderFriendProfileScreen(){
         const owned=isFriendSubscriptionOwned(s);
         return `<button class="friend-profile-web-sub" type="button" onclick="openFriendSubscriptionPreview('${s.key}',this)">${friendSubscriptionIcon(s)}<div class="friend-profile-web-sub-copy"><strong>${s.name}</strong><span>${owned?'Общая подписка':'Только у друга'}</span><small>${fmt(s.amount)} / месяц</small></div>${owned?'<i class="fa-solid fa-check friend-subscription-common-check"></i>':''}</button>`;
     }).join('');
-
-    box.innerHTML=`<div class="friend-profile-web-grid friend-profile-web-grid-aligned">
-        <div class="friend-profile-web-column">
-            <div class="friend-profile-web-card friend-profile-web-main-card friend-profile-web-main-card-similar">
-                <div class="friend-profile-web-header">
-                    <div class="friend-profile-web-avatar" style="background:${friend.color}">${friend.initials}</div>
-                    <div class="friend-profile-web-person-info">
-                        <div class="friend-profile-web-name-row">
-                            <div class="friend-profile-web-name">${friend.name}</div>
+    box.innerHTML=`<div class="friend-profile-web-grid friend-profile-web-grid-aligned friend-profile-web-single-layout">
+        <div class="friend-profile-web-card friend-profile-web-main-card friend-profile-web-main-card-similar">
+            <div class="friend-profile-web-overview">
+                <div class="friend-profile-web-identity-panel">
+                    <div class="friend-profile-web-header">
+                        <div class="friend-profile-web-avatar" style="background:${friend.color}">${friend.initials}</div>
+                        <div class="friend-profile-web-person-info">
+                            <div class="friend-profile-web-name-row">
+                                <div class="friend-profile-web-name">${friend.name}</div>
+                            </div>
+                            <div class="friend-profile-web-age"><i class="fa-solid fa-cake-candles"></i><span>${friendProfileAge(friend)} лет</span></div>
+                            <div class="friend-profile-web-level"><i class="fa-solid fa-trophy"></i><span>${friendProfileLevelTitle(friend)}</span></div>
                         </div>
-                        <div class="friend-profile-web-age"><i class="fa-solid fa-cake-candles"></i><span>${friendProfileAge(friend)} лет</span></div>
-                        <div class="friend-profile-web-level"><i class="fa-solid fa-trophy"></i><span>${friendProfileLevelTitle(friend)}</span></div>
                     </div>
+                    <div class="friend-profile-web-actions"><button class="friend-profile-web-primary" type="button" onclick="handleFriendPrimaryAction()">${relationButtonLabel(friend)}</button></div>
                 </div>
-                <div class="friend-profile-web-actions"><button class="friend-profile-web-primary" type="button" onclick="handleFriendPrimaryAction()">${relationButtonLabel(friend)}</button></div>
-                <hr class="friend-profile-web-divider">
-                <div class="friend-profile-web-level-top">
-                    <div>
-                        <div class="friend-profile-web-level-title">${friendProfileLevelTitle(friend)}</div>
-                        <div class="friend-profile-web-level-sub">До «${nextTitle}» — ${remainingXp} XP</div>
+
+                <div class="friend-profile-web-level-panel">
+                    <div class="friend-profile-web-level-top">
+                        <div>
+                            <div class="friend-profile-web-level-title">${friendProfileLevelTitle(friend)}</div>
+                            <div class="friend-profile-web-level-sub">До «${nextTitle}» — ${remainingXp} XP</div>
+                        </div>
+                        <div class="friend-profile-web-points" aria-label="Баллы друга">
+                            <div class="friend-profile-web-num">${formatFriendPoints(points)}</div>
+                            <div class="friend-profile-web-lbl">баллов</div>
+                        </div>
                     </div>
-                    <div class="friend-profile-web-points" aria-label="Баллы друга">
-                        <div class="friend-profile-web-num">${formatFriendPoints(points)}</div>
-                        <div class="friend-profile-web-lbl">баллов</div>
+                    <div class="friend-profile-web-bar"><span style="width:${progress}%"></span></div>
+                    <div class="friend-profile-web-bar-labels">
+                        <span>Уровень ${level}</span>
+                        <span>Уровень ${nextLevel}</span>
                     </div>
-                </div>
-                <div class="friend-profile-web-bar"><span style="width:${progress}%"></span></div>
-                <div class="friend-profile-web-bar-labels">
-                    <span>Уровень ${level}</span>
-                    <span>Уровень ${nextLevel}</span>
-                </div>
-                <div class="friend-profile-web-stats">
-                    <button type="button" class="friend-profile-web-stat" onclick="openFriendConnections(0)"><i class="fa-solid fa-user-group"></i><span><strong>${friendCount}</strong><small>друзей</small></span></button>
-                    <div class="friend-profile-web-stat"><i class="fa-solid fa-star"></i><span><strong>${formatFriendPoints(points)}</strong><small>баллов</small></span></div>
                 </div>
             </div>
-            <div class="friend-profile-web-card friend-profile-web-subscriptions-card">
-                <div class="friend-profile-web-section-title"><h3>Подписки</h3><button type="button" class="friend-profile-web-more" onclick="openAllFriendSubscriptions()" aria-label="Все подписки"><i class="fa-solid fa-ellipsis"></i></button></div>
-                <div class="friend-profile-web-subscriptions">${subscriptionsMarkup}</div>
+
+            <hr class="friend-profile-web-divider">
+
+            <div class="friend-profile-web-stats">
+                <button type="button" class="friend-profile-web-stat" onclick="openFriendConnections(0)"><i class="fa-solid fa-user-group"></i><span><strong>${friendCount}</strong><small>друзей</small></span></button>
+                <div class="friend-profile-web-stat"><i class="fa-solid fa-star"></i><span><strong>${formatFriendPoints(points)}</strong><small>баллов</small></span></div>
+            </div>
+
+            <div class="friend-profile-web-main-content-grid">
+                <section class="friend-profile-web-embedded-section friend-profile-web-subscriptions-section">
+                    <div class="friend-profile-web-section-title"><h3>Подписки</h3><button type="button" class="friend-profile-web-more" onclick="openAllFriendSubscriptions()" aria-label="Все подписки"><i class="fa-solid fa-ellipsis"></i></button></div>
+                    <div class="friend-profile-web-subscriptions">${subscriptionsMarkup}</div>
+                </section>
+                ${renderFriendProfileCommonFriends(friend)}
             </div>
         </div>
-        <div class="friend-profile-web-column">
-            <div class="friend-profile-web-card friend-profile-web-achievements-card">
-                <div class="friend-profile-web-ach-head"><h3>Достижения</h3><button type="button" class="friend-profile-web-section-link" onclick="openFriendAchievements()">Все</button></div>
-                <div class="friend-profile-web-ach-grid">${achievements.map(a=>`<button class="friend-profile-web-ach" type="button" style="background:${a.color}" onclick="openFriendAchievements()"><i class="fa-solid ${a.icon}"></i></button>`).join('')}</div>
-                <div class="friend-profile-web-ach-list">${achievements.slice(0,3).map(a=>`<button class="friend-profile-web-ach-item" type="button" onclick="openFriendAchievements()"><div class="friend-profile-web-ach-ic" style="background:${a.color};"><i class="fa-solid ${a.icon}"></i></div><div><div class="friend-profile-web-ach-t">${a.title}</div><div class="friend-profile-web-ach-d">${a.description}</div></div></button>`).join('')}</div>
-            </div>
-            ${renderFriendProfileCommonFriends(friend)}
+
+        <div class="friend-profile-web-card friend-profile-web-achievements-card">
+            <div class="friend-profile-web-ach-head"><h3>Достижения</h3><button type="button" class="friend-profile-web-section-link" onclick="openFriendAchievements()">Все</button></div>
+            <div class="friend-profile-web-ach-grid">${achievements.map(a=>`<button class="friend-profile-web-ach" type="button" style="background:${a.color}" onclick="openFriendAchievements()"><i class="fa-solid ${a.icon}"></i></button>`).join('')}</div>
+            <div class="friend-profile-web-ach-list">${achievements.slice(0,3).map(a=>`<button class="friend-profile-web-ach-item" type="button" onclick="openFriendAchievements()"><div class="friend-profile-web-ach-ic" style="background:${a.color};"><i class="fa-solid ${a.icon}"></i></div><div><div class="friend-profile-web-ach-t">${a.title}</div><div class="friend-profile-web-ach-d">${a.description}</div></div></button>`).join('')}</div>
         </div>
     </div>`;
 }
@@ -2809,7 +2872,7 @@ function friendConnectionSubtitle(profileFriend,item,tab){
 function renderFriendProfileCommonFriends(friend){
     const common = friendConnectionCommonFriends(friend);
     const shown = common.slice(0,3);
-    return `<button class="friend-profile-web-card friend-profile-web-common-card" type="button" onclick="openFriendConnections(1)">
+    return `<button class="friend-profile-web-common-card friend-profile-web-common-embedded friend-profile-web-embedded-section" type="button" onclick="openFriendConnections(1)">
         <div class="friend-profile-web-section-title"><h3>Общие друзья</h3><span>${common.length}</span></div>
         ${shown.length ? `<div class="friend-profile-web-common-list">${shown.map(item=>`
             <span class="friend-profile-web-common-person" onclick="event.stopPropagation();openFriendProfile('${item.id}')">
@@ -3244,6 +3307,40 @@ document.addEventListener('keydown', event => {
     if(event.key === 'Escape' && document.getElementById('paymentMethodsModal')?.classList.contains('open')) closePaymentMethodsModal();
 });
 
+
+// ================== SETTINGS MOBILE MENU ==================
+function openAppearanceSettings(){
+    const modal = document.getElementById('appearanceSettingsModal');
+    if(!modal) return;
+    modal.classList.add('open');
+    setTimeout(initSettingsPersonalizationBottom, 60);
+}
+function closeAppearanceSettings(){
+    document.getElementById('appearanceSettingsModal')?.classList.remove('open');
+}
+document.getElementById('appearanceSettingsModal')?.addEventListener('click', event => {
+    if(event.target.id === 'appearanceSettingsModal') closeAppearanceSettings();
+});
+document.addEventListener('keydown', event => {
+    if(event.key === 'Escape' && document.getElementById('appearanceSettingsModal')?.classList.contains('open')){
+        closeAppearanceSettings();
+    }
+});
+function openNotificationPreferencesModal(){
+    if(typeof renderNotificationSettings === 'function') renderNotificationSettings();
+    document.getElementById('notificationPreferencesModal')?.classList.add('open');
+}
+function closeNotificationPreferencesModal(){
+    document.getElementById('notificationPreferencesModal')?.classList.remove('open');
+}
+document.getElementById('notificationPreferencesModal')?.addEventListener('click', event => {
+    if(event.target.id === 'notificationPreferencesModal') closeNotificationPreferencesModal();
+});
+document.addEventListener('keydown', event => {
+    if(event.key === 'Escape' && document.getElementById('notificationPreferencesModal')?.classList.contains('open')){
+        closeNotificationPreferencesModal();
+    }
+});
 
 // ================== NOTIFICATION REMINDERS ==================
 function ensureNotificationSettings(){

@@ -3,20 +3,39 @@
 
   const STORAGE_KEY = 'author_content_favorites_v1';
   let decorating = false;
+  let favoritesCache = null;
 
   function scopedGet(key){
-    try{return window.AccountStorage ? window.AccountStorage.getItem(key) : localStorage.getItem(key);}catch(_){return null;}
+    try{
+      if(window.AccountStorage){
+        const accountId = window.AccountStorage.getActiveAccount?.();
+        if(accountId) return window.AccountStorage.getItem(key);
+      }
+      return localStorage.getItem(key);
+    }catch(_){return null;}
   }
   function scopedSet(key,value){
-    try{if(window.AccountStorage) window.AccountStorage.setItem(key,value); else localStorage.setItem(key,value);}catch(_){ }
+    try{
+      if(window.AccountStorage){
+        const accountId = window.AccountStorage.getActiveAccount?.();
+        if(accountId && window.AccountStorage.setItem(key,value)) return true;
+      }
+      localStorage.setItem(key,value);
+      return true;
+    }catch(_){return false;}
   }
-  function load(){
+  function load(forceReload=false){
+    if(!forceReload && favoritesCache) return favoritesCache;
     try{
       const value = JSON.parse(scopedGet(STORAGE_KEY) || '{}');
-      return value && typeof value === 'object' ? value : {};
-    }catch(_){return {};}
+      favoritesCache = value && typeof value === 'object' ? value : {};
+    }catch(_){favoritesCache = {};}
+    return favoritesCache;
   }
-  function save(value){scopedSet(STORAGE_KEY, JSON.stringify(value));}
+  function save(value){
+    favoritesCache = value && typeof value === 'object' ? value : {};
+    scopedSet(STORAGE_KEY, JSON.stringify(favoritesCache));
+  }
 
   function slug(value){
     return String(value || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zа-я0-9]+/gi,'_').replace(/^_+|_+$/g,'') || 'material';
@@ -109,6 +128,7 @@
     if(!button) return;
     event.preventDefault();
     event.stopPropagation();
+    event.stopImmediatePropagation();
     const card = button.closest('.author-content-card');
     if(card) toggle(card);
   }, true);
@@ -126,6 +146,8 @@
   }
 
   window.addEventListener('account-changed', ()=>{
+    favoritesCache = null;
+    load(true);
     decorateAll();
     const activeTab = document.querySelector('#authorContentTabs [data-author-content-tab="favorites"].active');
     if(activeTab) renderFavorites();

@@ -1,0 +1,79 @@
+/* Friend profile: match the full-width layout of the user's own profile. */
+#view-friend-profile .friend-profile-web-shell {
+    width: 100% !important;
+    max-width: 1100px !important;
+}
+
+#view-friend-profile .friend-profile-web-grid.friend-profile-web-single-layout {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    grid-template-columns: none !important;
+    gap: 18px !important;
+}
+
+#view-friend-profile .friend-profile-web-grid.friend-profile-web-single-layout > .friend-profile-web-main-card,
+#view-friend-profile .friend-profile-web-grid.friend-profile-web-single-layout > .friend-profile-web-achievements-card {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#view-friend-profile .friend-profile-web-grid.friend-profile-web-single-layout > .friend-profile-web-main-card {
+    order: 1 !important;
+    min-height: 0 !important;
+}
+
+#view-friend-profile .friend-profile-web-grid.friend-profile-web-single-layout > .friend-profile-web-achievements-card {
+    order: 2 !important;
+}
+
+@media (max-width: 760px) {
+    #view-friend-profile .friend-profile-web-shell {
+        max-width: none !important;
+    }
+}
+
+/* Friend profile: outlined common-friends section inside the main card. */
+#view-friend-profile .friend-profile-web-common-embedded,
+#view-friend-profile .friend-profile-web-common-embedded:hover {
+    align-self: stretch !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    box-sizing: border-box !important;
+    padding: 16px !important;
+    border: 1px solid #e1e4ea !important;
+    border-radius: 16px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+body.global-dark-theme #view-friend-profile .friend-profile-web-common-embedded,
+body.global-dark-theme #view-friend-profile .friend-profile-web-common-embedded:hover {
+    border-color: #303544 !important;
+    background: transparent !important;
+}
+
+/* Friend profile: keep common friends content aligned to the top of its outlined card. */
+#view-friend-profile .friend-profile-web-common-embedded,
+#view-friend-profile .friend-profile-web-common-embedded:hover {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    align-content: flex-start !important;
+}
+
+#view-friend-profile .friend-profile-web-common-embedded > .friend-profile-web-section-title {
+    width: 100% !important;
+    margin-top: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+#view-friend-profile .friend-profile-web-common-embedded > .friend-profile-web-common-list,
+#view-friend-profile .friend-profile-web-common-embedded > .friends-web-empty.compact {
+    flex: 0 0 auto !important;
+}

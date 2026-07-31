@@ -184,6 +184,7 @@
   }
 
   document.addEventListener('click', function(e){
+    if(e.target.closest('#view-author-profile .author-content-favorite-btn')) return;
     const card = e.target.closest('#view-author-profile .author-media-card');
     if(!card) return;
     e.preventDefault();
