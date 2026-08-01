@@ -12,7 +12,7 @@
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260731-1102">
+    <link rel="stylesheet" href="style.css?v=20260801-0904">
     <link rel="stylesheet" href="profile-notifications.css">
     <link rel="stylesheet" href="profile-avatar.css">
     <link rel="stylesheet" href="achievement-details.css">
@@ -416,7 +416,7 @@
 
                 <div class="analytics-grid">
                     <!-- COLUMN 1 -->
-                    <div class="analytics-col">
+                    <div class="analytics-col analytics-secondary-col analytics-summary-col">
                         <div class="analytics-toggle">
                             <button class="active" type="button" data-analytics-period="month">Мес</button>
                             <button type="button" data-analytics-period="year">Год</button>
@@ -466,9 +466,72 @@
                     </div>
 
                     <!-- COLUMN 2 -->
-                    <div class="analytics-col">
+                    <div class="analytics-col analytics-main-col">
                         <div class="analytics-section-title">Категории трат</div>
-                        <div class="analytics-card">
+                        <div class="analytics-card analytics-category-card">
+                            <div class="analytics-category-info">
+                                <div class="analytics-legend">
+                                    <div class="analytics-legend-row">
+                                        <div class="analytics-legend-left">
+                                            <span class="analytics-dot" style="background:#6c2bd9;"></span>
+                                            <div><div class="analytics-name">Работа</div><div class="analytics-pct">55% расходов</div></div>
+                                        </div>
+                                        <div class="analytics-val">1 990 ₽</div>
+                                    </div>
+                                    <div class="analytics-legend-row">
+                                        <div class="analytics-legend-left">
+                                            <span class="analytics-dot" style="background:#e8443c;"></span>
+                                            <div><div class="analytics-name">Развлечения</div><div class="analytics-pct">33% расходов</div></div>
+                                        </div>
+                                        <div class="analytics-val">1 198 ₽</div>
+                                    </div>
+                                    <div class="analytics-legend-row">
+                                        <div class="analytics-legend-left">
+                                            <span class="analytics-dot" style="background:#22a565;"></span>
+                                            <div><div class="analytics-name">Музыка</div><div class="analytics-pct">8% расходов</div></div>
+                                        </div>
+                                        <div class="analytics-val">299 ₽</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="analytics-divider"></div>
+                                
+                                <div class="analytics-cat-row">
+                                    <div class="analytics-cat-head">
+                                        <div class="analytics-cat-ico" style="background:#efeaff;color:#6c2bd9;"><i class="fa-solid fa-folder"></i></div>
+                                        <div class="analytics-cat-mid">
+                                            <div class="analytics-cat-top"><span class="analytics-cat-name">Работа</span><span class="analytics-cat-amt">1 990 ₽</span></div>
+                                            <div class="analytics-cat-top"><span class="analytics-cat-meta">55% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
+                                    </div>
+                                    <div class="analytics-bar"><span style="width:55%;background:#6c2bd9;"></span></div>
+                                </div>
+                                
+                                <div class="analytics-cat-row">
+                                    <div class="analytics-cat-head">
+                                        <div class="analytics-cat-ico" style="background:#fdeaea;color:#e8443c;"><i class="fa-solid fa-folder"></i></div>
+                                        <div class="analytics-cat-mid">
+                                            <div class="analytics-cat-top"><span class="analytics-cat-name">Развлечения</span><span class="analytics-cat-amt">1 198 ₽</span></div>
+                                            <div class="analytics-cat-top"><span class="analytics-cat-meta">33% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
+                                    </div>
+                                    <div class="analytics-bar"><span style="width:33%;background:#e8443c;"></span></div>
+                                </div>
+                                
+                                <div class="analytics-cat-row">
+                                    <div class="analytics-cat-head">
+                                        <div class="analytics-cat-ico" style="background:#e4f6ee;color:#22a565;"><i class="fa-solid fa-folder"></i></div>
+                                        <div class="analytics-cat-mid">
+                                            <div class="analytics-cat-top"><span class="analytics-cat-name">Музыка</span><span class="analytics-cat-amt">299 ₽</span></div>
+                                            <div class="analytics-cat-top"><span class="analytics-cat-meta">8% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
+                                    </div>
+                                    <div class="analytics-bar"><span style="width:8%;background:#22a565;"></span></div>
+                                </div>
+                            </div>
                             <div class="analytics-donut-wrap">
                                 <div class="analytics-donut">
                                     <svg viewBox="0 0 42 42" width="220" height="220">
@@ -483,73 +546,11 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="analytics-legend">
-                                <div class="analytics-legend-row">
-                                    <div class="analytics-legend-left">
-                                        <span class="analytics-dot" style="background:#6c2bd9;"></span>
-                                        <div><div class="analytics-name">Работа</div><div class="analytics-pct">55% расходов</div></div>
-                                    </div>
-                                    <div class="analytics-val">1 990 ₽</div>
-                                </div>
-                                <div class="analytics-legend-row">
-                                    <div class="analytics-legend-left">
-                                        <span class="analytics-dot" style="background:#e8443c;"></span>
-                                        <div><div class="analytics-name">Развлечения</div><div class="analytics-pct">33% расходов</div></div>
-                                    </div>
-                                    <div class="analytics-val">1 198 ₽</div>
-                                </div>
-                                <div class="analytics-legend-row">
-                                    <div class="analytics-legend-left">
-                                        <span class="analytics-dot" style="background:#22a565;"></span>
-                                        <div><div class="analytics-name">Музыка</div><div class="analytics-pct">8% расходов</div></div>
-                                    </div>
-                                    <div class="analytics-val">299 ₽</div>
-                                </div>
-                            </div>
-
-                            <div class="analytics-divider"></div>
-
-                            <div class="analytics-cat-row">
-                                <div class="analytics-cat-head">
-                                    <div class="analytics-cat-ico" style="background:#efeaff;color:#6c2bd9;"><i class="fa-solid fa-folder"></i></div>
-                                    <div class="analytics-cat-mid">
-                                        <div class="analytics-cat-top"><span class="analytics-cat-name">Работа</span><span class="analytics-cat-amt">1 990 ₽</span></div>
-                                        <div class="analytics-cat-top"><span class="analytics-cat-meta">55% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
-                                    </div>
-                                    <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
-                                </div>
-                                <div class="analytics-bar"><span style="width:55%;background:#6c2bd9;"></span></div>
-                            </div>
-
-                            <div class="analytics-cat-row">
-                                <div class="analytics-cat-head">
-                                    <div class="analytics-cat-ico" style="background:#fdeaea;color:#e8443c;"><i class="fa-solid fa-folder"></i></div>
-                                    <div class="analytics-cat-mid">
-                                        <div class="analytics-cat-top"><span class="analytics-cat-name">Развлечения</span><span class="analytics-cat-amt">1 198 ₽</span></div>
-                                        <div class="analytics-cat-top"><span class="analytics-cat-meta">33% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
-                                    </div>
-                                    <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
-                                </div>
-                                <div class="analytics-bar"><span style="width:33%;background:#e8443c;"></span></div>
-                            </div>
-
-                            <div class="analytics-cat-row">
-                                <div class="analytics-cat-head">
-                                    <div class="analytics-cat-ico" style="background:#e4f6ee;color:#22a565;"><i class="fa-solid fa-folder"></i></div>
-                                    <div class="analytics-cat-mid">
-                                        <div class="analytics-cat-top"><span class="analytics-cat-name">Музыка</span><span class="analytics-cat-amt">299 ₽</span></div>
-                                        <div class="analytics-cat-top"><span class="analytics-cat-meta">8% от месяца</span><span class="analytics-cat-meta">— без истории</span></div>
-                                    </div>
-                                    <i class="fa-solid fa-chevron-right analytics-cat-arrow"></i>
-                                </div>
-                                <div class="analytics-bar"><span style="width:8%;background:#22a565;"></span></div>
-                            </div>
                         </div>
                     </div>
 
                     <!-- COLUMN 3 -->
-                    <div class="analytics-col">
+                    <div class="analytics-col analytics-secondary-col analytics-insights-col">
                         <div class="analytics-section-title">Главные инсайты</div>
 
                         <div class="analytics-insight">
